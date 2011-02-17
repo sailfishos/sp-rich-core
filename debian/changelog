@@ -1,3 +1,9 @@
+sp-rich-core (1.65.1-2) unstable; urgency=low
+
+  * Updated build number
+
+ -- Carol Rus <ext-carol.rus@nokia.com>  Thu, 17 Feb 2011 17:23:00 +0200
+
 sp-rich-core (1.65.1-1) unstable; urgency=low
 
   * Fixes: NB#223843 - sp-rich-core should depend on sysinfoclient
