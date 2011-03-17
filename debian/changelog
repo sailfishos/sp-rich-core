@@ -1,8 +1,8 @@
 sp-rich-core (1.65.2-1) unstable; urgency=low
 
-  * Added presteps in tests.xml to ignore duplicates handling
+  * Fixes: NB#237570 - Add code to ignore duplicates handling in tests 
 
- -- Carol Rus <ext-carol.rus@nokia.com>  Thu, 17 Mar 2011 11:53:00 +0200
+ -- Carol Rus <ext-carol.rus@nokia.com>  Thu, 17 Mar 2011 12:24:00 +0200
 
 sp-rich-core (1.65.1-2) unstable; urgency=low
 
