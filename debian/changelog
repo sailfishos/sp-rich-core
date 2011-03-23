@@ -1,3 +1,10 @@
+sp-rich-core (1.65.3-1) unstable; urgency=low
+
+  * Fixes: NB#206215 - rich-core-pattern fails mkdir during boot
+  * Fixes: NB#207709 - sp-rich-core does unnecessary sysinfoclient output parsing 
+
+ -- Carol Rus <ext-carol.rus@nokia.com>  Tue, 23 Mar 2011 11:22:00 +0200
+
 sp-rich-core (1.65.2-1) unstable; urgency=low
 
   * Fixes: NB#237570 - Add code to ignore duplicates handling in tests 

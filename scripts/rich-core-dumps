@@ -114,7 +114,7 @@ _create_oopslog_dump()
 
 _create_bootreason_dump()
 {
-	bootreason=$(sed -re 's/.*bootreason=([^[:space:]]+).*/\1/' /proc/cmdline)
+	bootreason=$(sysinfoclient -p /component/boot-reason)
 	if [ x"${bootreason}" = x"32wd_to" ] || [ x"${bootreason}" = x"hw_bug" ]; then
 	
 		if [ $_SLEPT_ALREADY -ne 1 ]; then

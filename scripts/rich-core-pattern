@@ -32,7 +32,7 @@ case "$1" in
 
 	test -x /usr/sbin/rich-core-dumper || exit 0
 
-	test -x /home/user/MyDocs/core-dumps || mkdir /home/user/MyDocs/core-dumps
+	! test -x /home/user/MyDocs || test -x /home/user/MyDocs/core-dumps || mkdir /home/user/MyDocs/core-dumps
 
 	# setup new core_pattern
 	sysctl -w kernel.core_pattern='|/usr/sbin/rich-core-dumper --pid=%p --signal=%s --name=%e'
