@@ -52,7 +52,7 @@ _create_oopslog_dump()
 		# We also need a partition; check its number and whether it exists
 
 #	partnum=$(sed 's/^.*console=ttyMTD\([0-9]\+\).*$/\1/' < /proc/cmdline)
-	partnum="2"
+	partnum="3"
 
 	echo "Oopslog partition should be: /dev/mtd$partnum"
 

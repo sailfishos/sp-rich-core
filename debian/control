@@ -7,8 +7,7 @@ Standards-Version: 3.8.0
 
 Package: sp-rich-core
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, lzop, sp-endurance, core-reducer, sysinfoclient, sysinfod
-Recommends: sp-oops-extract
+Depends: ${shlibs:Depends}, ${misc:Depends}, lzop, sp-endurance, core-reducer, sysinfoclient, sysinfod, sp-oops-extract
 Description: Rich core
  Create rich core dumps. Rich cores include information about system
  state and core in a single compressed file. Requires a kernel that

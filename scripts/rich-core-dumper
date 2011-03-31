@@ -437,7 +437,7 @@ if [ -z "${core_sig}" ]; then
 fi
 
 # Make a unique HW ID from IMEI
-imei_suffix=$(sysinfoclient -g /certs/npc/esn/gsm 2>/dev/null)
+imei_suffix=$(sysinfoclient -p /certs/npc/esn/gsm 2>/dev/null)
 if [ -z ${imei_suffix} -o "${imei_suffix}" = "<error>" ]; then
     /usr/sbin/sysinfod --static
     imei_suffix=$(awk -F '=' '/^\/certs\/npc\/esn\/gsm=/{print $2}' /var/cache/sysinfod/values)

@@ -1,3 +1,9 @@
+sp-rich-core (1.66.0-1) unstable; urgency=low
+
+  * Fixes: NB#238895 - [TASK] [FEA] kernel oops trace upload for Harmattan requested -- Device side
+  
+ -- Carol Rus <ext-carol.rus@nokia.com>  Wed, 30 Mar 2011 17:50:00 +0300
+
 sp-rich-core (1.65.3-1) unstable; urgency=low
 
   * Fixes: NB#206215 - rich-core-pattern fails mkdir during boot
