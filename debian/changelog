@@ -3,7 +3,7 @@ sp-rich-core (1.66.0-1) unstable; urgency=low
   * Fixes: NB#238895 - [TASK] [FEA] kernel oops trace upload for Harmattan requested -- Device side
   * Fixes: NB#235492 - sp-rich-core not buildable with gcc-4.5
   
- -- Carol Rus <ext-carol.rus@nokia.com>  Wed, 31 Mar 2011 17:25:00 +0300
+ -- Carol Rus <ext-carol.rus@nokia.com> Mon, 04 Mar 2011 12:27:00 +0300
 
 sp-rich-core (1.65.3-1) unstable; urgency=low
 
