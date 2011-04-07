@@ -148,10 +148,10 @@ _check_sw_version_file()
 {
   # check if the file does not exist or is empty
   if [ ! -s ${SW_VERSION_FILE} ]; then
-    VERSION=$(sysinfoclient -g /device/sw-release-ver 2>/dev/null)
+    VERSION=$(sysinfoclient -p /device/sw-release-ver 2>/dev/null)
     if [ -z $VERSION ]; then
 	/usr/sbin/sysinfod --static
-	VERSION=$(awk -F '=' '/^\/device\/sw-release-ver/{print $2}' /var/cache/sysinfod/values)
+	VERSION=$(sysinfoclient -p /device/sw-release-ver 2>/dev/null)
     fi
     echo "$VERSION" > ${SW_VERSION_FILE}
   fi
