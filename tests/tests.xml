@@ -46,7 +46,7 @@
         <set name="input-validation-tests" feature="Robustness">
             <description>Determine how the application responds to input</description>
             <case name="no-parameters" type="Robustness" level="Component">
-                <step expected_result="255">core-reducer</step>
+                <step>core-reducer</step>
             </case>
         </set>
     </suite>
