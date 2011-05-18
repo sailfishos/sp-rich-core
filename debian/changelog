@@ -1,8 +1,9 @@
 sp-rich-core (1.66.1-1) unstable; urgency=low
 
   * Fixes: NB#207709 - sp-rich-core does unnecessary sysinfoclient output parsing 
+  * Temporary fix for core corruption by blacklisting core-reducer's action on specific applications
   
- -- Carol Rus <ext-carol.rus@nokia.com>  Thu, 07 Apr 2011 12:27:00 +0300
+ -- Carol Rus <ext-carol.rus@nokia.com>  Thu, 18 May 2011 10:10:00 +0300
 
 sp-rich-core (1.66.0-2) unstable; urgency=low
 

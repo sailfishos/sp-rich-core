@@ -492,10 +492,20 @@ else
   if [ x"$INCLUDE_CORE" = x"true" -a "${omit_core}" != "true" ]; then
     _print_header coredump
       if [ x"$REDUCE_CORE" = x"true" ] && [ -n ${core_exe} ]; then
-        originalcorefilename=${rcorefilename}.core.in
-        cat > ${originalcorefilename}
-        core-reducer -i ${originalcorefilename} -o /dev/stdout -e ${core_exe}
-        rm ${originalcorefilename}
+
+		if [ -e /etc/core-reducer.exclude ]; then
+    		/bin/grep -q "^[[:space:]]*${core_name}[[:space:]]*$" /etc/core-reducer.exclude
+    		if [ $? -ne 0 ]; then
+				# Not in the core-reducer's blacklist, so it can be reduced
+				originalcorefilename=${rcorefilename}.core.in
+        		cat > ${originalcorefilename}
+        		core-reducer -i ${originalcorefilename} -o /dev/stdout -e ${core_exe}
+        		rm ${originalcorefilename}
+			else
+				cat			
+			fi
+		fi
+
       else
         cat
       fi
