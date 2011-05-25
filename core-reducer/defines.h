@@ -111,6 +111,7 @@ typedef Elf32_Nhdr Nhdr;
   * The offset in the link map structure that points to the name string of the library that is referenced by this link
   */
 #define LM_NAME 4
+typedef Elf32_auxv_t Auxv;
 #else
 /*!
   * \typedef Elf32_Ehdr Ehdr
@@ -157,6 +158,7 @@ typedef Elf64_Nhdr Nhdr;
   * The offset in the link map structure that points to the name string of the library that is referenced by this link
   */
 #define LM_NAME 8
+typedef Elf64_auxv_t Auxv; 
 #endif
 
 #endif // DEFINES_H

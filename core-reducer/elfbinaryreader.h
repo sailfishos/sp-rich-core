@@ -119,6 +119,8 @@ public:
       */
     const CurrentSectionData *getSectionByType(Elf_Word type);
 
+	Phdr *getSegmentByType(Elf_Word type);
+
     /*!
       * \brief Close the underlying file handles
       */

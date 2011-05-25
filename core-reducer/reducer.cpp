@@ -73,7 +73,8 @@ Reducer::Reducer(const char *output, ADDRESS heap)
     output(output),
     heapAddress(heap),
     processId(INT_MAX),
-    executableName(NULL)
+    executableName(NULL),
+	phdrAddr(0)
 {
 }
 
@@ -127,11 +128,13 @@ bool Reducer::initalize(const char *core, const char *binary)
     if (!binaryReader->initalize(binary))
         return false;
 
+	Phdr *phdr = binaryReader->getSegmentByType(PT_PHDR);
+	ADDRESS loadBias = phdrAddr - phdr->p_vaddr;
     //get the dynamic section from the binary executable
     const CurrentSectionData *binarySectionData = binaryReader->getSectionByType(SHT_DYNAMIC);
     if (binarySectionData)
     {
-        dynamicAddressFromExecutable = binarySectionData->sectionHeader->sh_addr;
+        dynamicAddressFromExecutable = binarySectionData->sectionHeader->sh_addr + loadBias;
         dynamicSectionSizeFromExecutable = binarySectionData->sectionHeader->sh_size;
 
         //Now find the address of the INTREP section.  this is the address at which the dynamic linker
@@ -141,7 +144,7 @@ bool Reducer::initalize(const char *core, const char *binary)
         if (binarySectionData)
         {
             //Find the address the interpreter is loaded at
-            interpAddress = binarySectionData->sectionHeader->sh_addr;
+            interpAddress = binarySectionData->sectionHeader->sh_addr + loadBias;
 
             //Find the name of the application that is being used as the interpreter
             Elf_Data *data = NULL;
@@ -239,6 +242,20 @@ bool Reducer::getNotes()
             //but not just the name it should include its path
             executableName = info->pr_psargs;
         }
+		else if (current->n_type == NT_AUXV)
+		{
+			Auxv *aux = (Auxv *)((char *)(current + 1) + align_power(current->n_namesz, 2)); 
+			while (aux->a_type != AT_NULL)
+			{
+				if (aux->a_type == AT_PHDR)
+				{
+					phdrAddr = (ADDRESS)aux->a_un.a_val;
+					break; 
+				}
+				++aux;
+			}
+		}
+
         current = (Nhdr *)((char *)(current + 1) + align_power (current->n_namesz, 2)
                            + align_power (current->n_descsz, 2));
     }

@@ -202,6 +202,31 @@ bool ElfBinaryReader::byName(const Shdr *sectionHeader, void *toMatch)
     return false;
 }
 
+Phdr *ElfBinaryReader::getSegmentByType(Elf_Word type)
+{
+	size_t n;
+
+	if (!elf_getphnum(file, &n))
+		return NULL;
+
+	Phdr *phdr = NULL;
+#if __WORDSIZE == 32
+	if (!(phdr = elf32_getphdr(file)))
+		LOG_RETURN(LOG_ERR, false, "getphdr() failed: %s", elf_errmsg(-1)); 
+#else
+	if (!(phdr = elf64_getphdr(file)))
+		LOG_RETURN(LOG_ERR, false, "getphdr() failed: %s", elf_errmsg(-1)); 
+#endif
+
+	while (phdr)
+	{
+		if (phdr->p_type == type)
+			return phdr;
+		++phdr; 
+	}
+	return NULL; 
+}
+
 void ElfBinaryReader::close()
 {
     if (file)

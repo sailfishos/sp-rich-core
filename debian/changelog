@@ -1,3 +1,9 @@
+sp-rich-core (1.67.1-1) unstable; urgency=low
+
+  * Fixes: NB#243569 - Core reducer corrupts certain cores (e.g. fenix)
+  
+ -- Carol Rus <ext-carol.rus@nokia.com>  Tue, 25 May 2011 10:24:00 +0300
+
 sp-rich-core (1.66.1-2) unstable; urgency=low
 
   * Updated build number

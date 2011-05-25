@@ -191,6 +191,8 @@ private:
     int processId;
     //! The name and path of the application that crashed
     char *executableName;
+	//! Load address of PHDR
+	ADDRESS phdrAddr; 
 };
 
 #endif // REDUCER_H
