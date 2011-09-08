@@ -123,7 +123,7 @@ _create_bootreason_dump()
 			_SLEPT_ALREADY=1
 		fi	
 	    echo "Creating a dump about exceptional bootreason"
-		echo "[---rich-core: reboot-$bootreason---]" > /tmp/tmp-bootreason
+		echo -e "\n[---rich-core: reboot-$bootreason---]" > /tmp/tmp-bootreason
 		echo "lifeguard_resets:" >> /tmp/tmp-bootreason
 		cat /var/lib/dsme/stats/lifeguard_resets >> /tmp/tmp-bootreason
 		echo "lifeguard_restarts:" >> /tmp/tmp-bootreason
