@@ -1,9 +1,8 @@
 sp-rich-core (1.67.2-1) unstable; urgency=low
 
-  * Fixes: NB#278720 - rich-core-extract can't extract all the files in reboot core
   * Fixes: NB#263432 - New feaure, disable core reducing based on core name
 
- -- Joonas Kylänpää <ext-joonas.kylanpaa@nokia.com>  Thu, 08 Sep 2011 14:26:53 +0300
+ -- Sami Lahtinen <ext-sami.t.lahtinen@nokia.com>  Fri, 09 Sep 2011 13:02:00 +0300
 
 sp-rich-core (1.67.1-1) unstable; urgency=low
 
