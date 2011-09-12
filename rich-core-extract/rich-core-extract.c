@@ -174,7 +174,19 @@ int main(int argc, char *argv[])
             {
                 fwrite(buffer, 1, remaining, output_file);
                 unbuffer_data(remaining);
-                break;
+
+                /* If feof is true, process also extra bytes */
+                if(feof(input_file) && start_of_header > remaining
+                    && (start_of_header - remaining) != size)
+                {
+                    start_of_header -= remaining;
+                    end_of_header -= remaining;
+                    remaining = size;
+                }
+                else
+                {
+                    break;
+                }
             }
 
             /* If start was found in remaining bytes write data before start to output_file */
@@ -228,7 +240,6 @@ int main(int argc, char *argv[])
 
     /* Empty out the buffer */
     fwrite(buffer, 1, size, output_file);
-
     fclose(output_file);
     pclose(input_file);
     exit(0);
