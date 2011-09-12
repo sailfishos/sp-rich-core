@@ -1,3 +1,9 @@
+sp-rich-core (1.67.3-1) unstable; urgency=low
+
+  * Fixes: NB#266095 - Crash reporter can corrupt core dumps so that CoreWeb cannot process them
+
+ -- Joonas Kylänpää <ext-joonas.kylanpaa@nokia.com>  Mon, 12 Sep 2011 15:29:46 +0300
+
 sp-rich-core (1.67.2-1) unstable; urgency=low
 
   * Fixes: NB#263432 - New feaure, disable core reducing based on core name
