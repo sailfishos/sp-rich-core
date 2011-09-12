@@ -429,6 +429,11 @@ if [ -e /etc/rich-core.exclude ]; then
     fi
 fi
 
+# Check if core reducing is disabled for certain executables based on core_name
+if [ -f /etc/rich-core/disable-reducer/${core_name} ]; then
+    REDUCE_CORE=false
+fi
+
 # We will lack the value for the signal if we're invoked from the
 # script. Provide a dummy value in that case.
 
