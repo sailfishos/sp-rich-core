@@ -502,7 +502,9 @@ else
   fi
 fi
 _section_rich_core_errors
-) | lzop > ${rcorefilename}.rcore.lzo 
+) | lzop > ${rcorefilename}.tmp
+
+mv ${rcorefilename}.tmp ${rcorefilename}.rcore.lzo
 
 # count cores per application
 if [ ! -d /var/lib/dsme/rich-cores ]; then
