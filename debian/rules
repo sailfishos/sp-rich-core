@@ -151,6 +151,7 @@ binary-arch: build install
 	dh_gencontrol -- -v$(PKGVERSION)$(VERSUFFIX)
 	dh_md5sums
 	dh_builddeb
+	aegis-deb-util --add-manifest sp-rich-core
 
 binary: binary-indep binary-arch
 .PHONY: build clean binary-indep binary-arch binary install configure

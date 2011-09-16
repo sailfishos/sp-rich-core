@@ -2,7 +2,7 @@ Source: sp-rich-core
 Section: devel
 Priority: optional
 Maintainer: Brian McGillion <brian.mcgillion@symbio.com>
-Build-Depends: debhelper (>= 4.0.0), libelfg0-dev (>= 0.8.10), autoconf, automake
+Build-Depends: debhelper (>= 4.0.0), libelfg0-dev (>= 0.8.10), autoconf, automake, aegis-builder (>= 1.6)
 Standards-Version: 3.8.0
 
 Package: sp-rich-core
