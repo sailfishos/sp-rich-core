@@ -121,10 +121,12 @@ _print_syslog_files_with_header()
 	_print_separator dmesg
 	/bin/dmesg
     fi
-    if [ -f $1 ]; then
-	_print_separator $1
-	cat $1
-    fi
+    for file in "$@"; do
+	if [ -f $file ]; then
+	    _print_separator $file
+	    cat $file
+	fi
+    done
 }
 
 _print_command_with_header()
@@ -268,7 +270,7 @@ _section_syslog()
   if [ -e /var/ftd-log/syslog ]; then
     _print_syslog_files_with_header /var/ftd-log/syslog
   else
-    _print_syslog_files_with_header /var/log/syslog
+    _print_syslog_files_with_header /var/log/syslog /var/log/syslog.old
   fi
 }
 
