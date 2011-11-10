@@ -1,3 +1,9 @@
+sp-rich-core (1.69.1-1) unstable; urgency=low
+
+  * Fixes: NB#289448 - [TASK] Add OneNAND vendor ID and device HWID into the crash report package's file name
+
+ -- Joonas Kylänpää <ext-joonas.kylanpaa@nokia.com>  Thu, 10 Nov 2011 14:17:44 +0200
+
 sp-rich-core (1.69.0-1) unstable; urgency=low
 
   * Fixes: NB#279034 - Include syslog.old in addition to syslog file in rich cores
