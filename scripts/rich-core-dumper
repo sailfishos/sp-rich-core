@@ -452,13 +452,22 @@ if [ -z ${imei_suffix} -o "${imei_suffix}" = "<error>" ]; then
         imei_suffix="xxxx"
     fi
 fi
+
+# Get OneNAND vendor ID
+vendor_id=$(cat /sys/devices/platform/omap2-onenand/manfid)
+if [ -z "${vendor_id}" ]; then
+  vendor_id="NA"
+fi
+
+# Get hwid
+hwid=$(sysinfoclient -p /component/hw-build 2>dev/null)
  
 # Make a naming distinction between oopslogs and rich-cores
 if [ -n "${IS_OOPSLOG}" ]; then
 	timestamp=$(date +%F-%S)
 	rcorefilename=${core_location}/oopslog-${imei_suffix}-${timestamp}
 else
-	rcorefilename=${core_location}/${core_name}-${imei_suffix}-${core_sig}-${core_pid}
+	rcorefilename=${core_location}/${core_name}-${imei_suffix}-${vendor_id}-${hwid}-${core_sig}-${core_pid}
 fi
 
 # Collect process specific information first, only then system
