@@ -1,8 +1,14 @@
+sp-rich-core (1.69.2-1) unstable; urgency=low
+
+  * Add chipID and HWID to oopslog filename also
+
+ -- Joonas Kylänpää <ext-joonas.kylanpaa@nokia.com>  Fri, 16 Dec 2011 14:01:17 +0200
+
 sp-rich-core (1.69.1-1) unstable; urgency=low
 
   * Fixes: NB#289448 - [TASK] Add OneNAND vendor ID and device HWID into the crash report package's file name
 
- -- Joonas Kylänpää <ext-joonas.kylanpaa@nokia.com>  Thu, 10 Nov 2011 14:17:44 +0200
+ -- Joonas Kylänpää <ext-joonas.kylanpaa@nokia.com>  Thu, 10 Nov 2011 14:01:05 +0200
 
 sp-rich-core (1.69.0-1) unstable; urgency=low
 

@@ -465,7 +465,7 @@ hwid=$(sysinfoclient -p /component/hw-build 2>dev/null)
 # Make a naming distinction between oopslogs and rich-cores
 if [ -n "${IS_OOPSLOG}" ]; then
 	timestamp=$(date +%F-%S)
-	rcorefilename=${core_location}/oopslog-${imei_suffix}-${timestamp}
+	rcorefilename=${core_location}/oopslog-${imei_suffix}-${vendor_id}-${hwid}-${timestamp}
 else
 	rcorefilename=${core_location}/${core_name}-${imei_suffix}-${vendor_id}-${hwid}-${core_sig}-${core_pid}
 fi
