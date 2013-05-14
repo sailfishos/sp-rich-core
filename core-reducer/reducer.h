@@ -169,7 +169,7 @@ private:
     ElfBinaryReader *binaryReader;
     //! A pointer to the class that will be used to write the reduced core file
     RawElfWriter *coreWriter;
-    //! A vector that contains a reference to each of the program headers that we want to copy to the reduced core file
+    //! A vector that contains a reference to each of the program headers that we wnat to copy to the reduced core file
     std::vector<const Phdr *> wantedHeaders;
     //! A vector to store the headers that are created, and must be deleted after use.
     std::vector<Phdr *> dynamiclyCreatedHeaders;

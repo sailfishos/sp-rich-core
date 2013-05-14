@@ -36,11 +36,10 @@
 
 //add some additional space on the stack
 #define STACK_ADDITION 128
-
 // predefined heap address, will be used if an application does not have heap
 #define PREDEFINED_HEAP_ADDRESS 4
 
-#ifdef ARM_REGS
+#ifdef __arm__
 /*!
   * \brief The offset pointer in to the registry buffer that holds the value of R13 (aka esp)
   * \sa gdb-7.0/gdb/arm-tdep.c
@@ -66,10 +65,10 @@ Reducer::Reducer(const char *output, ADDRESS heap)
     :   coreReader(NULL),
     binaryReader(NULL),
     coreWriter(NULL),
-    dynamicAddressFromExecutable(0),
+    dynamicAddressFromExecutable(NULL),
     dynamicSectionSizeFromExecutable(0),
-    interpAddress(0),
-    interpreter(0),
+    interpAddress(NULL),
+    interpreter(NULL),
     output(output),
     heapAddress(heap),
     processId(INT_MAX),
@@ -284,6 +283,7 @@ void Reducer::getStacks()
         //memory section is just junk data !! (hopefully :))
         if (stackPointerAddresses.at(i) - STACK_ADDITION > toStore->p_vaddr)
             toStore->p_vaddr = stackPointerAddresses.at(i) - STACK_ADDITION;
+
         //The size of the stack that we are interested in is the area between the the high level
         //memory address of the section and the esp
         toStore->p_filesz = (coreSegment->p_vaddr + coreSegment->p_filesz) - toStore->p_vaddr;
@@ -292,7 +292,7 @@ void Reducer::getStacks()
         toStore->p_offset += (toStore->p_vaddr - coreSegment->p_vaddr);
         //store so it can be copied to the output core file later
         wantedHeaders.push_back(toStore);
-		//These headers are are created and as such must be deleted correctly;
+        //These headers are are created and as such mush be deleted correctly;
         dynamiclyCreatedHeaders.push_back(toStore);
     }
 }

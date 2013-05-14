@@ -222,12 +222,12 @@ ADDRESS RawElfWriter::createR_DebugStruct()
 ADDRESS RawElfWriter::addR_DebugStruct(const char *rDebugStart)
 {
     if (!rDebugStart)
-        return 0;
+        return NULL;
 
     if ((R_DEBUG_STRUCT_SIZE + offset) > currentBufferSize)
     {
         if (!reallocate(R_DEBUG_STRUCT_SIZE + offset + LM_BUFFER_DATA_SIZE))
-            return 0;
+            return NULL;
     }
 
     char *writePointer = buffer + offset;
@@ -268,7 +268,7 @@ ADDRESS RawElfWriter::createAndAddLinkMapSegment(ADDRESS memoryAddress, const ch
 ADDRESS RawElfWriter::addLinkMapSegment(const char *linkMapStart, const char *stringStart)
 {
     if (!linkMapStart)
-        return 0;
+        return NULL;
 
     LinkMap *LM_To_Copy = (LinkMap *)linkMapStart;
 
@@ -281,7 +281,7 @@ ADDRESS RawElfWriter::addLinkMapSegment(const char *linkMapStart, const char *st
     if ((sizeof(LinkMap) + stringSize + offset) > currentBufferSize)
     {
         if (!reallocate(sizeof(LinkMap) + stringSize + offset + LM_BUFFER_DATA_SIZE))
-            return 0;
+            return NULL;
     }
 
     //write the link map information
