@@ -28,7 +28,7 @@ EOF
 /tmp/default.txt
 EOF
 
-    rm -f /home/user/MyDocs/core-dumps/sleep-*.rcore.lzo
+    rm -f /home/nemo/core-dumps/sleep-*.rcore.lzo
     rm -fr ./outputdir
 
     sleep 60&
@@ -39,7 +39,7 @@ EOF
     wait ${PID}
     sleep 5
 
-    if rich-core-extract /home/user/MyDocs/core-dumps/sleep-*-${PID}.rcore.lzo outputdir; then
+    if rich-core-extract /home/nemo/core-dumps/sleep-*-${PID}.rcore.lzo outputdir; then
 	if [ ! -f ./outputdir/foo.txt ]; then
 	    echo "ERROR: file foo.txt is missing from rich core"
 	    return 1
@@ -93,7 +93,7 @@ EOF
 
     rm -f ${DEFAULT_EXTRAS_FILE}
 
-    rm -f /home/user/MyDocs/core-dumps/sleep-*.rcore.lzo
+    rm -f /home/nemo/core-dumps/sleep-*.rcore.lzo
     rm -fr ./outputdir
 
     sleep 60&
@@ -104,7 +104,7 @@ EOF
     wait ${PID}
     sleep 5
 
-    if rich-core-extract /home/user/MyDocs/core-dumps/sleep-*-${PID}.rcore.lzo outputdir; then
+    if rich-core-extract /home/nemo/core-dumps/sleep-*-${PID}.rcore.lzo outputdir; then
 	if [ ! -f ./outputdir/foo.txt ]; then
 	    echo "ERROR: file foo.txt is missing from rich core"
 	    return 1
@@ -155,7 +155,7 @@ EOF
 /tmp/default.txt
 EOF
 
-    rm -f /home/user/MyDocs/core-dumps/sleep-*.rcore.lzo
+    rm -f /home/nemo/core-dumps/sleep-*.rcore.lzo
     rm -fr ./outputdir
 
     sleep 60&
@@ -166,7 +166,7 @@ EOF
     wait ${PID}
     sleep 5
 
-    if rich-core-extract /home/user/MyDocs/core-dumps/sleep-*-${PID}.rcore.lzo outputdir; then
+    if rich-core-extract /home/nemo/core-dumps/sleep-*-${PID}.rcore.lzo outputdir; then
 	if [ ! -f ./outputdir/foo.txt ]; then
 	    echo "ERROR: file foo.txt is missing from rich core"
 	    return 1
@@ -200,7 +200,7 @@ test_case_4()
     rm -f ${EXTRAS_FILE}
     rm -f ${DEFAULT_EXTRAS_FILE}
 
-    rm -f /home/user/MyDocs/core-dumps/sleep-*.rcore.lzo
+    rm -f /home/nemo/core-dumps/sleep-*.rcore.lzo
     rm -fr ./outputdir
 
     sleep 60&
@@ -211,7 +211,7 @@ test_case_4()
     wait ${PID}
     sleep 5
 
-    if rich-core-extract /home/user/MyDocs/core-dumps/sleep-*-${PID}.rcore.lzo outputdir; then
+    if rich-core-extract /home/nemo/core-dumps/sleep-*-${PID}.rcore.lzo outputdir; then
 	if [ ! -f ./outputdir/cmdline ]; then
 	    echo "ERROR: file cmdline is missing from rich core"
 	    return 1
@@ -264,7 +264,7 @@ EOF
 
     tar czf /tmp/default.foobar.tar.gz /tmp/default.foobar
 
-    rm -f /home/user/MyDocs/core-dumps/sleep-*.rcore.lzo
+    rm -f /home/nemo/core-dumps/sleep-*.rcore.lzo
     rm -fr ./outputdir
 
     sleep 60&
@@ -275,7 +275,7 @@ EOF
     wait ${PID}
     sleep 5
 
-    if rich-core-extract /home/user/MyDocs/core-dumps/sleep-*-${PID}.rcore.lzo outputdir; then
+    if rich-core-extract /home/nemo/core-dumps/sleep-*-${PID}.rcore.lzo outputdir; then
 	if [ ! -f ./outputdir/foo.txt ]; then
 	    echo "ERROR: file foo.txt is missing from rich core"
 	    return 1

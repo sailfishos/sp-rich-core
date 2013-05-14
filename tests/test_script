@@ -58,22 +58,16 @@ _wait()
 _disable_rich_core_dumper()
 {
   # disable rich core dumper
-  if [ -e /etc/init.d/rich-core-pattern ]; then
-    /etc/init.d/rich-core-pattern stop
+  if [ -e /lib/systemd/system/rich-core-pattern.service ]; then
+    systemctl stop rich-core-pattern.service
   fi
-  if [ -e /etc/init.d/rich-core-dumps ]; then
-    /etc/init.d/rich-core-dumps stop
-  fi  
 }
 
 _enable_rich_core_dumper()
 {
   # enable
-  if [ -e /etc/init.d/rich-core-pattern ]; then
-    /etc/init.d/rich-core-pattern start
-  fi
-  if [ -e /etc/init.d/rich-core-dumps ]; then
-    /etc/init.d/rich-core-dumps start
+  if [ -e /lib/systemd/system/rich-core-pattern.service ]; then
+    systemctl start rich-core-pattern.service
   fi
 }
 
@@ -120,6 +114,9 @@ ret=0
 
 # otherwise - run real tests
 
+# unlimit core size
+ulimit -c unlimited
+
 # disable rich core dumper
 _disable_rich_core_dumper
 
@@ -142,10 +139,10 @@ echo "Found pid: $pid"
 
 # debug output - show any started processes prepared for core dumping
 ps ax | grep $SCRIPT | grep $SCRIPT_ADDITIONAL_KEY
-echo "kill -SIGSEGV $pid"
+echo "kill -SEGV $pid"
 
 # kill a process - a core dump must be created
-kill -SIGSEGV $pid
+kill -SEGV $pid
 
 # try to be sure that it will be 'killed'
 wait $pid

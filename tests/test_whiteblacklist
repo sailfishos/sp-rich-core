@@ -28,7 +28,7 @@ WHITELIST_FILE=/etc/rich-core.include
 WHITELIST_FILE_BAK=/etc/rich-core.include.bak
 BLACKLIST_FILE=/etc/rich-core.exclude
 BLACKLIST_FILE_BAK=/etc/rich-core.exclude.bak
-CORE_DUMPS_DIR=/home/user/MyDocs/core-dumps/
+CORE_DUMPS_DIR=/home/nemo/core-dumps/
 
 # 0 stand for rich core is not created, 1 for it is created
 EXPECTED_CORE=0

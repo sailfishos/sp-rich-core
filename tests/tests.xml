@@ -8,18 +8,15 @@
               <scratchbox>false</scratchbox>
             </environments>
 	    <pre_steps>
-	      <step>if ! grep -q "^avoid-dups=false" /home/user/.config/crash-reporter-settings/crash-reporter-privacy.conf; then sed -ie "s/^avoid-dups=.*/avoid-dups=false/" /home/user/.config/crash-reporter-settings/crash-reporter-privacy.conf &amp;&amp; sleep 2; fi</step>
+	      <step>if ! grep -q "^avoid-dups=false" /home/nemo/.config/crash-reporter-settings/crash-reporter-privacy.conf; then sed -ie "s/^avoid-dups=.*/avoid-dups=false/" /home/nemo/.config/crash-reporter-settings/crash-reporter-privacy.conf &amp;&amp; sleep 2; fi</step>
    	    </pre_steps>
             <case name="core_pattern-file-string-set-correctly" type="Integration" level="Feature">
               <step expected_result="0">[ "|/usr/sbin/rich-core-dumper --pid=%p --signal=%s --name=%e" = "$(cat /proc/sys/kernel/core_pattern)" ]</step>
             </case>
             <case name="Rich-core-pattern-script-installed" type="Integration" level="Feature">
-              <step expected_result="0">[ -f /etc/init.d/rich-core-pattern ]</step>
+              <step expected_result="0">[ -f /lib/systemd/system/rich-core-pattern.service ]</step>
+              <step expected_result="0">[ -f /lib/systemd/system/basic.target.wants/rich-core-pattern.service ]</step>
             </case>
-            <case name="Rich-core-dumps-script-installed" type="Integration" level="Feature">
-              <step expected_result="0">[ -f /etc/init.d/rich-core-dumps ]</step>
-            </case>
-	    
             <case name="Rich-core-dumperscript-installed" type="Integration" level="Feature">
               <step expected_result="0">[ -x /usr/sbin/rich-core-dumper ]</step>
             </case>
@@ -27,21 +24,17 @@
               <step expected_result="0">[ -x /usr/bin/core-reducer ]</step>
             </case>
             <case name="Core-Reducer-core-dump-work" type="Integration" level="Feature">
-              <step expected_result="0">/usr/share/sp-rich-core-tests/test_script</step>
+              <step expected_result="0">/usr/sbin/run-blts-root /usr/share/sp-rich-core-tests/test_script</step>
             </case>
             <case name="Rich-core-whitelist-blacklist" type="Integration" level="Feature">
-              <step expected_result="0">/usr/share/sp-rich-core-tests/test_whiteblacklist</step>
+              <step expected_result="0">/usr/sbin/run-blts-root /usr/share/sp-rich-core-tests/test_whiteblacklist</step>
             </case>
             <case name="Rich-core-extra-files" type="Integration" level="Feature">
-              <step expected_result="0">/usr/share/sp-rich-core-tests/test_extra_files</step>
+              <step expected_result="0">/usr/sbin/run-blts-root /usr/share/sp-rich-core-tests/test_extra_files</step>
             </case>
             <case name="Rich-core-extract-test" type="Integration" level="Feature">
-              <step expected_result="0">/usr/share/sp-rich-core-tests/test_extract</step>
+              <step expected_result="0">/usr/sbin/run-blts-root /usr/share/sp-rich-core-tests/test_extract</step>
             </case>
-
-	    <get>
-	      <file>/usr/share/sp-rich-core-tests/testing.rcore.lzo</file>
-	    </get>
 	</set>
         <set name="input-validation-tests" feature="Robustness">
             <description>Determine how the application responds to input</description>
