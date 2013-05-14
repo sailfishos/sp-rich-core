@@ -1,0 +1,15 @@
+[Unit]
+Description=Rich core pattern
+Requires=local-fs.target
+After=local-fs.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStartPre=/usr/bin/test -x /usr/sbin/rich-core-dumper
+ExecStartPre=/bin/sh -c "if [ ! -d /home/nemo/core-dumps ]; then mkdir -p /home/nemo/core-dumps; fi"
+ExecStart=/bin/sh -c "/sbin/sysctl -w kernel.core_pattern=\'|/usr/sbin/rich-core-dumper --pid=%%p --signal=%%s --name=%%e\'"
+ExecStop=/bin/sh -c "/sbin/sysctl -w kernel.core_pattern=/home/nemo/core-dumps/%%e-%%s-%%p.core"
+
+[Install]
+WantedBy=basic.target
