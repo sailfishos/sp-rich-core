@@ -36,3 +36,6 @@ config.status
 configure
 missing
 stamp-h1
+*.patch
+*.orig
+*.rej
