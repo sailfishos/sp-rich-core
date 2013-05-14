@@ -68,7 +68,7 @@ Create core dumps that have a reduced size, allowing them to be transported betw
 %prep
 # Adjusting %%setup since git-pkg unpacks to src/
 # %%setup -q -n %%{name}-%%{version}
-%setup -q -n %{name}-%{version} -n src
+%setup -q -n src
 
 %build
 touch NEWS README AUTHORS ChangeLog
