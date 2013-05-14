@@ -1,0 +1,9 @@
+* Tue May 14 2013 Matti Kosola <matti.kosola@jollamobile.com> - 1.70.0
+- Set default core folder to /home/nemo/core-dumps 
+- Add Meego patches to core-reducer
+- Remove sysvinit startup scripts
+- Add systemd service for rich core pattern
+- Modify test cases for Mer
+
+* Wed May 08 2013 Matti Kosola <matti.kosola@jollamobile.com> - 1.69.2
+- Initial Mer packaging
