@@ -23,6 +23,7 @@ Tool that creates rich core dumps, which include information about system state 
 /lib/systemd/system/rich-core-pattern.service
 /lib/systemd/system/basic.target.wants/rich-core-pattern.service
 %{_sbindir}/rich-core-dumper
+/var/cache/core-dumps
 
 %package postproc
 Summary: Rich core postprocessing
@@ -68,9 +69,7 @@ Create core dumps that have a reduced size, allowing them to be transported betw
 %prep
 # Adjusting %%setup since git-pkg unpacks to src/
 # %%setup -q -n %%{name}-%%{version}
-# Adjusting %%setup since git-pkg unpacks to src/
-# %%setup -q -n src
-%setup -q -n src -n src
+%setup -q -n src
 
 %build
 touch NEWS README AUTHORS ChangeLog
@@ -82,6 +81,7 @@ make
 mkdir -p %{buildroot}/%{_sbindir}
 mkdir -p %{buildroot}/lib/systemd/system
 mkdir -p %{buildroot}/lib/systemd/system/basic.target.wants
+mkdir -m 777 -p %{buildroot}/var/cache/core-dumps
 mkdir -p %{buildroot}/%{_datadir}/%{name}-tests
 make install DESTDIR=%{buildroot}
 

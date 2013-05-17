@@ -1,4 +1,4 @@
-* Fri May 17 2013 Matti Kosola <matti.kosola@jollamobile.com> - 1.70.1-1
+* Fri May 17 2013 Matti Kosola <matti.kosola@jollamobile.com> - 1.70.1
 - Get rid of Nemo dependencies
 - Change default core dump location to /var/cache/core-dumps
 
