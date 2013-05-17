@@ -1,5 +1,5 @@
 Name: sp-rich-core
-Version: 1.70.0
+Version: 1.70.1
 Release: 1
 Summary: Create rich core dumps
 Group: Development/Tools
@@ -68,7 +68,9 @@ Create core dumps that have a reduced size, allowing them to be transported betw
 %prep
 # Adjusting %%setup since git-pkg unpacks to src/
 # %%setup -q -n %%{name}-%%{version}
-%setup -q -n src
+# Adjusting %%setup since git-pkg unpacks to src/
+# %%setup -q -n src
+%setup -q -n src -n src
 
 %build
 touch NEWS README AUTHORS ChangeLog

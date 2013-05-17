@@ -1,3 +1,7 @@
+* Fri May 17 2013 Matti Kosola <matti.kosola@jollamobile.com> - 1.70.1-1
+- Get rid of Nemo dependencies
+- Change default core dump location to /var/cache/core-dumps
+
 * Tue May 14 2013 Matti Kosola <matti.kosola@jollamobile.com> - 1.70.0
 - Set default core folder to /home/nemo/core-dumps 
 - Add Meego patches to core-reducer
