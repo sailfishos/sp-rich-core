@@ -39,7 +39,6 @@ _obtain_configuration()
   # default fallback values, overruled by configuration file if one exists
 
   system_settings=/usr/share/crash-reporter-settings
-  user_settings=/home/nemo/.config/crash-reporter-settings
 
   INCLUDE_CORE=true
   REDUCE_CORE=true
@@ -50,9 +49,6 @@ _obtain_configuration()
 
   if [ -e $system_settings/crash-reporter-privacy.conf ]; then
     . $system_settings/crash-reporter-privacy.conf 2>/dev/null
-  fi
-  if [ -e $user_settings/crash-reporter-privacy.conf ]; then
-    . $user_settings/crash-reporter-privacy.conf 2>/dev/null
   fi
 }
 
@@ -323,11 +319,11 @@ if [ x"${coredumping}" = x"false" ]; then
 fi
 
 # Check, if there's location with enough space to write a rich-core.
-if [ -d /home/nemo/core-dumps ]; then
-    freespace=`_free_space /home/nemo/core-dumps`
+if [ -d /var/cache/core-dumps ]; then
+    freespace=`_free_space /var/cache/core-dumps`
     if [ -n "$freespace" -a "$freespace" -gt 20000 ]; then
         # more than 20MB free, go ahead
-        core_location="/home/nemo/core-dumps"
+        core_location="/var/cache/core-dumps"
     else
 	logger "rich-core: less than 20M free in core location"
     fi

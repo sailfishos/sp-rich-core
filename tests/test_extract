@@ -18,13 +18,13 @@ _enable_rich_core_dumper()
 
 _disable_rich_core_dumper
 
-rm -f /home/nemo/core-dumps/sleep*.core
+rm -f /var/cache/core-dumps/sleep*.core
 
 # unlimit core size
 ulimit -c unlimited
 
 # generate a coredump
-su -c 'sleep 59&' nemo
+su -c 'sleep 59&'
 sleep 1
 pid=$(ps ax | grep 'sleep 59' | grep -v grep | awk -F' ' '{print $1}')
 echo "Killing pid $pid"
@@ -33,7 +33,7 @@ sleep 3
 
 _enable_rich_core_dumper
 
-coredump=$(find /home/nemo/core-dumps -name "sleep-11-${pid}-.core")
+coredump=$(find /var/cache/core-dumps -name "sleep-11-${pid}-.core")
 
 echo "Found a coredump $coredump"
 
@@ -80,10 +80,10 @@ echo "--------"
 
 # use rich-core-dumper to create a rich core from coredump
 echo "Creating a rich core by using rich-core-dumper"
-rm -f /home/nemo/core-dumps/sleep*.rcore.lzo
+rm -f /var/cache/core-dumps/sleep*.rcore.lzo
 echo "[---rich-core: coredump---]" | cat - ${coredump} | /usr/sbin/rich-core-dumper --no-section-header --default-name sleep
 
-richcore=$(find /home/nemo/core-dumps -type f -name sleep*.rcore.lzo)
+richcore=$(find /var/cache/core-dumps -type f -name sleep*.rcore.lzo)
 
 if [ -f "${richcore}" ]; then
     echo "copying ${richcore} to /usr/share/sp-rich-core-tests/extract_test.rcore.lzo"

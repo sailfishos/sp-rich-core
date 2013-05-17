@@ -7,9 +7,9 @@ After=local-fs.target
 Type=oneshot
 RemainAfterExit=yes
 ExecStartPre=/usr/bin/test -x /usr/sbin/rich-core-dumper
-ExecStartPre=/bin/sh -c "if [ ! -d /home/nemo/core-dumps ]; then mkdir -p /home/nemo/core-dumps; fi"
+ExecStartPre=/usr/bin/test -d /var/cache/core-dumps
 ExecStart=/bin/sh -c "/sbin/sysctl -w kernel.core_pattern=\'|/usr/sbin/rich-core-dumper --pid=%%p --signal=%%s --name=%%e\'"
-ExecStop=/bin/sh -c "/sbin/sysctl -w kernel.core_pattern=/home/nemo/core-dumps/%%e-%%s-%%p.core"
+ExecStop=/bin/sh -c "/sbin/sysctl -w kernel.core_pattern=/var/cache/core-dumps/%%e-%%s-%%p.core"
 
 [Install]
 WantedBy=basic.target
