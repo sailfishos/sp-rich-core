@@ -485,8 +485,8 @@ else
       if [ x"$REDUCE_CORE" = x"true" ] && [ -n ${core_exe} ]; then
 		originalcorefilename=${rcorefilename}.core.in
 		cat > ${originalcorefilename}
-		core-reducer -i ${originalcorefilename} -o /dev/stdout -e ${core_exe}
-		rm ${originalcorefilename}	
+		core-reducer -i "${originalcorefilename}" -o /dev/stdout -e ${core_exe}
+		rm "${originalcorefilename}"
       else
         cat
       fi
@@ -495,7 +495,7 @@ fi
 _section_rich_core_errors
 ) | lzop > ${rcorefilename}.tmp
 
-mv ${rcorefilename}.tmp ${rcorefilename}.rcore.lzo
+mv "${rcorefilename}.tmp" "${rcorefilename}.rcore.lzo"
 
 # count cores per application
 if [ ! -d /var/lib/dsme/rich-cores ]; then
