@@ -419,6 +419,11 @@ if [ -f /etc/rich-core/disable-reducer/${core_name} ]; then
     REDUCE_CORE=false
 fi
 
+# If core_exe has zero length, disable core reducing
+if [ -z ${core_exe} ]; then
+    REDUCE_CORE=false
+fi
+
 # We will lack the value for the signal if we're invoked from the
 # script. Provide a dummy value in that case.
 
@@ -482,7 +487,7 @@ elif [ -n "${IS_OOPSLOG}" ]; then
 else 
   if [ x"$INCLUDE_CORE" = x"true" -a "${omit_core}" != "true" ]; then
     _print_header coredump
-      if [ x"$REDUCE_CORE" = x"true" ] && [ -n ${core_exe} ]; then
+      if [ x"$REDUCE_CORE" = x"true" ]; then
 		originalcorefilename=${rcorefilename}.core.in
 		cat > ${originalcorefilename}
 		core-reducer -i "${originalcorefilename}" -o /dev/stdout -e ${core_exe}
