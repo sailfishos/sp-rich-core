@@ -44,6 +44,7 @@ _obtain_configuration()
   REDUCE_CORE=true
   INCLUDE_SYSLOG=true
   INCLUDE_PKGLIST=true
+  INCLUDE_STACK_TRACE=false
 
   DEFAULT_CORE_NAME="unknown"
 
@@ -302,6 +303,31 @@ _get_vmsizes()
   vmlib=$3
 }
 
+_download_debuginfo()
+{
+  _print_header debuginfo_download
+
+  local DEBUGINFOS=$(gdb --nx --batch ${core_exe} "${originalcorefilename}" 2>&1 \
+      | grep '^Try: zypper install' \
+      | sed 's/^.*"\(debuginfo.*\)".*$/\1/')
+
+  for dinfo in $DEBUGINFOS; do
+    CMD="zypper --non-interactive install -C $dinfo"
+    echo "-------------------------------------------------------------------"
+    echo "\$$CMD"
+    echo "-------------------------------------------------------------------"
+    $CMD 2>&1
+  done
+}
+
+_capture_stacktrace()
+{
+  _download_debuginfo
+
+  _print_header stacktrace
+  gdb --nx --batch -ex 'thread apply all bt full' ${core_exe} "${originalcorefilename}"
+}
+
 #
 # Main program
 #
@@ -335,9 +361,9 @@ if [ x"${core_location}" = x ]; then
   exit
 fi
 
-# when core reducing is enabled, coredump is written temporarily on disk.
-# therefore space left must be checked
-if [ -n "${core_pid}" -a "${REDUCE_CORE}" = "true" ]; then
+# When core reducing and/or stack trace inclusion is enabled, coredump is
+# written temporarily on disk. Therefore, space left must be checked.
+if [ -n "${core_pid}" -a "${REDUCE_CORE}" = "true" ] || [ "${INCLUDE_STACK_TRACE}" = "true" ]; then
   _get_vmsizes ${core_pid}
 
   if [ -z "${vmsize}" -o -z "${vmlib}" -o -z "${vmexe}" ]; then
@@ -419,8 +445,14 @@ if [ -f /etc/rich-core/disable-reducer/${core_name} ]; then
     REDUCE_CORE=false
 fi
 
-# If core_exe has zero length, disable core reducing
+# If core_exe has zero length, disable core reducing and stack traces
 if [ -z ${core_exe} ]; then
+    REDUCE_CORE=false
+    INCLUDE_STACK_TRACE=false
+fi
+
+# If we are not including the core file, reducing it makes no sense
+if [ x"$INCLUDE_CORE" != x"true" ]; then
     REDUCE_CORE=false
 fi
 
@@ -484,17 +516,29 @@ cat
 elif [ -n "${IS_OOPSLOG}" ]; then
   _print_header oopslog
   cat
-else 
-  if [ x"$INCLUDE_CORE" = x"true" -a "${omit_core}" != "true" ]; then
+elif [ "${omit_core}" != "true" ]; then
+  # By default core is read from stdin.
+  originalcorefilename=-
+  if [ x"$REDUCE_CORE" = x"true" ] || [ x"$INCLUDE_STACK_TRACE" = x"true" ]; then
+    originalcorefilename=${rcorefilename}.core.in
+    cat > ${originalcorefilename}
+  fi
+
+  if [ x"$INCLUDE_CORE" = x"true" ]; then
     _print_header coredump
-      if [ x"$REDUCE_CORE" = x"true" ]; then
-		originalcorefilename=${rcorefilename}.core.in
-		cat > ${originalcorefilename}
-		core-reducer -i "${originalcorefilename}" -o /dev/stdout -e ${core_exe}
-		rm "${originalcorefilename}"
-      else
-        cat
-      fi
+    if [ x"$REDUCE_CORE" = x"true" ]; then
+      core-reducer -i "${originalcorefilename}" -o /dev/stdout -e ${core_exe}
+    else
+      cat "${originalcorefilename}"
+    fi
+  fi
+
+  if [ x"$INCLUDE_STACK_TRACE" = x"true" ]; then
+    _capture_stacktrace
+  fi
+
+  if [ -f "${originalcorefilename}" ]; then
+    rm "${originalcorefilename}"
   fi
 fi
 _section_rich_core_errors
