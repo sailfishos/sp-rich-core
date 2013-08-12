@@ -303,6 +303,12 @@ _get_vmsizes()
   vmlib=$3
 }
 
+_check_gdb()
+{
+  (which gdb >/dev/null) || (zypper --non-interactive install gdb)
+  return $?
+}
+
 _download_debuginfo()
 {
   _print_header debuginfo_download
@@ -322,10 +328,12 @@ _download_debuginfo()
 
 _capture_stacktrace()
 {
-  _download_debuginfo
+  if _check_gdb; then
+    _download_debuginfo
 
-  _print_header stacktrace
-  gdb --nx --batch -ex 'thread apply all bt full' ${core_exe} "${originalcorefilename}"
+    _print_header stacktrace
+    gdb --nx --batch -ex 'thread apply all bt full' ${core_exe} "${originalcorefilename}"
+  fi
 }
 
 #
