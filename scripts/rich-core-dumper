@@ -39,6 +39,7 @@ _obtain_configuration()
   # default fallback values, overruled by configuration file if one exists
 
   system_settings=/usr/share/crash-reporter-settings
+  user_settings=/home/nemo/.config/crash-reporter-settings
 
   INCLUDE_CORE=true
   REDUCE_CORE=true
@@ -50,6 +51,10 @@ _obtain_configuration()
 
   if [ -e $system_settings/crash-reporter-privacy.conf ]; then
     . $system_settings/crash-reporter-privacy.conf 2>/dev/null
+  fi
+
+  if [ -e $user_settings/crash-reporter-privacy.conf ]; then
+    . $user_settings/crash-reporter-privacy.conf 2>/dev/null
   fi
 }
 
