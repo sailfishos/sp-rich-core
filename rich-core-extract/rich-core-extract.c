@@ -130,7 +130,7 @@ int main(int argc, char *argv[])
         exit(1);
     }
 
-    snprintf(buf, 255, "lzop -d -c %s", input_fn);
+    snprintf(buf, 255, "lzop -d -c \"%s\"", input_fn);
     input_file = popen(buf, "r");
     output_file = fopen("/dev/null", "w");
     if (!input_file)
