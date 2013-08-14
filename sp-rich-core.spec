@@ -91,4 +91,3 @@ make distclean
 %post
 systemctl daemon-reload
 systemctl start rich-core-pattern.service
-
