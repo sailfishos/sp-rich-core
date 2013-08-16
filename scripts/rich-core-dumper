@@ -330,20 +330,32 @@ _invoke_gdb()
   return 0
 }
 
+_pretty_header()
+{
+  echo "-------------------------------------------------------------------"
+  echo "\$$1"
+  echo "-------------------------------------------------------------------"
+}
+
 _download_debuginfo()
 {
   _print_header debuginfo_download
 
-  local DEBUGINFOS=$(_invoke_gdb 'quit' \
-      | grep '^Try: zypper install' \
-      | sed 's/^.*"\(debuginfo.*\)".*$/\1/')
+  local CMD="eu-unstrip -n -e ${core_exe} --core '${originalcorefilename}'"
+  local EU_UNSTRIP_OUTPUT=$(eval $CMD 2>&1)
+
+  _pretty_header "$CMD"
+  echo "$EU_UNSTRIP_OUTPUT"
+
+  local DEBUGINFOS=$(echo "$EU_UNSTRIP_OUTPUT" \
+      | sed -n 's/^0x[^ ]* \([[:xdigit:]]\+\).*$/\1/p' \
+      | sort \
+      | uniq)
 
   for dinfo in $DEBUGINFOS; do
-    CMD="zypper --non-interactive install -C $dinfo"
-    echo "-------------------------------------------------------------------"
-    echo "\$$CMD"
-    echo "-------------------------------------------------------------------"
-    $CMD 2>&1
+    CMD="zypper --non-interactive install -C 'debuginfo(build-id)=$dinfo'"
+    _pretty_header "$CMD"
+    eval $CMD 2>&1
   done
 }
 
