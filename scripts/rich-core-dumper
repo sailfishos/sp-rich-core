@@ -310,7 +310,7 @@ _get_vmsizes()
 
 _check_gdb()
 {
-  (which gdb >/dev/null) || (zypper --non-interactive install gdb)
+  (which gdb >/dev/null) || (zypper --non-interactive install gdb >/dev/null)
   return $?
 }
 
@@ -386,6 +386,8 @@ _capture_stacktrace()
 #
 # Main program
 #
+
+export PATH
 
 _obtain_configuration
 
