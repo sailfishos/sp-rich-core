@@ -316,7 +316,11 @@ _check_gdb()
 
 _invoke_gdb()
 {
-  local GDB="gdb -nx -ex '$1' --batch ${core_exe} \"${originalcorefilename}\""
+  while read line; do
+    local gdb_ex="$gdb_ex -ex '$line'"
+  done < <(echo -e "$LIBS_WITHOUT_BUILD_ID")
+
+  local GDB="gdb -nx ${gdb_ex} -ex '$1' --batch ${core_exe} \"${originalcorefilename}\""
 
   eval $GDB 2>&1
   local GDBSTATUS=$?
