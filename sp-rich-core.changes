@@ -1,3 +1,8 @@
+* Wed Aug 21 2013 Matti Kosola <matti.kosola@jollamobile.com> - 1.71.1
+- Fix gdb detection
+- Load symbols for libs without build-id into gdb
+- Add list of shared libraries and build-ids into rich core
+
 * Tue Aug 13 2013 Matti Kosola <matti.kosola@jollamobile.com> - 1.71.0
 - Added on-device stack traces feature
 
