@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # Gathers information about system state and creates an lzop
 # compressed rich core
 
@@ -310,13 +310,17 @@ _get_vmsizes()
 
 _check_gdb()
 {
-  (which gdb >/dev/null) || (zypper --non-interactive install gdb)
+  (which gdb >/dev/null) || (zypper --non-interactive install gdb >/dev/null)
   return $?
 }
 
 _invoke_gdb()
 {
-  local GDB="gdb -nx -ex '$1' --batch ${core_exe} \"${originalcorefilename}\""
+  while read line; do
+    local gdb_ex="$gdb_ex -ex '$line'"
+  done < <(echo -e "$LIBS_WITHOUT_BUILD_ID")
+
+  local GDB="gdb -nx ${gdb_ex} -ex '$1' --batch ${core_exe} \"${originalcorefilename}\""
 
   eval $GDB 2>&1
   local GDBSTATUS=$?
@@ -330,16 +334,38 @@ _invoke_gdb()
   return 0
 }
 
+_section_proc_maps()
+{
+  core_maps=/proc/$core_pid/maps
+
+  local shlibs=$(sed -n 's/^\([[:xdigit:]]\+\)-[[:xdigit:]]\+ r-xp [^\/]*\(\/.*\)$/\1 \2/p' $core_maps)
+
+  _print_header buildids
+  while read startaddr lib; do
+    build_id=$(readelf -n $lib \
+        | sed -n 's/[[:space:]]*Build ID: \([[:xdigit:]]\+\)$/\1/p');
+    if [ -n "$build_id" ]; then
+      echo $lib $build_id
+      BUILD_IDS="$BUILD_IDS $build_id"
+    else
+      textaddr=$(readelf --sections $lib \
+          | sed -n 's/^[[:space:]]*\[[ 0-9]\+\] \.text[[:space:]]\+[A-Z_]\+[[:space:]]\+[[:xdigit:]]\+ \([[:xdigit:]]\+\) .*$/\1/p')
+
+      offset=$(printf "%X" $((0x$startaddr + 0x$textaddr)))
+      lib=$(echo "$lib" | sed 's/^\/system\/lib\///')
+      LIBS_WITHOUT_BUILD_ID="${LIBS_WITHOUT_BUILD_ID}add-symbol-file /system/symbols/$lib 0x$offset\n"
+    fi
+  done < <(echo "$shlibs")
+
+  _print_header buildids_missing
+  echo -e "$LIBS_WITHOUT_BUILD_ID"
+}
+
 _download_debuginfo()
 {
   _print_header debuginfo_download
-
-  local DEBUGINFOS=$(_invoke_gdb 'quit' \
-      | grep '^Try: zypper install' \
-      | sed 's/^.*"\(debuginfo.*\)".*$/\1/')
-
-  for dinfo in $DEBUGINFOS; do
-    CMD="zypper --non-interactive install -C $dinfo"
+  for buildid in $BUILD_IDS; do
+    CMD="zypper --non-interactive install -C debuginfo(build-id)=$buildid"
     echo "-------------------------------------------------------------------"
     echo "\$$CMD"
     echo "-------------------------------------------------------------------"
@@ -360,6 +386,8 @@ _capture_stacktrace()
 #
 # Main program
 #
+
+export PATH
 
 _obtain_configuration
 
@@ -519,6 +547,7 @@ if [ -z "${IS_OOPSLOG}" ] && [ "${core_pid}" -gt 0 ]; then
   _section_cmdline
   _section_ls_proc
   _section_proc_fd
+  _section_proc_maps
   _section_proc_smaps
 fi
   _section_date
