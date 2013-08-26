@@ -520,12 +520,6 @@ if [ -z "${core_sig}" ]; then
   core_sig=0
 fi
 
-# Make a unique HW ID from IMEI
-imei_suffix=$(sysinfoclient -p /certs/npc/esn/gsm 2>/dev/null)
-if [ -z "${imei_suffix}" ]; then
-  imei_suffix="xxxx"
-fi
-
 # Get hwid
 hwid=$(ssu model -s)
 if [ -z "${hwid}" ]; then
@@ -534,10 +528,10 @@ fi
  
 # Make a naming distinction between oopslogs and rich-cores
 if [ -n "${IS_OOPSLOG}" ]; then
-	timestamp=$(date +%F-%S)
-	rcorefilename=${core_location}/oopslog-${imei_suffix}-${hwid}-${timestamp}
+  timestamp=$(date +%F-%S)
+  rcorefilename=${core_location}/oopslog-${hwid}-${timestamp}
 else
-	rcorefilename=${core_location}/${core_name}-${imei_suffix}-${hwid}-${core_sig}-${core_pid}
+  rcorefilename=${core_location}/${core_name}-${hwid}-${core_sig}-${core_pid}
 fi
 
 # Collect process specific information first, only then system
