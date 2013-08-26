@@ -256,6 +256,13 @@ _section_packagelist()
   rpm -qa
 }
 
+_section_repositories()
+{
+  _print_header repositories
+  ssu lr
+  zypper lr -u
+}
+
 _section_syslog()
 {
 # as syslog has existed in two different places, try the old one first
@@ -569,6 +576,7 @@ fi
 #  _section_product_info
 if [ x"$INCLUDE_PKGLIST" = x"true" ]; then
   _section_packagelist
+  _section_repositories
 fi
 if [ x"$NO_SECTION_HEADER" = x"true" -a "${omit_core}" != "true" ]; then
 cat
