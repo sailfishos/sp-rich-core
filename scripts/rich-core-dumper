@@ -299,6 +299,12 @@ _section_extra_files()
   fi
 }
 
+_section_ssu_status()
+{
+  _print_header ssu-status
+  ssu status
+}
+
 _get_vmsizes()
 {
   # get virtual memory size information of process
@@ -520,12 +526,6 @@ if [ -z "${core_sig}" ]; then
   core_sig=0
 fi
 
-# Make a unique HW ID from IMEI
-imei_suffix=$(sysinfoclient -p /certs/npc/esn/gsm 2>/dev/null)
-if [ -z "${imei_suffix}" ]; then
-  imei_suffix="xxxx"
-fi
-
 # Get hwid
 hwid=$(ssu model -s)
 if [ -z "${hwid}" ]; then
@@ -534,10 +534,10 @@ fi
  
 # Make a naming distinction between oopslogs and rich-cores
 if [ -n "${IS_OOPSLOG}" ]; then
-	timestamp=$(date +%F-%S)
-	rcorefilename=${core_location}/oopslog-${imei_suffix}-${hwid}-${timestamp}
+  timestamp=$(date +%F-%S)
+  rcorefilename=${core_location}/oopslog-${hwid}-${timestamp}
 else
-	rcorefilename=${core_location}/${core_name}-${imei_suffix}-${hwid}-${core_sig}-${core_pid}
+  rcorefilename=${core_location}/${core_name}-${hwid}-${core_sig}-${core_pid}
 fi
 
 # Collect process specific information first, only then system
@@ -556,6 +556,7 @@ fi
   _section_df
   _section_ifconfig
   _section_extra_files
+  _section_ssu_status
 
 if [ -z "${IS_OOPSLOG}" ]; then
     _section_slabinfo
