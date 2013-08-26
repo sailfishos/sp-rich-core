@@ -299,6 +299,12 @@ _section_extra_files()
   fi
 }
 
+_section_ssu_status()
+{
+  _print_header ssu-status
+  ssu status
+}
+
 _get_vmsizes()
 {
   # get virtual memory size information of process
@@ -550,6 +556,7 @@ fi
   _section_df
   _section_ifconfig
   _section_extra_files
+  _section_ssu_status
 
 if [ -z "${IS_OOPSLOG}" ]; then
     _section_slabinfo
