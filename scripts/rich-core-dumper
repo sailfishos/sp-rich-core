@@ -228,6 +228,12 @@ _section_proc2csv()
   _print_command_with_header /usr/bin/proc2csv
 }
 
+_section_testcase_uuid()
+{
+  _print_header testcase_uuid
+  echo ${core_tc_uuid}
+}
+
 _section_packagelist()
 {
   _print_header packagelist
@@ -554,6 +560,12 @@ fi
 
 rcorefilename=${rcorebasename}.rcore.lzo
 
+# Create marker file for testrunner-lite
+if [ -f "${core_location}/testrunner-lite-testcase" ]; then
+  core_tc_uuid=$(cat "${core_location}/testrunner-lite-testcase")
+  touch "${rcorefilename}.${core_tc_uuid}"
+fi
+
 # Collect process specific information first, only then system
 # as process may disappear while this info is collected
 (
@@ -577,6 +589,10 @@ fi
 if [ -z "${IS_OOPSLOG}" ]; then
     _section_slabinfo
     _section_proc2csv
+fi
+
+if [ -n "${core_tc_uuid}" ]; then
+  _section_testcase_uuid
 fi
 
 if [ x"$INCLUDE_SYSLOG" = x"true" ]; then
