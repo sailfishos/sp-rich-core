@@ -46,6 +46,7 @@ _obtain_configuration()
   INCLUDE_SYSLOG=true
   INCLUDE_PKGLIST=true
   INCLUDE_STACK_TRACE=false
+  DOWNLOAD_DEBUGINFO=false
 
   DEFAULT_CORE_NAME="unknown"
 
@@ -389,7 +390,9 @@ _download_debuginfo()
 _capture_stacktrace()
 {
   if _check_gdb; then
-    _download_debuginfo
+    if [ x"$DOWNLOAD_DEBUGINFO" = x"true" ]; then
+      _download_debuginfo
+    fi
 
     _print_header stacktrace
     _invoke_gdb 'thread apply all bt full'
