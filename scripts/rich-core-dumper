@@ -313,6 +313,12 @@ _section_ssu_status()
   ssu status
 }
 
+_section_exe_package()
+{
+	_print_header exe-package
+	rpmquery -f ${core_exe}
+}
+
 _get_vmsizes()
 {
   # get virtual memory size information of process
@@ -567,6 +573,7 @@ fi
   _section_ifconfig
   _section_extra_files
   _section_ssu_status
+  _section_exe_package
 
 if [ -z "${IS_OOPSLOG}" ]; then
     _section_slabinfo
