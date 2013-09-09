@@ -6,6 +6,7 @@ Group: Development/Tools
 License: GPL-2
 URL: http://github.com/mer-tools
 Source0: %{name}-%{version}.tar.gz  
+Source1: _src
 BuildRequires: elfutils-libelf-devel
 BuildRequires: autoconf
 BuildRequires: gcc-c++
