@@ -1,3 +1,6 @@
+* Tue Sep 17 2013 Matti Kosola <matti.kosola@jollamobile.com> - 1.71.6
+- Add dependency to binutils
+
 * Mon Sep 02 2013 Matti Kosola <matti.kosola@jollamobile.com> - 1.71.5
 - Fix crashed binary's executable name 
 
