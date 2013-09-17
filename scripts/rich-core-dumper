@@ -473,7 +473,7 @@ if [ x"$NO_SECTION_HEADER" = x"true" ] && [ -z ${core_pid} ]; then
 fi
 
 # figure out the executable
-core_exe=`cat /proc/${core_pid}/cmdline | cut -d '' -f 1`
+core_exe=`readlink -f /proc/${core_pid}/exe`
 core_exe_basename=${core_exe##*/}
 
 # if process is invoker, don't create a core
