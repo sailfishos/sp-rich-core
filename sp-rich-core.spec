@@ -15,6 +15,7 @@ Requires: coreutils
 Requires: lzop
 Requires: sp-endurance
 Requires: core-reducer
+Requires: binutils
 
 %description
 Tool that creates rich core dumps, which include information about system state and core in a single compressed file. Requires a kernel that supports piping core dumps. 
