@@ -1,3 +1,6 @@
+* Tue Sep 20 2013 Matti Kosola <matti.kosola@jollamobile.com> - 1.71.7
+- Add 'exe' section with path to the crashed binary
+
 * Tue Sep 17 2013 Matti Kosola <matti.kosola@jollamobile.com> - 1.71.6
 - Add dependency to binutils
 - Revert "check executable name from /proc/pid/cmdline"
