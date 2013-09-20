@@ -241,6 +241,12 @@ _section_cmdline()
   fi
 }
 
+_section_exe()
+{
+  _print_header exe
+  echo ${core_exe}
+}
+
 _section_slabinfo()
 {
   _print_file_with_header /proc/slabinfo
@@ -561,6 +567,7 @@ fi
 (
 if [ -z "${IS_OOPSLOG}" ] && [ "${core_pid}" -gt 0 ]; then
   _section_cmdline
+  _section_exe
   _section_ls_proc
   _section_proc_fd
   _section_proc_maps
