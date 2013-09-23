@@ -166,20 +166,6 @@ _check_sw_version_file()
   return 0
 }
 
-_check_product_info_file()
-{
-  # check if the file does not exist or is empty
-  if [ ! -s ${PRODUCT_INFO_FILE} ]; then
-    VERSION=$(sysinfoclient -p /device/sw-release-ver 2>/dev/null)
-    if [ -z $VERSION ]; then
-	/usr/sbin/sysinfod --static
-	VERSION=$(sysinfoclient -p /device/sw-release-ver 2>/dev/null)
-    fi
-    echo "OSSO_VERSION='$VERSION'" > ${PRODUCT_INFO_FILE}
-  fi
-  return 0
-}
-
 #
 # Information collection functions
 #
@@ -279,13 +265,6 @@ _section_syslog()
     _print_syslog_files_with_header /var/ftd-log/syslog
   else
     _print_syslog_files_with_header /var/log/syslog /var/log/syslog.old
-  fi
-}
-
-_section_product_info()
-{
-  if _check_product_info_file; then
-    _print_file_with_header ${PRODUCT_INFO_FILE}
   fi
 }
 
@@ -608,7 +587,6 @@ fi
 if [ x"$INCLUDE_SYSLOG" = x"true" ]; then
   _section_syslog
 fi
-#  _section_product_info
 if [ x"$INCLUDE_PKGLIST" = x"true" ]; then
   _section_packagelist
   _section_repositories
