@@ -336,7 +336,11 @@ _get_vmsizes()
 
 _check_gdb()
 {
-  (which gdb >/dev/null) || (zypper --non-interactive install gdb >/dev/null)
+  (which gdb >/dev/null) && return 0
+
+  [ $has_suitable_network_connection = "true" ] && \
+    (zypper --non-interactive install gdb >/dev/null)
+
   return $?
 }
 
@@ -427,6 +431,15 @@ logger "rich-core: arguments: $*"
 if [ x"${coredumping}" = x"false" ]; then
   cat > /dev/null
   exit
+fi
+
+network_type=$(su nemo -c 'cat /run/user/100000/state/namespaces/Internet/NetworkType')
+has_suitable_network_connection=false
+
+# When no connection or on USB network, statefs reports empty string so accept
+# it here as well as wifi.
+if [ x"$network_type" = x"wifi" ] || [ x"$network_type" = x"" ]; then
+  has_suitable_network_connection=true
 fi
 
 # Check, if there's location with enough space to write a rich-core.
@@ -539,6 +552,11 @@ fi
 # If we are not including the core file, reducing it makes no sense
 if [ x"$INCLUDE_CORE" != x"true" ]; then
     REDUCE_CORE=false
+fi
+
+# If network transfers are paid, don't download anything 
+if [ $has_suitable_network_connection = "false" ]; then
+    DOWNLOAD_DEBUGINFO=false
 fi
 
 # We will lack the value for the signal if we're invoked from the
