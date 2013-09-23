@@ -1,3 +1,8 @@
+* Tue Sep 23 2013 Matti Kosola <matti.kosola@jollamobile.com> - 1.71.8
+- Download debuginfo only when on WiFi or Ethernet
+- Remove unused _section_product_info() and related code
+- Update _section_software_version() for Nemo and Sailfish
+
 * Tue Sep 20 2013 Matti Kosola <matti.kosola@jollamobile.com> - 1.71.7
 - Add 'exe' section with path to the crashed binary
 
