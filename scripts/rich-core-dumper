@@ -27,7 +27,7 @@
 # Constant variables
 #
 
-SW_VERSION_FILE=/etc/meego-release
+SW_VERSION_FILE=/etc/os-release
 CORE_SIZE_LIMIT=500000		# kB
 
 #
@@ -152,34 +152,6 @@ _free_space()
   df -Pk $1 | awk 'NR == 2 { print $4 }'
 }
 
-_check_sw_version_file()
-{
-  # check if the file does not exist or is empty
-  if [ ! -s ${SW_VERSION_FILE} ]; then
-    VERSION=$(sysinfoclient -p /device/sw-release-ver 2>/dev/null)
-    if [ -z $VERSION ]; then
-	/usr/sbin/sysinfod --static
-	VERSION=$(sysinfoclient -p /device/sw-release-ver 2>/dev/null)
-    fi
-    echo "$VERSION" > ${SW_VERSION_FILE}
-  fi
-  return 0
-}
-
-_check_product_info_file()
-{
-  # check if the file does not exist or is empty
-  if [ ! -s ${PRODUCT_INFO_FILE} ]; then
-    VERSION=$(sysinfoclient -p /device/sw-release-ver 2>/dev/null)
-    if [ -z $VERSION ]; then
-	/usr/sbin/sysinfod --static
-	VERSION=$(sysinfoclient -p /device/sw-release-ver 2>/dev/null)
-    fi
-    echo "OSSO_VERSION='$VERSION'" > ${PRODUCT_INFO_FILE}
-  fi
-  return 0
-}
-
 #
 # Information collection functions
 #
@@ -202,9 +174,8 @@ _section_proc_smaps()
 
 _section_software_version()
 {
-  if _check_sw_version_file; then
-    _print_file_with_header ${SW_VERSION_FILE}
-  fi
+  _print_header software_version
+  sed -n 's/PRETTY_NAME=\"\(.*\)\"/\1/p' "${SW_VERSION_FILE}"
 }
 
 _section_component_version()
@@ -282,13 +253,6 @@ _section_syslog()
   fi
 }
 
-_section_product_info()
-{
-  if _check_product_info_file; then
-    _print_file_with_header ${PRODUCT_INFO_FILE}
-  fi
-}
-
 _section_rich_core_errors()
 {
   if [ "${omit_core}" = "true" ]; then
@@ -336,7 +300,11 @@ _get_vmsizes()
 
 _check_gdb()
 {
-  (which gdb >/dev/null) || (zypper --non-interactive install gdb >/dev/null)
+  (which gdb >/dev/null) && return 0
+
+  [ $has_suitable_network_connection = "true" ] && \
+    (zypper --non-interactive install gdb >/dev/null)
+
   return $?
 }
 
@@ -427,6 +395,15 @@ logger "rich-core: arguments: $*"
 if [ x"${coredumping}" = x"false" ]; then
   cat > /dev/null
   exit
+fi
+
+network_type=$(su nemo -c 'cat /run/user/100000/state/namespaces/Internet/NetworkType')
+has_suitable_network_connection=false
+
+# When no connection or on USB network, statefs reports empty string so accept
+# it here as well as wifi.
+if [ x"$network_type" = x"wifi" ] || [ x"$network_type" = x"" ]; then
+  has_suitable_network_connection=true
 fi
 
 # Check, if there's location with enough space to write a rich-core.
@@ -541,6 +518,11 @@ if [ x"$INCLUDE_CORE" != x"true" ]; then
     REDUCE_CORE=false
 fi
 
+# If network transfers are paid, don't download anything 
+if [ $has_suitable_network_connection = "false" ]; then
+    DOWNLOAD_DEBUGINFO=false
+fi
+
 # We will lack the value for the signal if we're invoked from the
 # script. Provide a dummy value in that case.
 
@@ -590,7 +572,6 @@ fi
 if [ x"$INCLUDE_SYSLOG" = x"true" ]; then
   _section_syslog
 fi
-#  _section_product_info
 if [ x"$INCLUDE_PKGLIST" = x"true" ]; then
   _section_packagelist
   _section_repositories
