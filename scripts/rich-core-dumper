@@ -27,7 +27,7 @@
 # Constant variables
 #
 
-SW_VERSION_FILE=/etc/meego-release
+SW_VERSION_FILE=/etc/os-release
 CORE_SIZE_LIMIT=500000		# kB
 
 #
@@ -152,20 +152,6 @@ _free_space()
   df -Pk $1 | awk 'NR == 2 { print $4 }'
 }
 
-_check_sw_version_file()
-{
-  # check if the file does not exist or is empty
-  if [ ! -s ${SW_VERSION_FILE} ]; then
-    VERSION=$(sysinfoclient -p /device/sw-release-ver 2>/dev/null)
-    if [ -z $VERSION ]; then
-	/usr/sbin/sysinfod --static
-	VERSION=$(sysinfoclient -p /device/sw-release-ver 2>/dev/null)
-    fi
-    echo "$VERSION" > ${SW_VERSION_FILE}
-  fi
-  return 0
-}
-
 #
 # Information collection functions
 #
@@ -188,9 +174,8 @@ _section_proc_smaps()
 
 _section_software_version()
 {
-  if _check_sw_version_file; then
-    _print_file_with_header ${SW_VERSION_FILE}
-  fi
+  _print_header software_version
+  sed -n 's/PRETTY_NAME=\"\(.*\)\"/\1/p' "${SW_VERSION_FILE}"
 }
 
 _section_component_version()
