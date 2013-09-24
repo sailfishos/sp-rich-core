@@ -1,3 +1,6 @@
+* Tue Sep 24 2013 Matti Kosola <matti.kosola@jollamobile.com> - 1.71.9
+- Use pkcon instead of zypper
+
 * Tue Sep 23 2013 Matti Kosola <matti.kosola@jollamobile.com> - 1.71.8
 - Download debuginfo only when on WiFi or Ethernet
 - Remove unused _section_product_info() and related code
