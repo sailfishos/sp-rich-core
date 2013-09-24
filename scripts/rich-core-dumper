@@ -238,7 +238,7 @@ _section_repositories()
 {
   _print_header repositories
   ssu lr
-  zypper lr -u
+  pkcon -p repo-list | grep '^ '
 }
 
 _section_syslog()
@@ -298,12 +298,12 @@ _get_vmsizes()
   vmlib=$3
 }
 
-_check_gdb()
+_check_and_install()
 {
-  (which gdb >/dev/null) && return 0
+  (which $1 >/dev/null) && return 0
 
   [ $has_suitable_network_connection = "true" ] && \
-    (zypper --non-interactive install gdb >/dev/null)
+    (pkcon --noninteractive install $1 >/dev/null)
 
   return $?
 }
@@ -369,8 +369,16 @@ _download_debuginfo()
 
 _capture_stacktrace()
 {
-  if _check_gdb; then
-    if [ x"$DOWNLOAD_DEBUGINFO" = x"true" ]; then
+  if _check_and_install gdb; then
+    if [ x"$DOWNLOAD_DEBUGINFO" = x"true" ] && (_check_and_install zypper); then
+
+      # Disable packagekitd if it is running before we attempt to download
+      # debuginfo packages using zypper.
+      local packagekitd_pid=$(pgrep -x packagekitd)
+      if [ -n "$packagekitd_pid" ]; then
+        kill $packagekitd_pid
+      fi
+
       _download_debuginfo
     fi
 
