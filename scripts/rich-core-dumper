@@ -298,12 +298,12 @@ _get_vmsizes()
   vmlib=$3
 }
 
-_check_gdb()
+_check_and_install()
 {
-  (which gdb >/dev/null) && return 0
+  (which $1 >/dev/null) && return 0
 
   [ $has_suitable_network_connection = "true" ] && \
-    (zypper --non-interactive install gdb >/dev/null)
+    (zypper --non-interactive install $1 >/dev/null)
 
   return $?
 }
@@ -369,7 +369,7 @@ _download_debuginfo()
 
 _capture_stacktrace()
 {
-  if _check_gdb; then
+  if _check_and_install gdb; then
     if [ x"$DOWNLOAD_DEBUGINFO" = x"true" ]; then
       _download_debuginfo
     fi
