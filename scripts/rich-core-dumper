@@ -552,6 +552,8 @@ else
   rcorebasename=${core_location}/${core_name}-${hwid}-${core_sig}-${core_pid}
 fi
 
+rcorefilename=${rcorebasename}.rcore.lzo
+
 # Collect process specific information first, only then system
 # as process may disappear while this info is collected
 (
@@ -617,7 +619,7 @@ fi
 _section_rich_core_errors
 ) | lzop > ${rcorebasename}.tmp
 
-mv "${rcorebasename}.tmp" "${rcorebasename}.rcore.lzo"
+mv "${rcorebasename}.tmp" "${rcorefilename}"
 
 # count cores per application
 if [ ! -d /var/lib/dsme/rich-cores ]; then
