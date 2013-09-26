@@ -547,9 +547,9 @@ fi
 # Make a naming distinction between oopslogs and rich-cores
 if [ -n "${IS_OOPSLOG}" ]; then
   timestamp=$(date +%F-%S)
-  rcorefilename=${core_location}/oopslog-${hwid}-${timestamp}
+  rcorebasename=${core_location}/oopslog-${hwid}-${timestamp}
 else
-  rcorefilename=${core_location}/${core_name}-${hwid}-${core_sig}-${core_pid}
+  rcorebasename=${core_location}/${core_name}-${hwid}-${core_sig}-${core_pid}
 fi
 
 # Collect process specific information first, only then system
@@ -593,7 +593,7 @@ elif [ "${omit_core}" != "true" ]; then
   # By default core is read from stdin.
   originalcorefilename=-
   if [ x"$REDUCE_CORE" = x"true" ] || [ x"$INCLUDE_STACK_TRACE" = x"true" ]; then
-    originalcorefilename=${rcorefilename}.core.in
+    originalcorefilename=${rcorebasename}.core.in
     cat > ${originalcorefilename}
   fi
 
@@ -615,9 +615,9 @@ elif [ "${omit_core}" != "true" ]; then
   fi
 fi
 _section_rich_core_errors
-) | lzop > ${rcorefilename}.tmp
+) | lzop > ${rcorebasename}.tmp
 
-mv "${rcorefilename}.tmp" "${rcorefilename}.rcore.lzo"
+mv "${rcorebasename}.tmp" "${rcorebasename}.rcore.lzo"
 
 # count cores per application
 if [ ! -d /var/lib/dsme/rich-cores ]; then
