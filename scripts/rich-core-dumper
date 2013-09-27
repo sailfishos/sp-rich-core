@@ -228,6 +228,12 @@ _section_proc2csv()
   _print_command_with_header /usr/bin/proc2csv
 }
 
+_section_testcase_uuid()
+{
+  _print_header testcase_uuid
+  echo ${core_tc_uuid}
+}
+
 _section_packagelist()
 {
   _print_header packagelist
@@ -547,9 +553,17 @@ fi
 # Make a naming distinction between oopslogs and rich-cores
 if [ -n "${IS_OOPSLOG}" ]; then
   timestamp=$(date +%F-%S)
-  rcorefilename=${core_location}/oopslog-${hwid}-${timestamp}
+  rcorebasename=${core_location}/oopslog-${hwid}-${timestamp}
 else
-  rcorefilename=${core_location}/${core_name}-${hwid}-${core_sig}-${core_pid}
+  rcorebasename=${core_location}/${core_name}-${hwid}-${core_sig}-${core_pid}
+fi
+
+rcorefilename=${rcorebasename}.rcore.lzo
+
+# Create marker file for testrunner-lite
+if [ -f "${core_location}/testrunner-lite-testcase" ]; then
+  core_tc_uuid=$(cat "${core_location}/testrunner-lite-testcase")
+  touch "${rcorefilename}.${core_tc_uuid}"
 fi
 
 # Collect process specific information first, only then system
@@ -577,6 +591,10 @@ if [ -z "${IS_OOPSLOG}" ]; then
     _section_proc2csv
 fi
 
+if [ -n "${core_tc_uuid}" ]; then
+  _section_testcase_uuid
+fi
+
 if [ x"$INCLUDE_SYSLOG" = x"true" ]; then
   _section_syslog
 fi
@@ -593,7 +611,7 @@ elif [ "${omit_core}" != "true" ]; then
   # By default core is read from stdin.
   originalcorefilename=-
   if [ x"$REDUCE_CORE" = x"true" ] || [ x"$INCLUDE_STACK_TRACE" = x"true" ]; then
-    originalcorefilename=${rcorefilename}.core.in
+    originalcorefilename=${rcorebasename}.core.in
     cat > ${originalcorefilename}
   fi
 
@@ -615,9 +633,9 @@ elif [ "${omit_core}" != "true" ]; then
   fi
 fi
 _section_rich_core_errors
-) | lzop > ${rcorefilename}.tmp
+) | lzop > ${rcorebasename}.tmp
 
-mv "${rcorefilename}.tmp" "${rcorefilename}.rcore.lzo"
+mv "${rcorebasename}.tmp" "${rcorefilename}"
 
 # count cores per application
 if [ ! -d /var/lib/dsme/rich-cores ]; then
