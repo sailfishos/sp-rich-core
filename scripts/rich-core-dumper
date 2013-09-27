@@ -338,7 +338,7 @@ _section_proc_maps()
 {
   core_maps=/proc/$core_pid/maps
 
-  local shlibs=$(sed -n 's|^\([[:xdigit:]]\+\)-[[:xdigit:]]\+ r-xp [^/]*\(/.*\)$|\1 \2|p' $core_maps)
+  local shlibs=$(sed -n 's|^\([[:xdigit:]]\+\)-[[:xdigit:]]\+ r-xp [^/]*\(/[^\( (\)]*\).*$|\1 \2|p' $core_maps)
 
   _print_header buildids
   while read startaddr lib; do
