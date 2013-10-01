@@ -28,7 +28,7 @@
 #
 
 SW_VERSION_FILE=/etc/os-release
-CORE_SIZE_LIMIT=500000		# kB
+CORE_SIZE_LIMIT=300000		# kB
 
 #
 # Helper functions
@@ -423,11 +423,11 @@ fi
 # Check, if there's location with enough space to write a rich-core.
 if [ -d /var/cache/core-dumps ]; then
     freespace=`_free_space /var/cache/core-dumps`
-    if [ -n "$freespace" -a "$freespace" -gt 20000 ]; then
-        # more than 20MB free, go ahead
+    if [ -n "$freespace" -a "$freespace" -gt 500000 ]; then
+        # more than 500MB free, go ahead
         core_location="/var/cache/core-dumps"
     else
-	logger "rich-core: less than 20M free in core location"
+	logger "rich-core: less than 500M free in core location"
     fi
 fi
 
