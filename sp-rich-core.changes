@@ -1,3 +1,6 @@
+* Tue Oct 02 2013 Matti Kosola <matti.kosola@jollamobile.com> - 1.71.12
+- Fix possible infinite loop in ProcInterface::heapAddress
+
 * Tue Oct 01 2013 Matti Kosola <matti.kosola@jollamobile.com> - 1.71.11
 - Don't remove core_pattern on system shutdown
 - Keep 500M empty space on core loacation instead of 20M
