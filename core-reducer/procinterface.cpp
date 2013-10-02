@@ -71,6 +71,11 @@ ADDRESS ProcInterface::heapAddress(const char *fileName) const
                     break;
                 }
             }
+            else if (ferror(fd))
+            {
+                LOG(LOG_ERR, "Error reading from %s", useFileName);
+                break;
+            }
         }
         fclose(fd);
     }
