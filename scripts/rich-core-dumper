@@ -470,7 +470,7 @@ if [ x"$NO_SECTION_HEADER" = x"true" ] && [ -z ${core_pid} ]; then
 fi
 
 # figure out the executable
-core_exe=`readlink -f /proc/${core_pid}/exe`
+core_exe=`readlink -f /proc/${core_pid}/exe | sed 's| (deleted)$||'`
 core_exe_basename=${core_exe##*/}
 
 # if process is invoker, don't create a core
