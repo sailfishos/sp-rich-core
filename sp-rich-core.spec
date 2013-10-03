@@ -1,6 +1,6 @@
 Name: sp-rich-core
 
-Version: 1.71.12
+Version: 1.71.13
 Release: 1
 Summary: Create rich core dumps
 Group: Development/Tools
