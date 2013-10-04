@@ -234,6 +234,18 @@ _section_testcase_uuid()
   echo ${core_tc_uuid}
 }
 
+_section_user_message()
+{
+  # Created by quick-feedback application
+  local quickie_file="${core_location}/quickie-${core_pid}"
+
+  if [ -f "${quickie_file}" ]; then
+    _print_header user_message
+    cat "${quickie_file}"
+    rm -f "${quickie_file}"
+  fi
+}
+
 _section_packagelist()
 {
   _print_header packagelist
@@ -594,6 +606,8 @@ fi
 if [ -n "${core_tc_uuid}" ]; then
   _section_testcase_uuid
 fi
+
+_section_user_message
 
 if [ x"$INCLUDE_SYSLOG" = x"true" ]; then
   _section_syslog
