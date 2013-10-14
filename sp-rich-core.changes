@@ -1,3 +1,6 @@
+* Mon Oct 14 2013 Matti Kosola <matti.kosola@jollamobile.com> - 1.71.15
+- Core-reducer: use memory-mapped I/O when loading cores
+
 * Fri Oct 04 2013 Matti Kosola <matti.kosola@jollamobile.com> - 1.71.14
 - Attach user message from Quick Feedback application
 
