@@ -28,7 +28,7 @@
 #
 
 SW_VERSION_FILE=/etc/os-release
-CORE_SIZE_LIMIT=450000		# kB
+CORE_SIZE_LIMIT=1000000		# kB
 
 #
 # Helper functions

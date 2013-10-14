@@ -54,7 +54,7 @@ bool ElfCoreReader::initalize(const char *fileName)
     if ((fd = open(fileName, O_RDONLY, 0)) < 0)
         LOG_RETURN(LOG_ERR, false, "Opening file '%s' failed.", fileName);
 
-    if ((file = elf_begin(fd, ELF_C_READ, NULL)) == NULL)
+    if ((file = elf_begin(fd, ELF_C_READ_MMAP, NULL)) == NULL)
         LOG_RETURN(LOG_ERR, false, "elf_begin() failed: %s", elf_errmsg(-1));
 
     if (elf_kind(file) != ELF_K_ELF)
