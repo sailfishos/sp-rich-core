@@ -346,15 +346,47 @@ _invoke_gdb()
   return 0
 }
 
-_section_proc_maps()
+_collect_shlibs()
 {
   core_maps=/proc/$core_pid/maps
+  local maps=$(sed -n 's|^\([[:xdigit:]]\+\)-\([[:xdigit:]]\+\) r-xp [^/]*\(/.*\).*$|\1 \2 \3|p' $core_maps)
 
-  local shlibs=$(sed -n 's|^\([[:xdigit:]]\+\)-[[:xdigit:]]\+ r-xp [^/]*\(/[^\( (\)]*\).*$|\1 \2|p' $core_maps)
+  if [ -d "/proc/$core_pid/map_files" ]; then
+    has_map_files=true
+  fi
+
+  while read startaddr endaddr lib; do
+    lib_path=${lib% (deleted)}
+
+    if [ -n "$has_map_files" ]; then
+      idsource=$(echo $startaddr | sed 's|^0*||')-$(echo $endaddr | sed 's|^0*||')
+      idsource="/proc/$core_pid/map_files/$idsource"
+    else
+      if [ "$lib_path" != "$lib" ]; then
+        DELETED_LIBS="${DELETED_LIBS}$lib_path\n"
+        continue
+      fi
+      idsource=$lib_path
+    fi
+
+    SH_LIBS="${SH_LIBS}$startaddr $lib_path $idsource\n"
+  done < <(echo "$maps")
+
+  SH_LIBS="${SH_LIBS%\\n}"
+
+  if [ -n "$DELETED_LIBS" ]; then
+    _print_header deleted_libs
+    echo -e "${DELETED_LIBS%\\n}"
+  fi
+}
+
+_section_proc_maps()
+{
+  _collect_shlibs
 
   _print_header buildids
-  while read startaddr lib; do
-    build_id=$(readelf -n $lib \
+  while read startaddr lib idsource; do
+    build_id=$(readelf -n $idsource \
         | sed -n 's/[[:space:]]*Build ID: \([[:xdigit:]]\+\)$/\1/p');
     if [ -n "$build_id" ]; then
       echo $lib $build_id
@@ -367,10 +399,12 @@ _section_proc_maps()
       lib=$(echo "$lib" | sed 's/^\/system\/lib\///')
       LIBS_WITHOUT_BUILD_ID="${LIBS_WITHOUT_BUILD_ID}add-symbol-file /system/symbols/$lib 0x$offset\n"
     fi
-  done < <(echo "$shlibs")
+  done < <(echo -e "$SH_LIBS")
 
-  _print_header buildids_missing
-  echo -e "$LIBS_WITHOUT_BUILD_ID"
+  if [ -n "$LIBS_WITHOUT_BUILD_ID" ]; then
+    _print_header buildids_missing
+    echo -e "${LIBS_WITHOUT_BUILD_ID%\\n}"
+  fi
 }
 
 _download_debuginfo()
