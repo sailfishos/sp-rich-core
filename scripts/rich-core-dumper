@@ -386,8 +386,10 @@ _section_proc_maps()
     fi
   done < <(_collect_shlibs)
 
-  _print_header buildids_missing
-  echo -e "$LIBS_WITHOUT_BUILD_ID"
+  if [ -n "$LIBS_WITHOUT_BUILD_ID" ]; then
+    _print_header buildids_missing
+    echo -e "$LIBS_WITHOUT_BUILD_ID"
+  fi
 }
 
 _download_debuginfo()
