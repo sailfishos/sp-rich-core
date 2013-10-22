@@ -403,7 +403,7 @@ _section_proc_maps()
 
   if [ -n "$LIBS_WITHOUT_BUILD_ID" ]; then
     _print_header buildids_missing
-    echo -e "$LIBS_WITHOUT_BUILD_ID"
+    echo -e "${LIBS_WITHOUT_BUILD_ID%\\n}"
   fi
 }
 
