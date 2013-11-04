@@ -47,6 +47,7 @@ _obtain_configuration()
   INCLUDE_PKGLIST=true
   INCLUDE_STACK_TRACE=false
   DOWNLOAD_DEBUGINFO=false
+  KEEP_UNSTRIPPED_CORE=false
 
   DEFAULT_CORE_NAME="unknown"
 
@@ -666,7 +667,7 @@ elif [ "${omit_core}" != "true" ]; then
     _capture_stacktrace
   fi
 
-  if [ -f "${originalcorefilename}" ]; then
+  if [ x"$KEEP_UNSTRIPPED_CORE" != x"true" ] && [ -f "${originalcorefilename}" ]; then
     rm "${originalcorefilename}"
   fi
 fi
