@@ -47,6 +47,7 @@ _obtain_configuration()
   INCLUDE_PKGLIST=true
   INCLUDE_STACK_TRACE=false
   DOWNLOAD_DEBUGINFO=false
+  KEEP_UNSTRIPPED_CORE=false
 
   DEFAULT_CORE_NAME="unknown"
 
@@ -176,15 +177,6 @@ _section_software_version()
 {
   _print_header software_version
   sed -n 's/PRETTY_NAME=\"\(.*\)\"/\1/p' "${SW_VERSION_FILE}"
-}
-
-_section_component_version()
-{
-  _print_header /proc/component_version
-  if [ ! -e /var/cache/sysinfod/values ]; then
-      /usr/sbin/sysinfod --static >/dev/null 2>&1
-  fi
-  sysinfoclient -g /component/product -g /component/hw-build -g /component/nolo -g /component/boot-mode 2>/dev/null | awk -F ' ' '{gsub(/\/.*\//,"",$1); printf("%-11s %s\n",$1,$3)}'
 }
 
 _section_ifconfig()
@@ -625,7 +617,6 @@ if [ -z "${IS_OOPSLOG}" ] && [ "${core_pid}" -gt 0 ]; then
 fi
   _section_date
   _section_software_version
-  #_section_component_version
   _section_df
   _section_ifconfig
   _section_extra_files
@@ -676,7 +667,7 @@ elif [ "${omit_core}" != "true" ]; then
     _capture_stacktrace
   fi
 
-  if [ -f "${originalcorefilename}" ]; then
+  if [ x"$KEEP_UNSTRIPPED_CORE" != x"true" ] && [ -f "${originalcorefilename}" ]; then
     rm "${originalcorefilename}"
   fi
 fi
