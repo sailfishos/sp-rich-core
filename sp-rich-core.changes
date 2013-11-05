@@ -1,3 +1,7 @@
+* Tue Nov 05 2013 Matti Kosola <matti.kosola@jollamobile.com> - 1.71.17
+- Remove unused _section_component_version function
+- Add KEEP_UNSTRIPPED_CORE config property
+
 * Tue Oct 22 2013 Matti Kosola <matti.kosola@jollamobile.com> - 1.71.16
 - When available, use /proc/$pid/map_files to read build-ids
 - Create buildids_missing section only if there is anything to put there
