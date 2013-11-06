@@ -90,50 +90,12 @@ _print_header()
     printf '\n[---rich-core: %s---]\n' "$@"
 }
 
-_print_separator()
-{
-    printf '\n--- %s ---\n' "$@"
-}
-
 _print_file_with_header()
 {
   if [ -f $1 ]; then
     _print_header $1
     cat $1
   fi
-}
-
-_print_syslog_files_with_header()
-{
-    _print_header $1
-    for xorglog in /var/log/Xorg.0.log.*.gz; do
-        if [ -f "$xorglog" ]; then
-            _print_separator $xorglog
-            zcat $xorglog
-        fi
-    done
-    if [ -f /var/log/Xorg.0.log.old ]; then
-	_print_separator /var/log/Xorg.0.log.old
-	cat /var/log/Xorg.0.log.old
-    fi
-    if [ -f /var/log/Xorg.0.log ]; then
-	_print_separator /var/log/Xorg.0.log
-	cat /var/log/Xorg.0.log
-    fi
-    if [ -x /bin/journalctl ]; then
-        _print_separator journalctl
-        /bin/journalctl -a
-    fi
-    if [ -x /bin/dmesg ]; then
-	_print_separator dmesg
-	/bin/dmesg
-    fi
-    for file in "$@"; do
-	if [ -f $file ]; then
-	    _print_separator $file
-	    cat $file
-	fi
-    done
 }
 
 _print_command_with_header()
@@ -251,16 +213,23 @@ _section_repositories()
   pkcon -p repo-list | grep '^ '
 }
 
-_section_syslog()
+_dump_logs()
 {
-# as syslog has existed in two different places, try the old one first
-# to support older releases
+  for xorglog in /var/log/Xorg.0.log.*.gz; do
+    if [ -f "$xorglog" ]; then
+      _print_header $xorglog
+      zcat $xorglog
+    fi
+  done
 
-  if [ -e /var/ftd-log/syslog ]; then
-    _print_syslog_files_with_header /var/ftd-log/syslog
-  else
-    _print_syslog_files_with_header /var/log/syslog /var/log/syslog.old
-  fi
+  _print_file_with_header /var/log/Xorg.0.log
+  _print_file_with_header /var/log/Xorg.0.log.old
+
+  _print_command_with_header /bin/journalctl
+  _print_command_with_header /bin/dmesg
+
+  _print_file_with_header /var/log/syslog
+  _print_file_with_header /var/log/syslog.old
 }
 
 _section_rich_core_errors()
@@ -635,7 +604,7 @@ fi
 _section_user_message
 
 if [ x"$INCLUDE_SYSLOG" = x"true" ]; then
-  _section_syslog
+  _dump_logs
 fi
 if [ x"$INCLUDE_PKGLIST" = x"true" ]; then
   _section_packagelist
