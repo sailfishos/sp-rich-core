@@ -253,14 +253,7 @@ _section_repositories()
 
 _section_syslog()
 {
-# as syslog has existed in two different places, try the old one first
-# to support older releases
-
-  if [ -e /var/ftd-log/syslog ]; then
-    _print_syslog_files_with_header /var/ftd-log/syslog
-  else
-    _print_syslog_files_with_header /var/log/syslog /var/log/syslog.old
-  fi
+  _print_syslog_files_with_header /var/log/syslog /var/log/syslog.old
 }
 
 _section_rich_core_errors()
