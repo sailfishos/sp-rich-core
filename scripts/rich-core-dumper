@@ -218,7 +218,7 @@ _section_repositories()
   pkcon -p repo-list | grep '^ '
 }
 
-_section_syslog()
+_dump_logs()
 {
   _print_header syslog
 
@@ -629,7 +629,7 @@ fi
 _section_user_message
 
 if [ x"$INCLUDE_SYSLOG" = x"true" ]; then
-  _section_syslog
+  _dump_logs
 fi
 if [ x"$INCLUDE_PKGLIST" = x"true" ]; then
   _section_packagelist
