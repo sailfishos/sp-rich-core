@@ -103,39 +103,6 @@ _print_file_with_header()
   fi
 }
 
-_print_syslog_files_with_header()
-{
-    _print_header $1
-    for xorglog in /var/log/Xorg.0.log.*.gz; do
-        if [ -f "$xorglog" ]; then
-            _print_separator $xorglog
-            zcat $xorglog
-        fi
-    done
-    if [ -f /var/log/Xorg.0.log.old ]; then
-	_print_separator /var/log/Xorg.0.log.old
-	cat /var/log/Xorg.0.log.old
-    fi
-    if [ -f /var/log/Xorg.0.log ]; then
-	_print_separator /var/log/Xorg.0.log
-	cat /var/log/Xorg.0.log
-    fi
-    if [ -x /bin/journalctl ]; then
-        _print_separator journalctl
-        /bin/journalctl -a
-    fi
-    if [ -x /bin/dmesg ]; then
-	_print_separator dmesg
-	/bin/dmesg
-    fi
-    for file in "$@"; do
-	if [ -f $file ]; then
-	    _print_separator $file
-	    cat $file
-	fi
-    done
-}
-
 _print_command_with_header()
 {
   _cmd=$1
@@ -253,7 +220,41 @@ _section_repositories()
 
 _section_syslog()
 {
-  _print_syslog_files_with_header /var/log/syslog /var/log/syslog.old
+  _print_header syslog
+
+  for xorglog in /var/log/Xorg.0.log.*.gz; do
+    if [ -f "$xorglog" ]; then
+      _print_separator $xorglog
+      zcat $xorglog
+    fi
+  done
+
+  if [ -f /var/log/Xorg.0.log.old ]; then
+    _print_separator /var/log/Xorg.0.log.old
+    cat /var/log/Xorg.0.log.old
+  fi
+
+  if [ -f /var/log/Xorg.0.log ]; then
+    _print_separator /var/log/Xorg.0.log
+    cat /var/log/Xorg.0.log
+  fi
+
+  if [ -x /bin/journalctl ]; then
+    _print_separator journalctl
+    /bin/journalctl -a
+  fi
+
+  if [ -x /bin/dmesg ]; then
+    _print_separator dmesg
+    /bin/dmesg
+  fi
+
+  for file in /var/log/syslog /var/log/syslog.old; do
+    if [ -f $file ]; then
+      _print_separator $file
+      cat $file
+    fi
+  done
 }
 
 _section_rich_core_errors()
