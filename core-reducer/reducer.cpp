@@ -36,6 +36,8 @@
 
 //add some additional space on the stack
 #define STACK_ADDITION 128
+//tolerance for sp being past the edge of the stack segment
+#define STACK_OVERFLOW_GUESS 8192
 // predefined heap address, will be used if an application does not have heap
 #define PREDEFINED_HEAP_ADDRESS 4
 
@@ -273,6 +275,8 @@ void Reducer::getStacks()
     for (unsigned int i = 0; i < stackPointerAddresses.size(); i++)
     {
         const Phdr *coreSegment = coreReader->getSegmentByAddress(stackPointerAddresses.at(i));
+        if (!coreSegment)
+            coreSegment = coreReader->getSegmentByAddress(stackPointerAddresses.at(i) + STACK_OVERFLOW_GUESS);
         if (!coreSegment)
             continue;
 
