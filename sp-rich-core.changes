@@ -1,3 +1,6 @@
+* Tue Nov 07 2013 Matti Kosola <matti.kosola@jollamobile.com> - 1.71.19
+- [core-reducer] Try to find the stack even if sp overflowed 
+
 * Tue Nov 06 2013 Matti Kosola <matti.kosola@jollamobile.com> - 1.71.18
 - Write each log into a separate section
 
