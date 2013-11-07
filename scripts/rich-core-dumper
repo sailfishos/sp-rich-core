@@ -227,6 +227,7 @@ _dump_logs()
 
   _print_command_with_header /bin/journalctl
   _print_command_with_header /bin/dmesg
+  _print_command_with_header /system/bin/logcat -d
 
   _print_file_with_header /var/log/syslog
   _print_file_with_header /var/log/syslog.old
