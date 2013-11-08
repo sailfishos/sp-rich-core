@@ -1,3 +1,7 @@
+* Tue Nov 08 2013 Matti Kosola <matti.kosola@jollamobile.com> - 1.71.20
+- Check whether core-reducer finished successfully
+- Add logcat output into rich core
+
 * Tue Nov 07 2013 Matti Kosola <matti.kosola@jollamobile.com> - 1.71.19
 - [core-reducer] Try to find the stack even if sp overflowed 
 
