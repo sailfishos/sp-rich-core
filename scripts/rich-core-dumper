@@ -227,6 +227,7 @@ _dump_logs()
 
   _print_command_with_header /bin/journalctl
   _print_command_with_header /bin/dmesg
+  _print_command_with_header /system/bin/logcat -d
 
   _print_file_with_header /var/log/syslog
   _print_file_with_header /var/log/syslog.old
@@ -234,8 +235,11 @@ _dump_logs()
 
 _section_rich_core_errors()
 {
-  if [ "${omit_core}" = "true" ]; then
+  if [ "${omit_core}" = "true" ] || [ "$RICH_CORE_ERRORS" != "" ]; then
     _print_header rich-core-errors
+  fi
+
+  if [ "${omit_core}" = "true" ]; then
     echo "Core dumping was omitted due to lack of free space on device or core size greater than ${CORE_SIZE_LIMIT} kB."
     echo "Free space on device = ${freespace} kB"
     echo "Approximate size of core = ${coresize_approx} kB"
@@ -243,6 +247,8 @@ _section_rich_core_errors()
     echo "VmExe  = ${vmexe} kB"
     echo "VmLib  = ${vmlib} kB"
   fi
+
+  echo -e "${RICH_CORE_ERRORS%\\n}"
 }
 
 _section_extra_files()
@@ -397,6 +403,16 @@ _capture_stacktrace()
 
     _print_header stacktrace
     _invoke_gdb 'thread apply all bt full'
+  fi
+}
+
+_reduce_core()
+{
+  core-reducer -i "$originalcorefilename" -o /dev/stdout -e $core_exe
+  retval=$?
+  if [ $retval != 0 ]; then
+    original_core_size=$(du -b "$originalcorefilename" | awk '{ print $1 }')
+    RICH_CORE_ERRORS="${RICH_CORE_ERRORS}core-reducer exited with value $retval, core file of size ${original_core_size}B is likely truncated\n"
   fi
 }
 
@@ -626,7 +642,7 @@ elif [ "${omit_core}" != "true" ]; then
   if [ x"$INCLUDE_CORE" = x"true" ]; then
     _print_header coredump
     if [ x"$REDUCE_CORE" = x"true" ]; then
-      core-reducer -i "${originalcorefilename}" -o /dev/stdout -e ${core_exe}
+      _reduce_core
     else
       cat "${originalcorefilename}"
     fi
