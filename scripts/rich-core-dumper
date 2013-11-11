@@ -119,6 +119,11 @@ _free_space()
 # Information collection functions
 #
 
+_section_pstree()
+{
+  _print_command_with_header /usr/bin/pstree -Uup
+}
+
 _section_date()
 {
   _print_command_with_header /bin/date
@@ -601,6 +606,7 @@ if [ -z "${IS_OOPSLOG}" ] && [ "${core_pid}" -gt 0 ]; then
   _section_proc_smaps
 fi
 
+_section_pstree
 _section_date
 _section_software_version
 _section_df
