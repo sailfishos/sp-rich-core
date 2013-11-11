@@ -600,13 +600,14 @@ if [ -z "${IS_OOPSLOG}" ] && [ "${core_pid}" -gt 0 ]; then
   _section_proc_maps
   _section_proc_smaps
 fi
-  _section_date
-  _section_software_version
-  _section_df
-  _section_ifconfig
-  _section_extra_files
-  _section_ssu_status
-  _section_exe_package
+
+_section_date
+_section_software_version
+_section_df
+_section_ifconfig
+_section_extra_files
+_section_ssu_status
+_section_exe_package
 
 if [ -z "${IS_OOPSLOG}" ]; then
     _section_slabinfo
