@@ -493,7 +493,7 @@ fi
 # If invoked from command line, we won't have a valid pid, so a dummy
 # value is assigned instead
 
-if [ x"$NO_SECTION_HEADER" = x"true" ] && [ -z ${core_pid} ]; then
+if [ -z ${core_pid} ]; then
    core_pid=0
 fi
 
