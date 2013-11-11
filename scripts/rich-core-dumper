@@ -569,7 +569,13 @@ fi
 # script. Provide a dummy value in that case.
 
 if [ -z "${core_sig}" ]; then
-  core_sig=0
+  if [ "${core_name}" == "Quickie" ]; then
+    # Coreless reports requested from Quick Feedback tool should have a random
+    # number in place of a signal identifier in its filename.
+    core_sig=$RANDOM
+  else
+    core_sig=0
+  fi
 fi
 
 # Get hwid
