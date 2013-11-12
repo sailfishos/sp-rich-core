@@ -23,6 +23,8 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 # 02110-1301 USA
 
+set +o posix
+
 #
 # Constant variables
 #
@@ -118,6 +120,11 @@ _free_space()
 #
 # Information collection functions
 #
+
+_section_pstree()
+{
+  _print_command_with_header /usr/bin/pstree -Uup
+}
 
 _section_date()
 {
@@ -488,7 +495,7 @@ fi
 # If invoked from command line, we won't have a valid pid, so a dummy
 # value is assigned instead
 
-if [ x"$NO_SECTION_HEADER" = x"true" ] && [ -z ${core_pid} ]; then
+if [ -z ${core_pid} ]; then
    core_pid=0
 fi
 
@@ -564,7 +571,13 @@ fi
 # script. Provide a dummy value in that case.
 
 if [ -z "${core_sig}" ]; then
-  core_sig=0
+  if [ "${core_name}" == "Quickie" ]; then
+    # Coreless reports requested from Quick Feedback tool should have a random
+    # number in place of a signal identifier in its filename.
+    core_sig=$RANDOM
+  else
+    core_sig=0
+  fi
 fi
 
 # Get hwid
@@ -595,18 +608,20 @@ fi
 if [ -z "${IS_OOPSLOG}" ] && [ "${core_pid}" -gt 0 ]; then
   _section_cmdline
   _section_exe
+  _section_exe_package
   _section_ls_proc
   _section_proc_fd
   _section_proc_maps
   _section_proc_smaps
 fi
-  _section_date
-  _section_software_version
-  _section_df
-  _section_ifconfig
-  _section_extra_files
-  _section_ssu_status
-  _section_exe_package
+
+_section_pstree
+_section_date
+_section_software_version
+_section_df
+_section_ifconfig
+_section_extra_files
+_section_ssu_status
 
 if [ -z "${IS_OOPSLOG}" ]; then
     _section_slabinfo
@@ -631,7 +646,7 @@ cat
 elif [ -n "${IS_OOPSLOG}" ]; then
   _print_header oopslog
   cat
-elif [ "${omit_core}" != "true" ]; then
+elif [ "${omit_core}" != "true" ] && [ "${core_pid}" -gt 0 ]; then
   # By default core is read from stdin.
   originalcorefilename=-
   if [ x"$REDUCE_CORE" = x"true" ] || [ x"$INCLUDE_STACK_TRACE" = x"true" ]; then
