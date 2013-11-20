@@ -41,6 +41,7 @@ const char *usage = "%s <input filename> [<output directory>]\n";
 #define BUFFER_SIZE 4096 + 128
 char buffer[BUFFER_SIZE];
 size_t buffer_len = 0;
+int at_input_beginning = 1;
 
 static size_t find_substring(const char *mem, size_t mem_len,
                              const char *str, size_t str_len)
@@ -87,14 +88,29 @@ static void write_data_until_header_beginning(FILE *input_file, FILE *output_fil
     buffer_replenish(input_file);
 
     while (1) {
-        size_t header_begin = find_substring(buffer, buffer_len,
-                RICHCORE_HEADER, RICHCORE_HEADER_LEN);
+        size_t header_begin;
+        size_t header_len = RICHCORE_HEADER_LEN;
+
+        if (at_input_beginning) {
+            /* Special case - at the beginning of input file we allow to omit
+             * initial '\n' of RICHCORE_HEADER. */
+            at_input_beginning = 0;
+            header_len -= 1;
+            header_begin = find_substring(buffer, buffer_len,
+                            RICHCORE_HEADER + 1, header_len);
+            if (header_begin != 0) {
+                continue;
+            }
+        } else {
+            header_begin = find_substring(buffer, buffer_len,
+                    RICHCORE_HEADER, header_len);
+        }
 
         /* Write everything that precedes the header into previous file and
          * align the data in buffer. */
         buffer_flush(output_file, header_begin);
 
-        if (buffer_len < RICHCORE_HEADER_LEN) {
+        if (buffer_len < header_len) {
             /* Empty buffer or possible incomplete header, buffer more data and
              * try again. */
             if (buffer_replenish(input_file) == 0) {
@@ -107,7 +123,7 @@ static void write_data_until_header_beginning(FILE *input_file, FILE *output_fil
         }
 
         /* Beginning of header found; discard header bytes and return */
-        buffer_flush(NULL, RICHCORE_HEADER_LEN);
+        buffer_flush(NULL, header_len);
         return;
     }
 }
