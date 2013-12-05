@@ -482,7 +482,7 @@ fi
 
 # When core reducing and/or stack trace inclusion is enabled, coredump is
 # written temporarily on disk. Therefore, space left must be checked.
-if [ "${core_pid}" != "0" -a "${REDUCE_CORE}" = "true" ] || [ "${INCLUDE_STACK_TRACE}" = "true" ]; then
+if [ "${core_pid}" != "0" -a \( "${REDUCE_CORE}" = "true" -o "${INCLUDE_STACK_TRACE}" = "true" \) ]; then
   _get_vmsizes ${core_pid}
 
   if [ -z "${vmsize}" -o -z "${vmlib}" -o -z "${vmexe}" ]; then
