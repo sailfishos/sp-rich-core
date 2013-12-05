@@ -131,6 +131,18 @@ _free_space()
   df -Pk $1 | awk 'NR == 2 { print $4 }'
 }
 
+_check_core_location()
+{
+  # Check if location exists and has enough space to write a rich core.
+  if [ -d "$CORE_LOCATION" ]; then
+    freespace=`_free_space "$CORE_LOCATION"`
+    [ -n "$freespace" -a "$freespace" -ge 500000 ]
+    return
+  fi
+
+  return 1
+}
+
 #
 # Information collection functions
 #
@@ -455,6 +467,12 @@ if [ x"${coredumping}" = x"false" ]; then
   exit
 fi
 
+if ! _check_core_location; then
+  [ $core_pid -eq 0 ] || cat > /dev/null
+  logger "rich-core: no core location or not enough free space - not dumping"
+  exit
+fi
+
 network_type=$(su nemo -c 'cat /run/user/100000/state/namespaces/Internet/NetworkType')
 has_suitable_network_connection=false
 
@@ -462,20 +480,6 @@ has_suitable_network_connection=false
 # it here as well as wifi.
 if [ x"$network_type" = x"wifi" ] || [ x"$network_type" = x"" ]; then
   has_suitable_network_connection=true
-fi
-
-# Check if there's location with enough space to write a rich-core.
-if [ -d "$CORE_LOCATION" ]; then
-  freespace=`_free_space "$CORE_LOCATION"`
-  if [ -z "$freespace" -o "$freespace" -lt 500000 ]; then
-    logger "rich-core: less than 500MB free in core location - not dumping"
-    cat > /dev/null
-    exit
-  fi
-else
-  cat > /dev/null
-  logger "rich-core: no core location - not dumping"
-  exit
 fi
 
 # When core reducing and/or stack trace inclusion is enabled, coredump is
