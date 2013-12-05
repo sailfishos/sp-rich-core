@@ -85,6 +85,9 @@ _parse_arguments()
     esac
     shift
   done
+
+  # Default values for unset arguments.
+  core_pid=${core_pid:-0}
 }
 
 _print_header()
@@ -469,7 +472,7 @@ fi
 
 # When core reducing and/or stack trace inclusion is enabled, coredump is
 # written temporarily on disk. Therefore, space left must be checked.
-if [ -n "${core_pid}" -a "${REDUCE_CORE}" = "true" ] || [ "${INCLUDE_STACK_TRACE}" = "true" ]; then
+if [ "${core_pid}" != "0" -a "${REDUCE_CORE}" = "true" ] || [ "${INCLUDE_STACK_TRACE}" = "true" ]; then
   _get_vmsizes ${core_pid}
 
   if [ -z "${vmsize}" -o -z "${vmlib}" -o -z "${vmexe}" ]; then
@@ -490,13 +493,6 @@ if [ -n "${core_pid}" -a "${REDUCE_CORE}" = "true" ] || [ "${INCLUDE_STACK_TRACE
     omit_core=true
     logger "rich-core: approximate of core size is greater than ${CORE_SIZE_LIMIT} kB - not dumping"
   fi
-fi
-
-# If invoked from command line, we won't have a valid pid, so a dummy
-# value is assigned instead
-
-if [ -z ${core_pid} ]; then
-   core_pid=0
 fi
 
 # figure out the executable
