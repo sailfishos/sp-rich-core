@@ -30,6 +30,7 @@ set +o posix
 #
 
 SW_VERSION_FILE=/etc/os-release
+CORE_LOCATION=/var/cache/core-dumps
 CORE_SIZE_LIMIT=1000000		# kB
 
 #
@@ -211,7 +212,7 @@ _section_testcase_uuid()
 _section_user_message()
 {
   # Created by quick-feedback application
-  local quickie_file="${core_location}/quickie-${core_pid}"
+  local quickie_file="${CORE_LOCATION}/quickie-${core_pid}"
 
   if [ -f "${quickie_file}" ]; then
     _print_header user_message
@@ -463,18 +464,15 @@ if [ x"$network_type" = x"wifi" ] || [ x"$network_type" = x"" ]; then
   has_suitable_network_connection=true
 fi
 
-# Check, if there's location with enough space to write a rich-core.
-if [ -d /var/cache/core-dumps ]; then
-    freespace=`_free_space /var/cache/core-dumps`
-    if [ -n "$freespace" -a "$freespace" -gt 500000 ]; then
-        # more than 500MB free, go ahead
-        core_location="/var/cache/core-dumps"
-    else
-	logger "rich-core: less than 500M free in core location"
-    fi
-fi
-
-if [ x"${core_location}" = x ]; then
+# Check if there's location with enough space to write a rich-core.
+if [ -d "$CORE_LOCATION" ]; then
+  freespace=`_free_space "$CORE_LOCATION"`
+  if [ -z "$freespace" -o "$freespace" -lt 500000 ]; then
+    logger "rich-core: less than 500MB free in core location - not dumping"
+    cat > /dev/null
+    exit
+  fi
+else
   cat > /dev/null
   logger "rich-core: no core location - not dumping"
   exit
@@ -582,16 +580,16 @@ fi
 # Make a naming distinction between oopslogs and rich-cores
 if [ -n "${IS_OOPSLOG}" ]; then
   timestamp=$(date +%F-%S)
-  rcorebasename=${core_location}/oopslog-${hwid}-${timestamp}
+  rcorebasename=${CORE_LOCATION}/oopslog-${hwid}-${timestamp}
 else
-  rcorebasename=${core_location}/${core_name}-${hwid}-${core_sig}-${core_pid}
+  rcorebasename=${CORE_LOCATION}/${core_name}-${hwid}-${core_sig}-${core_pid}
 fi
 
 rcorefilename=${rcorebasename}.rcore.lzo
 
 # Create marker file for testrunner-lite
-if [ -f "${core_location}/testrunner-lite-testcase" ]; then
-  core_tc_uuid=$(cat "${core_location}/testrunner-lite-testcase")
+if [ -f "${CORE_LOCATION}/testrunner-lite-testcase" ]; then
+  core_tc_uuid=$(cat "${CORE_LOCATION}/testrunner-lite-testcase")
   touch "${rcorefilename}.${core_tc_uuid}"
 fi
 
