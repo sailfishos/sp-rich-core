@@ -30,6 +30,7 @@ set +o posix
 #
 
 SW_VERSION_FILE=/etc/os-release
+CORE_LOCATION=/var/cache/core-dumps
 CORE_SIZE_LIMIT=1000000		# kB
 
 #
@@ -85,6 +86,19 @@ _parse_arguments()
     esac
     shift
   done
+
+  # Default values for unset arguments.
+  core_pid=${core_pid:-0}
+
+  if [ -z "${core_sig}" ]; then
+    if [ "${core_name}" == "Quickie" ]; then
+      # Coreless reports requested from Quick Feedback tool should have a random
+      # number in place of a signal identifier in its filename.
+      core_sig=$RANDOM
+    else
+      core_sig=0
+    fi
+  fi
 }
 
 _print_header()
@@ -115,6 +129,18 @@ _free_space()
   # get df for the directory, skip the first line (column headers),
   # and then print the third last column "Available"
   df -Pk $1 | awk 'NR == 2 { print $4 }'
+}
+
+_check_core_location()
+{
+  # Check if location exists and has enough space to write a rich core.
+  if [ -d "$CORE_LOCATION" ]; then
+    freespace=`_free_space "$CORE_LOCATION"`
+    [ -n "$freespace" -a "$freespace" -ge 500000 ]
+    return
+  fi
+
+  return 1
 }
 
 #
@@ -197,9 +223,6 @@ _section_testcase_uuid()
 
 _section_user_message()
 {
-  # Created by quick-feedback application
-  local quickie_file="${core_location}/quickie-${core_pid}"
-
   if [ -f "${quickie_file}" ]; then
     _print_header user_message
     cat "${quickie_file}"
@@ -435,9 +458,21 @@ _parse_arguments $*
 
 logger "rich-core: arguments: $*"
 
-# if dumping disabled in settings, don't bother going further
-if [ x"${coredumping}" = x"false" ]; then
+# User feedback message created by quick-feedback application. Doesn't have to
+# be present.
+quickie_file="${CORE_LOCATION}/quickie-${core_pid}"
+
+# If dumping is disabled in settings, don't bother going further. However, if
+# this dump was invoked from Quick Feedback application (i.e. quickie file
+# exists in $CORE_LOCATION), the setting is overriden.
+if [ x"${coredumping}" = x"false" -a ! -f "${quickie_file}" ]; then
   cat > /dev/null
+  exit
+fi
+
+if ! _check_core_location; then
+  [ $core_pid -eq 0 ] || cat > /dev/null
+  logger "rich-core: no core location or not enough free space - not dumping"
   exit
 fi
 
@@ -450,26 +485,9 @@ if [ x"$network_type" = x"wifi" ] || [ x"$network_type" = x"" ]; then
   has_suitable_network_connection=true
 fi
 
-# Check, if there's location with enough space to write a rich-core.
-if [ -d /var/cache/core-dumps ]; then
-    freespace=`_free_space /var/cache/core-dumps`
-    if [ -n "$freespace" -a "$freespace" -gt 500000 ]; then
-        # more than 500MB free, go ahead
-        core_location="/var/cache/core-dumps"
-    else
-	logger "rich-core: less than 500M free in core location"
-    fi
-fi
-
-if [ x"${core_location}" = x ]; then
-  cat > /dev/null
-  logger "rich-core: no core location - not dumping"
-  exit
-fi
-
 # When core reducing and/or stack trace inclusion is enabled, coredump is
 # written temporarily on disk. Therefore, space left must be checked.
-if [ -n "${core_pid}" -a "${REDUCE_CORE}" = "true" ] || [ "${INCLUDE_STACK_TRACE}" = "true" ]; then
+if [ "${core_pid}" != "0" -a \( "${REDUCE_CORE}" = "true" -o "${INCLUDE_STACK_TRACE}" = "true" \) ]; then
   _get_vmsizes ${core_pid}
 
   if [ -z "${vmsize}" -o -z "${vmlib}" -o -z "${vmexe}" ]; then
@@ -490,13 +508,6 @@ if [ -n "${core_pid}" -a "${REDUCE_CORE}" = "true" ] || [ "${INCLUDE_STACK_TRACE
     omit_core=true
     logger "rich-core: approximate of core size is greater than ${CORE_SIZE_LIMIT} kB - not dumping"
   fi
-fi
-
-# If invoked from command line, we won't have a valid pid, so a dummy
-# value is assigned instead
-
-if [ -z ${core_pid} ]; then
-   core_pid=0
 fi
 
 # figure out the executable
@@ -567,19 +578,6 @@ if [ $has_suitable_network_connection = "false" ]; then
     DOWNLOAD_DEBUGINFO=false
 fi
 
-# We will lack the value for the signal if we're invoked from the
-# script. Provide a dummy value in that case.
-
-if [ -z "${core_sig}" ]; then
-  if [ "${core_name}" == "Quickie" ]; then
-    # Coreless reports requested from Quick Feedback tool should have a random
-    # number in place of a signal identifier in its filename.
-    core_sig=$RANDOM
-  else
-    core_sig=0
-  fi
-fi
-
 # Get hwid
 hwid=$(ssu model -s)
 if [ -z "${hwid}" ]; then
@@ -589,16 +587,16 @@ fi
 # Make a naming distinction between oopslogs and rich-cores
 if [ -n "${IS_OOPSLOG}" ]; then
   timestamp=$(date +%F-%S)
-  rcorebasename=${core_location}/oopslog-${hwid}-${timestamp}
+  rcorebasename=${CORE_LOCATION}/oopslog-${hwid}-${timestamp}
 else
-  rcorebasename=${core_location}/${core_name}-${hwid}-${core_sig}-${core_pid}
+  rcorebasename=${CORE_LOCATION}/${core_name}-${hwid}-${core_sig}-${core_pid}
 fi
 
 rcorefilename=${rcorebasename}.rcore.lzo
 
 # Create marker file for testrunner-lite
-if [ -f "${core_location}/testrunner-lite-testcase" ]; then
-  core_tc_uuid=$(cat "${core_location}/testrunner-lite-testcase")
+if [ -f "${CORE_LOCATION}/testrunner-lite-testcase" ]; then
+  core_tc_uuid=$(cat "${CORE_LOCATION}/testrunner-lite-testcase")
   touch "${rcorefilename}.${core_tc_uuid}"
 fi
 
