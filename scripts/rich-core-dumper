@@ -88,6 +88,16 @@ _parse_arguments()
 
   # Default values for unset arguments.
   core_pid=${core_pid:-0}
+
+  if [ -z "${core_sig}" ]; then
+    if [ "${core_name}" == "Quickie" ]; then
+      # Coreless reports requested from Quick Feedback tool should have a random
+      # number in place of a signal identifier in its filename.
+      core_sig=$RANDOM
+    else
+      core_sig=0
+    fi
+  fi
 }
 
 _print_header()
@@ -561,19 +571,6 @@ fi
 # If network transfers are paid, don't download anything 
 if [ $has_suitable_network_connection = "false" ]; then
     DOWNLOAD_DEBUGINFO=false
-fi
-
-# We will lack the value for the signal if we're invoked from the
-# script. Provide a dummy value in that case.
-
-if [ -z "${core_sig}" ]; then
-  if [ "${core_name}" == "Quickie" ]; then
-    # Coreless reports requested from Quick Feedback tool should have a random
-    # number in place of a signal identifier in its filename.
-    core_sig=$RANDOM
-  else
-    core_sig=0
-  fi
 fi
 
 # Get hwid
