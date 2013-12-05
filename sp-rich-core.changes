@@ -1,3 +1,6 @@
+* Tue Dec 05 2013 Matti Kosola <matti.kosola@jollamobile.com> - 1.71.23
+- Prevent rich-core-dumper getting stuck when invoked by Quick Feedback
+
 * Tue Nov 26 2013 Matti Kosola <matti.kosola@jollamobile.com> - 1.71.22
 - Dump radio buffer into logcat
 
