@@ -1,3 +1,6 @@
+* Tue Dec 09 2013 Matti Kosola <matti.kosola@jollamobile.com> - 1.71.24
+- Fix occasional merged sections in unpacked crash report
+
 * Tue Dec 05 2013 Matti Kosola <matti.kosola@jollamobile.com> - 1.71.23
 - Prevent rich-core-dumper getting stuck when invoked by Quick Feedback
 
