@@ -5,6 +5,8 @@
  *
  * Contact: Eero Tamminen <eero.tamminen@nokia.com>
  *
+ * Copyright (C) 2013 Jolla Ltd.
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License 
  * version 2 as published by the Free Software Foundation. 
@@ -25,36 +27,156 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/types.h>
 #include <sys/stat.h>
-#include <unistd.h>
 #include <errno.h>
 
-#define RICHCORE_HEADER "[---rich-core: "
-#define RICHCORE_HEADER_END "---]\n"
+const char RICHCORE_HEADER[] = "\n[---rich-core: ";
+#define RICHCORE_HEADER_LEN sizeof (RICHCORE_HEADER) - 1
+
+const char RICHCORE_HEADER_END[] = "---]\n";
+#define RICHCORE_HEADER_END_LEN sizeof (RICHCORE_HEADER_END) - 1
 
 const char *usage = "%s <input filename> [<output directory>]\n";
 
-/*!
-  * \brief Returns position of reject in mem, used to search rich-core header data from data
-  * \param mem Data to search reject from
-  * \param memlen Size of mem
-  * \param reject Data to be searched from mem
-  * \param rejectlen Size of reject
-  * \return Position of reject in mem
-  */
-size_t memcspn(const void *mem, size_t memlen, const void *reject, size_t rejectlen);
-
-/* Buffer variables and functions */
 #define BUFFER_SIZE 4096 + 128
-/* Copy num bytes from data to buffer */
-void buffer_data(char* data, size_t num);
-/* Remove num bytes from buffer */
-void unbuffer_data(size_t num);
-/* Buffer */
 char buffer[BUFFER_SIZE];
-/* Buffer size */
-int size = 0;
+size_t buffer_len = 0;
+int at_input_beginning = 1;
+
+static size_t find_substring(const char *mem, size_t mem_len,
+                             const char *str, size_t str_len)
+{
+    if (str == NULL || str_len == 0 || mem == NULL || mem_len == 0) {
+        return 0;
+    }
+
+    size_t i;
+    int str_overhang = 0;
+    for (i = 0; i < mem_len; ++i) {
+        str_overhang = i + str_len - mem_len;
+        if(str_overhang < 0) {
+            str_overhang = 0;
+        }
+
+        if (strncmp(mem + i, str, str_len - str_overhang) == 0) {
+            break;
+        }
+    }
+
+    return i;
+}
+
+static size_t buffer_replenish(FILE *input_file)
+{
+    size_t bytes_read = fread(buffer + buffer_len, 1, BUFFER_SIZE - buffer_len,
+                    input_file);
+    buffer_len += bytes_read;
+
+    return bytes_read;
+}
+
+static void buffer_flush(FILE *output_file, size_t byte_count)
+{
+    if (output_file != NULL) {
+        fwrite(buffer, 1, byte_count, output_file);
+    }
+    memmove(buffer, buffer + byte_count, buffer_len -= byte_count);
+}
+
+static void write_data_until_header_beginning(FILE *input_file, FILE *output_file)
+{
+    buffer_replenish(input_file);
+
+    while (1) {
+        size_t header_begin;
+        size_t header_len = RICHCORE_HEADER_LEN;
+
+        if (at_input_beginning) {
+            /* Special case - at the beginning of input file we allow to omit
+             * initial '\n' of RICHCORE_HEADER. */
+            at_input_beginning = 0;
+            header_len -= 1;
+            header_begin = find_substring(buffer, buffer_len,
+                            RICHCORE_HEADER + 1, header_len);
+            if (header_begin != 0) {
+                continue;
+            }
+        } else {
+            header_begin = find_substring(buffer, buffer_len,
+                    RICHCORE_HEADER, header_len);
+        }
+
+        /* Write everything that precedes the header into previous file and
+         * align the data in buffer. */
+        buffer_flush(output_file, header_begin);
+
+        if (buffer_len < header_len) {
+            /* Empty buffer or possible incomplete header, buffer more data and
+             * try again. */
+            if (buffer_replenish(input_file) == 0) {
+                /* Nothing new was read and no section header in buffer, flush
+                 * remaining bytes and return. */
+                buffer_flush(output_file, buffer_len);
+                return;
+            }
+            continue;
+        }
+
+        /* Beginning of header found; discard header bytes and return */
+        buffer_flush(NULL, header_len);
+        return;
+    }
+}
+
+static char *write_data_until_next_section(FILE *input_file, FILE *output_file)
+{
+    write_data_until_header_beginning(input_file, output_file);
+    if (buffer_len == 0) {
+        /* No more sections in the input file, we're done. */
+        return NULL;
+    }
+
+    buffer_replenish(input_file);
+    if (buffer_len == 0) {
+        /* Malformed rich core - no header end. */
+        return NULL;
+    }
+
+    size_t header_end = find_substring(buffer, buffer_len,
+            RICHCORE_HEADER_END, RICHCORE_HEADER_END_LEN);
+    if (header_end >= (buffer_len - RICHCORE_HEADER_END_LEN)) {
+        /* Suspiciously long header, break. */
+        return NULL;
+    }
+
+    char *header = malloc(header_end + 1);
+    strncpy(header, buffer, header_end);
+    header[header_end] = '\0';
+
+    buffer_flush(NULL, header_end + RICHCORE_HEADER_END_LEN);
+
+    return header;
+}
+
+static void extract_rich_core(FILE *input_file, const char *output_dir)
+{
+    FILE *output_file = fopen("/dev/null", "w");
+    char *next_section;
+
+    while ((next_section = write_data_until_next_section(input_file, output_file))) {
+        fclose(output_file);
+
+        char *file_name = basename(next_section);
+        char file_path[128];
+
+        snprintf(file_path, sizeof (file_path), "%s/%s", output_dir, file_name);
+        output_file = fopen(file_path, "w");
+
+        free(next_section);
+    }
+
+    fclose(output_file);
+}
 
 int main(int argc, char *argv[])
 {
@@ -62,7 +184,6 @@ int main(int argc, char *argv[])
     char *output_dir;
     struct stat stat_s;
     FILE *input_file;
-    FILE *output_file;
     char buf[4096];
 
     if (argc < 2)
@@ -132,142 +253,15 @@ int main(int argc, char *argv[])
 
     snprintf(buf, 255, "lzop -d -c \"%s\"", input_fn);
     input_file = popen(buf, "r");
-    output_file = fopen("/dev/null", "w");
     if (!input_file)
     {
         fprintf(stderr, "error forking lzop: %s\n", strerror(errno));
         exit(1);
     }
 
-    while (!feof(input_file) && !ferror(input_file))
-    {
-        /* Read 4096 bytes from input file */
-        int remaining = fread(buf, 1, sizeof(buf), input_file);
-        char extra[128];
-        int extra_size = 0;
+    extract_rich_core(input_file, output_dir);
 
-        /* if buffer had less than 128bytes extra over remaining try to read more */
-        if(size < 128 && !feof(input_file) && !ferror(input_file)) 
-        {
-            extra_size = fread(extra, 1, 128 - size, input_file);
-        }
-
-        /* Write remaining bytes to buffer */
-        buffer_data(buf, remaining);
-        /* Write extra bytes to buffer */
-        buffer_data(extra, extra_size);
-
-        /* Loop ------- */
-        while(1)
-        {
-            /* Check for start of richcore header and header end in buffer's remaining+extra bytes */
-            int start_of_header = memcspn(buffer, size, RICHCORE_HEADER, sizeof(RICHCORE_HEADER));
-            //printf("Start of header %s\n", &buffer[start_of_header]);
-            int end_of_header = memcspn(buffer, size, RICHCORE_HEADER_END, sizeof(RICHCORE_HEADER_END));
-
-            if(end_of_header != size) {
-                end_of_header += sizeof(RICHCORE_HEADER_END) -1;
-            }
-
-            /* If no start was found or start was after remaining bytes write remaining bytes to output_file, exit loop */
-            if(start_of_header == size || start_of_header > remaining) 
-            {
-                fwrite(buffer, 1, remaining, output_file);
-                unbuffer_data(remaining);
-                break;
-            }
-
-            /* If start was found in remaining bytes write data before start to output_file */
-            if(start_of_header <= remaining)
-            {
-                /* To not break binaries, don't write the \n before header */
-                fwrite(buffer, 1, start_of_header -1, output_file);
-                remaining -= start_of_header;
-
-                /* If no end was found change output_file to /dev/null and write remaining bytes, exit loop */
-                if(end_of_header == size)
-                {
-                    fprintf(stderr, "skipping invalid rich core header\n");
-                    output_file = fopen("/dev/null", "w");
-                    fwrite(buffer, 1, remaining, output_file);
-                    unbuffer_data(remaining);
-                    break;
-                }
-
-                unbuffer_data(start_of_header);
-            }
-
-            /* End was found so parse new filename and unbuffer the header */
-            char *start_of_filename = &buffer[sizeof(RICHCORE_HEADER)-1];
-            char *end_of_filename = strstr(start_of_filename, RICHCORE_HEADER_END);
-            char *c;
-            char fn[128];
-
-            *end_of_filename = '\0';
-
-            c = basename(start_of_filename);
-
-            snprintf(fn, sizeof(fn), "%s/%s", output_dir, c);
-    #ifdef DEBUG
-            puts(fn);
-    #endif
-            fclose(output_file);
-            output_file = fopen(fn, "w");
-            remaining -= (end_of_header - start_of_header);
-            unbuffer_data(end_of_header - start_of_header);
-
-            /* If end was in remaining bytes + extra, exit loop */
-            if(remaining <= 0)
-            {
-                break;
-            }
-            /* If end was in remaining bytes, loop again */
-        }
-        /* End loop ------- */
-    }
-
-    /* Empty out the buffer */
-    fwrite(buffer, 1, size, output_file);
-
-    fclose(output_file);
     pclose(input_file);
+
     exit(0);
-}
-
-void buffer_data(char* data, size_t num)
-{
-    memcpy(&buffer[size], data, num);
-    size += num;
-}
-
-void unbuffer_data(size_t num)
-{
-    size -= num;
-    char* move = malloc(sizeof(char) * size);
-    memcpy(move, &buffer[num], size);
-    memcpy(buffer, move, size);
-    free (move);
-}
-
-size_t memcspn(const void *mem, size_t memlen,
-	       const void *reject, size_t rejectlen)
-{
-  size_t i;
-
-  const char *m = mem, *r = reject;
-
-  if (rejectlen == 0 || reject == 0)
-    return memlen;
-
-  if (mem == NULL || memlen == 0)
-    return 0;
-
-  for (i = 0; i < memlen; i++)
-  {
-        if (strncmp(r, m+i, rejectlen-1) == 0)
-        {
-          break;
-        }
-  }
-  return i;
 }
