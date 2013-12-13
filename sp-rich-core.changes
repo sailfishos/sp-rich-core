@@ -1,3 +1,6 @@
+* Fri Dec 13 2013 Matti Kosola <matti.kosola@jollamobile.com> - 1.71.25
+- Add pmlog.log into crash report
+
 * Tue Dec 09 2013 Matti Kosola <matti.kosola@jollamobile.com> - 1.71.24
 - Fix occasional merged sections in unpacked crash report
 
