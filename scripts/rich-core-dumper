@@ -261,6 +261,7 @@ _dump_logs()
 
   _print_file_with_header /var/log/syslog
   _print_file_with_header /var/log/syslog.old
+  _print_file_with_header /var/systemlog/pmlog/pmlog.log
 }
 
 _section_rich_core_errors()
