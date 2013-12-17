@@ -223,6 +223,10 @@ _section_testcase_uuid()
 
 _section_user_message()
 {
+  # User feedback message created by quick-feedback application.
+  # Doesn't have to be present.
+  local quickie_file="${CORE_LOCATION}/quickie-${core_pid}"
+
   if [ -f "${quickie_file}" ]; then
     _print_header user_message
     cat "${quickie_file}"
@@ -459,14 +463,10 @@ _parse_arguments $*
 
 logger "rich-core: arguments: $*"
 
-# User feedback message created by quick-feedback application. Doesn't have to
-# be present.
-quickie_file="${CORE_LOCATION}/quickie-${core_pid}"
-
 # If dumping is disabled in settings, don't bother going further. However, if
-# this dump was invoked from Quick Feedback application (i.e. quickie file
-# exists in $CORE_LOCATION), the setting is overriden.
-if [ x"${coredumping}" = x"false" -a ! -f "${quickie_file}" ]; then
+# this dump was invoked with PID 0, meaning only logs are collected, the setting
+# is overriden.
+if [ x"${coredumping}" = x"false" -a ! $core_pid -eq 0 ]; then
   cat > /dev/null
   exit
 fi
