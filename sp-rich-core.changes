@@ -1,3 +1,6 @@
+* Thu Jan 16 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.72.0
+- Create crash report after HW reboot
+
 * Fri Dec 18 2013 Matti Kosola <matti.kosola@jollamobile.com> - 1.71.26
 - Change logic of overriding disabled coredump
 
