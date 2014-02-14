@@ -277,10 +277,12 @@ _dump_logs()
 
 _dump_proc_lastlog()
 {
-  for file in /proc/lastlog/*; do
-    _print_header proc-lastlog-$(basename $file)
-    cat $file
-  done
+  if [ -d /proc/lastlog ]; then
+    for file in /proc/lastlog/*; do
+      _print_header proc-lastlog-$(basename $file)
+      cat $file
+    done
+  fi
 }
 
 _section_rich_core_errors()
