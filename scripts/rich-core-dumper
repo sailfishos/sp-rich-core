@@ -269,6 +269,14 @@ _dump_logs()
   _print_file_with_header /var/systemlog/pmlog/pmlog.log
 }
 
+_dump_proc_lastlog()
+{
+  for file in /proc/lastlog/*; do
+    _print_header proc-lastlog-$(basename $file)
+    cat $file
+  done
+}
+
 _section_rich_core_errors()
 {
   if [ "${omit_core}" = "true" ] || [ "$RICH_CORE_ERRORS" != "" ]; then
@@ -636,6 +644,9 @@ _section_user_message
 
 if [ x"$INCLUDE_SYSLOG" = x"true" ]; then
   _dump_logs
+fi
+if [ "${core_name}" == "HwReboot" ]; then
+  _dump_proc_lastlog
 fi
 if [ x"$INCLUDE_PKGLIST" = x"true" ]; then
   _section_packagelist
