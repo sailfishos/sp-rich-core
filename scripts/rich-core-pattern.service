@@ -8,7 +8,7 @@ Type=oneshot
 RemainAfterExit=yes
 ExecStartPre=/usr/bin/test -x /usr/sbin/rich-core-dumper
 ExecStartPre=/usr/bin/test -d /var/cache/core-dumps
-ExecStartPre=-/bin/sh -c '/usr/bin/test ! -f /tmp/richcore-hwreset-mark && /bin/grep -q pwr_on_status=pwr_on_by_HW_reboot /proc/cmdline && /usr/sbin/rich-core-dumper --name=HwReboot --signal=$RANDOM'
+ExecStartPre=-/bin/sh -c '/usr/bin/test ! -f /tmp/richcore-hwreset-mark && /bin/grep -q pwr_on_status=pwr_on_by_HW_ /proc/cmdline && /usr/sbin/rich-core-dumper --name=HwReboot --signal=$RANDOM'
 ExecStartPre=-/bin/touch /tmp/richcore-hwreset-mark
 ExecStart=/bin/sh -c "/sbin/sysctl -w kernel.core_pattern=\'|/usr/sbin/rich-core-dumper --pid=%%p --signal=%%s --name=%%e\'"
 

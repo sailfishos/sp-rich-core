@@ -147,6 +147,12 @@ _check_core_location()
 # Information collection functions
 #
 
+_section_kernel_parameters()
+{
+  _print_header kernel_parameters
+  cat /proc/cmdline
+}
+
 _section_pstree()
 {
   _print_command_with_header /usr/bin/pstree -Uup
@@ -267,6 +273,16 @@ _dump_logs()
   _print_file_with_header /var/log/syslog.old
   _print_file_with_header /var/log/systemboot.log
   _print_file_with_header /var/systemlog/pmlog/pmlog.log
+}
+
+_dump_proc_lastlog()
+{
+  if [ -d /proc/lastlog ]; then
+    for file in /proc/lastlog/*; do
+      _print_header proc-lastlog-$(basename $file)
+      cat $file
+    done
+  fi
 }
 
 _section_rich_core_errors()
@@ -615,6 +631,7 @@ if [ -z "${IS_OOPSLOG}" ] && [ "${core_pid}" -gt 0 ]; then
   _section_proc_smaps
 fi
 
+_section_kernel_parameters
 _section_pstree
 _section_date
 _section_software_version
@@ -636,6 +653,9 @@ _section_user_message
 
 if [ x"$INCLUDE_SYSLOG" = x"true" ]; then
   _dump_logs
+fi
+if [ "${core_name}" == "HwReboot" ]; then
+  _dump_proc_lastlog
 fi
 if [ x"$INCLUDE_PKGLIST" = x"true" ]; then
   _section_packagelist
