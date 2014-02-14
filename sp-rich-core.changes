@@ -1,3 +1,8 @@
+* Thu Feb 14 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.72.1
+- On abnormal reboot, add files in /proc/lastlog/* into crash report
+- Add kernel parameters into crash report
+- Detect HW reboot just by pwr_on_by_HW_ status prefix
+
 * Thu Jan 16 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.72.0
 - Create crash report after HW reboot
 
