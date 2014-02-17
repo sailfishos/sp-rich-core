@@ -1,3 +1,6 @@
+* Thu Feb 17 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.72.2
+- Add 'ps aux' into crash report
+
 * Thu Feb 14 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.72.1
 - On abnormal reboot, add files in /proc/lastlog/* into crash report
 - Add kernel parameters into crash report
