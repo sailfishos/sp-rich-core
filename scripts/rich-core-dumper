@@ -221,6 +221,11 @@ _section_proc2csv()
   _print_command_with_header /usr/bin/proc2csv
 }
 
+_section_ps()
+{
+  _print_command_with_header /bin/ps aux
+}
+
 _section_testcase_uuid()
 {
   _print_header testcase_uuid
@@ -631,6 +636,7 @@ if [ -z "${IS_OOPSLOG}" ] && [ "${core_pid}" -gt 0 ]; then
   _section_proc_smaps
 fi
 
+_section_ps
 _section_kernel_parameters
 _section_pstree
 _section_date
