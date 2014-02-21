@@ -1,3 +1,6 @@
+* Fri Feb 21 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.72.3
+- Distinguish spontaneous HW reboot reports by name
+
 * Thu Feb 17 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.72.2
 - Add 'ps aux' into crash report
 
