@@ -2,7 +2,7 @@ EXTRA_DIST = autogen.sh
 
 INCLUDES = $(DEPS_CFLAGS)
 
-SUBDIRS = rich-core-extract core-reducer scripts tests
+SUBDIRS = rich-core-extract core-reducer scripts tests sysctl
 DIST_SUBDIRS = $(SUBDIRS)
 
 MAINTAINERCLEANFILES = Makefile.in

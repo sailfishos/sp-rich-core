@@ -42,7 +42,7 @@ if test "$use_armregs" = "yes"; then
 fi
 
 # The standard output files to create
-AC_CONFIG_FILES([Makefile rich-core-extract/Makefile core-reducer/Makefile scripts/Makefile tests/Makefile])
+AC_CONFIG_FILES([Makefile rich-core-extract/Makefile core-reducer/Makefile scripts/Makefile tests/Makefile sysctl/Makefile])
 
 #!!!!Put in package checks that to ensure that the libcppunit and lcov are
 #!!!!Both in place before trying to use them.
