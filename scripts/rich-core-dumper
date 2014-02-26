@@ -660,7 +660,7 @@ _section_user_message
 if [ x"$INCLUDE_SYSLOG" = x"true" ]; then
   _dump_logs
 fi
-if [ "${core_name}" == "HwReboot" ]; then
+if [ "${core_name}" == "HWreboot" ]; then
   _dump_proc_lastlog
 fi
 if [ x"$INCLUDE_PKGLIST" = x"true" ]; then
