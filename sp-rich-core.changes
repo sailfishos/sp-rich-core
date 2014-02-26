@@ -1,3 +1,6 @@
+* Wed Feb 26 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.72.5
+- Fix HWreboot core name
+
 * Mon Feb 24 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.72.4
 - Set the core dump mode for setuid or otherwise protected binaries
 
