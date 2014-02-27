@@ -499,12 +499,13 @@ if ! _check_core_location; then
   exit
 fi
 
-network_type=$(su nemo -c 'cat /run/user/100000/state/namespaces/Internet/NetworkType')
+network_type=$(su nemo -c 'cat /run/state/namespaces/Internet/NetworkType')
 has_suitable_network_connection=false
 
-# When no connection or on USB network, statefs reports empty string so accept
-# it here as well as wifi.
-if [ x"$network_type" = x"wifi" ] || [ x"$network_type" = x"" ]; then
+# Don't download anything when on a network that charges for data.
+# Valid NetworkType values are from src/connman/provider_connman.cpp in
+# Nemo Mobile's statefs-providers.
+if [ x"$network_type" = x"WLAN" -o x"$network_type" = x"ethernet" ]; then
   has_suitable_network_connection=true
 fi
 
