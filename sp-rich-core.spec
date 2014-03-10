@@ -1,6 +1,6 @@
 Name: sp-rich-core
 
-Version: 1.72.5
+Version: 1.72.6
 Release: 1
 Summary: Create rich core dumps
 Group: Development/Tools
