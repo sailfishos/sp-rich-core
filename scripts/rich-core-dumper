@@ -255,7 +255,6 @@ _section_repositories()
 {
   _print_header repositories
   ssu lr
-  pkcon -p repo-list | grep '^ '
 }
 
 _dump_logs()
