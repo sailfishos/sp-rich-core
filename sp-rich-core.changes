@@ -1,4 +1,8 @@
-* Mon Mar 11 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.72.7
+* Tue Mar 11 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.72.8
+- Set kernel.core_pattern in sysctl/sp-rich-core.conf
+- Let sysctl load /usr/lib/sysctl.d/sp-rich-core.conf in %post
+
+* Tue Mar 11 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.72.7
 - Don't call pkcon -p repo-list
 - Avoid using pkcon when running RPM scriptlet
 
