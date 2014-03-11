@@ -94,5 +94,6 @@ make install DESTDIR=%{buildroot}
 make distclean
 
 %post
+/sbin/sysctl -p /usr/lib/sysctl.d/sp-rich-core.conf
 systemctl daemon-reload
 systemctl start rich-core-pattern.service
