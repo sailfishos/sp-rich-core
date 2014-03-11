@@ -1,18 +1,16 @@
 #!/bin/sh
 
+RICH_CORE_SYSCTL_CONF=/usr/lib/sysctl.d/sp-rich-core.conf
+
 _disable_rich_core_dumper()
 {
-  # disable rich core dumper
-  if [ -e /lib/systemd/system/rich-core-pattern.service ]; then
-    systemctl stop rich-core-pattern.service
-  fi
+  /sbin/sysctl -w kernel.core_pattern=core
 }
 
 _enable_rich_core_dumper()
 {
-  # enable
-  if [ -e /lib/systemd/system/rich-core-pattern.service ]; then
-    systemctl start rich-core-pattern.service
+  if [ -e $RICH_CORE_SYSCTL_CONF ]; then
+    /sbin/sysctl -p $RICH_CORE_SYSCTL_CONF
   fi
 }
 

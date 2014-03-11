@@ -1,5 +1,5 @@
 [Unit]
-Description=Rich core pattern
+Description=Collection of HWreset rich cores
 Requires=local-fs.target
 After=local-fs.target
 
@@ -15,9 +15,7 @@ ExecStartPre=-/bin/sh -c '/usr/bin/test ! -f /tmp/richcore-hwreset-mark && \
 	STATUS=$(/bin/sed -n "s|.*pwr_on_status=pwr_on_by_HW_\([^ ]*\).*|HW\1|p" /proc/cmdline) && \
 	/usr/bin/test -n "$STATUS" && \
 	/usr/sbin/rich-core-dumper --name=$STATUS --signal=$RANDOM'
-ExecStartPre=-/bin/touch /tmp/richcore-hwreset-mark
-
-ExecStart=/bin/sh -c "/sbin/sysctl -w kernel.core_pattern=\'|/usr/sbin/rich-core-dumper --pid=%%p --signal=%%s --name=%%e\'"
+ExecStart=/bin/touch /tmp/richcore-hwreset-mark
 
 [Install]
 WantedBy=basic.target
