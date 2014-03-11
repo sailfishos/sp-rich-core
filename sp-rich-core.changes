@@ -1,3 +1,7 @@
+* Mon Mar 11 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.72.7
+- Don't call pkcon -p repo-list
+- Avoid using pkcon when running RPM scriptlet
+
 * Mon Mar 10 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.72.6
 - Update NetworkType retrieval from statefs
 
