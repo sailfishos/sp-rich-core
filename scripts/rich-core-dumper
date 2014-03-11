@@ -343,7 +343,12 @@ _check_and_install()
 {
   (which $1 >/dev/null) && return 0
 
+  # If a running rpm scriptlet is detected, we don't execute pkcon. Application
+  # crashing inside that script may cause a deadlock since packagekitd would be
+  # waiting until scriptlet finishes, which would be waiting for failed program
+  # to finish dumping core, which would be waiting for pkcon to finish.
   [ $has_suitable_network_connection = "true" ] && \
+    ! (ps ax | grep '[/]bin/sh /var/tmp/rpm-tmp.' >/dev/null) && \
     (pkcon --noninteractive install $1 >/dev/null)
 
   return $?
