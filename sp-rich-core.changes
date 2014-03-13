@@ -1,3 +1,6 @@
+* Thu Mar 13 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.72.9
+- Limit journalctl dump to current boot
+
 * Tue Mar 11 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.72.8
 - Set kernel.core_pattern in sysctl/sp-rich-core.conf
 - Let sysctl load /usr/lib/sysctl.d/sp-rich-core.conf in %post
