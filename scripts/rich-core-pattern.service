@@ -17,6 +17,9 @@ ExecStart=/bin/sh -c ' \
 	STATUS=$(/bin/sed -n "s|.*pwr_on_status=pwr_on_by_HW_\([^ ]*\).*|HW\1|p" /proc/cmdline) && \
 	/usr/bin/test -n "$STATUS" && \
 	/usr/sbin/rich-core-dumper --name=$STATUS --signal=$RANDOM'
+
+ExecStart=/usr/libexec/rich-core-check-oneshot
+
 ExecStart=/bin/touch /tmp/richcore-early-collect-mark
 
 [Install]
