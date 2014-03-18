@@ -27,6 +27,7 @@ Tool that creates rich core dumps, which include information about system state 
 /lib/systemd/system/basic.target.wants/rich-core-pattern.service
 /usr/lib/sysctl.d/sp-rich-core.conf
 %{_sbindir}/rich-core-dumper
+%{_libexecdir}/rich-core-check-oneshot
 /var/cache/core-dumps
 
 %package postproc
