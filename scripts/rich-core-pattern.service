@@ -3,15 +3,17 @@ Description=Collection of HWreset rich cores
 Requires=local-fs.target
 After=local-fs.target
 
+ConditionFileIsExecutable=/usr/sbin/rich-core-dumper
+ConditionPathIsDirectory=/var/cache/core-dumps
+ConditionPathExists=!/tmp/richcore-hwreset-mark
+
 [Service]
 Type=oneshot
 RemainAfterExit=yes
-ExecStartPre=/usr/bin/test -x /usr/sbin/rich-core-dumper
-ExecStartPre=/usr/bin/test -d /var/cache/core-dumps
 
 # Test whether last reboot was caused by a hardware event and if so, gather the
 # log files into a crash report.
-ExecStartPre=-/bin/sh -c '/usr/bin/test ! -f /tmp/richcore-hwreset-mark && \
+ExecStart=/bin/sh -c ' \
 	STATUS=$(/bin/sed -n "s|.*pwr_on_status=pwr_on_by_HW_\([^ ]*\).*|HW\1|p" /proc/cmdline) && \
 	/usr/bin/test -n "$STATUS" && \
 	/usr/sbin/rich-core-dumper --name=$STATUS --signal=$RANDOM'
