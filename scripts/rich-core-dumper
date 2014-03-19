@@ -545,6 +545,10 @@ if [ "${core_pid}" != "0" -a \( "${REDUCE_CORE}" = "true" -o "${INCLUDE_STACK_TR
     omit_core=true
     logger "rich-core: approximate of core size is greater than ${CORE_SIZE_LIMIT} kB - not dumping"
   fi
+
+  if [ "${omit_core}" = "true" ]; then
+    cat > /dev/null
+  fi
 fi
 
 # figure out the executable
