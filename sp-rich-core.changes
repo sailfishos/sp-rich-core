@@ -1,3 +1,9 @@
+* Wed Mar 19 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.73.0
+- Use proper Condition* options in rich-core-pattern service file
+- Update description and marker file name in rich-core-pattern.service
+- Dump system logs when failed oneshot scripts are found
+- Clean up leftover temporary files from CORE_LOCATION
+
 * Thu Mar 13 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.72.9
 - Limit journalctl dump to current boot
 
