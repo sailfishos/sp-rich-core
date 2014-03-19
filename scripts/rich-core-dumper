@@ -643,7 +643,6 @@ fi
 if [ -z "${IS_OOPSLOG}" ] && [ "${core_pid}" -gt 0 ]; then
   _section_cmdline
   _section_exe
-  _section_exe_package
   _section_ls_proc
   _section_proc_fd
   _section_proc_maps
@@ -658,7 +657,6 @@ _section_software_version
 _section_df
 _section_ifconfig
 _section_extra_files
-_section_ssu_status
 
 if [ -z "${IS_OOPSLOG}" ]; then
     _section_slabinfo
@@ -671,18 +669,11 @@ fi
 
 _section_user_message
 
-if [ x"$INCLUDE_SYSLOG" = x"true" ]; then
-  _dump_logs
-fi
 if [ "${core_name}" == "HWreboot" ]; then
   _dump_proc_lastlog
 fi
 if [ "${core_name}" = "OneshotFailure" ]; then
   _section_failed_oneshot_scripts
-fi
-if [ x"$INCLUDE_PKGLIST" = x"true" ]; then
-  _section_packagelist
-  _section_repositories
 fi
 if [ x"$NO_SECTION_HEADER" = x"true" -a "${omit_core}" != "true" ]; then
 cat
@@ -714,6 +705,22 @@ elif [ "${omit_core}" != "true" ] && [ "${core_pid}" -gt 0 ]; then
     rm "${originalcorefilename}"
   fi
 fi
+
+_section_ssu_status
+
+if [ "${core_pid}" -gt 0 ]; then
+  _section_exe_package
+fi
+
+if [ x"$INCLUDE_SYSLOG" = x"true" ]; then
+  _dump_logs
+fi
+
+if [ x"$INCLUDE_PKGLIST" = x"true" ]; then
+  _section_packagelist
+  _section_repositories
+fi
+
 _section_rich_core_errors
 ) | lzop > ${rcorebasename}.tmp
 
