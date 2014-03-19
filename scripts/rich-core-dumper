@@ -489,6 +489,9 @@ _parse_arguments $*
 
 logger "rich-core: arguments: $*"
 
+# Clean up any leftover temporary files last modified more than two days ago.
+find "$CORE_LOCATION" -maxdepth 1 -mtime +2 -name *.tmp -delete
+
 # If dumping is disabled in settings, don't bother going further. However, if
 # this dump was invoked with PID 0, meaning only logs are collected, the setting
 # is overriden.
