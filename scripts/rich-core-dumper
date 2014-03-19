@@ -483,6 +483,13 @@ _reduce_core()
   fi
 }
 
+_log_msg()
+{
+  # We run logger on background so that the script doesn't get stuck if system
+  # journal is not accessible.
+  logger "$1" &
+}
+
 #
 # Main program
 #
@@ -493,7 +500,7 @@ _obtain_configuration
 
 _parse_arguments $*
 
-logger "rich-core: arguments: $*"
+_log_msg "rich-core: arguments: $*"
 
 # Clean up any leftover temporary files last modified more than two days ago.
 find "$CORE_LOCATION" -maxdepth 1 -mtime +2 -name *.tmp -delete
@@ -508,7 +515,7 @@ fi
 
 if ! _check_core_location; then
   [ $core_pid -eq 0 ] || cat > /dev/null
-  logger "rich-core: no core location or not enough free space - not dumping"
+  _log_msg "rich-core: no core location or not enough free space - not dumping"
   exit
 fi
 
@@ -528,7 +535,7 @@ if [ "${core_pid}" != "0" -a \( "${REDUCE_CORE}" = "true" -o "${INCLUDE_STACK_TR
   _get_vmsizes ${core_pid}
 
   if [ -z "${vmsize}" -o -z "${vmlib}" -o -z "${vmexe}" ]; then
-    logger "rich-core: could not get virtual memory information of process - not dumping"
+    _log_msg "rich-core: could not get virtual memory information of process - not dumping"
     cat > /dev/null
     exit
   fi
@@ -539,11 +546,11 @@ if [ "${core_pid}" != "0" -a \( "${REDUCE_CORE}" = "true" -o "${INCLUDE_STACK_TR
   if [ $((${freespace} - ${coresize_approx})) -lt 50000 ]; then
     # not enough free space for input core file + required extra 50M
     omit_core=true
-    logger "rich-core: dumping core might fill up disk - not dumping"
+    _log_msg "rich-core: dumping core might fill up disk - not dumping"
   elif [ ${coresize_approx} -gt ${CORE_SIZE_LIMIT} ]; then
     # approximated size of input core file is greater than the limit
     omit_core=true
-    logger "rich-core: approximate of core size is greater than ${CORE_SIZE_LIMIT} kB - not dumping"
+    _log_msg "rich-core: approximate of core size is greater than ${CORE_SIZE_LIMIT} kB - not dumping"
   fi
 
   if [ "${omit_core}" = "true" ]; then
