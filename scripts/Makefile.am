@@ -6,3 +6,6 @@ install-exec-local:
 install-data-local:
 	install -m 644 ./rich-core-pattern.service $(DESTDIR)/lib/systemd/system
 	ln -s ../rich-core-pattern.service $(DESTDIR)/lib/systemd/system/basic.target.wants/rich-core-pattern.service
+
+libexec_SCRIPTS = \
+	rich-core-check-oneshot

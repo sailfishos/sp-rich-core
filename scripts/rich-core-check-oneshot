@@ -1,0 +1,29 @@
+#!/bin/sh
+
+ONESHOTS_FILE=/var/cache/core-dumps/oneshots
+
+IFS=$'\n'
+
+# Find all files and file symlinks in oneshot directories. We ignore symlinked
+# directories (e.g. directory 'default' may have a symlink named after some user
+# ID).
+ONESHOTS=($(find -L /etc/oneshot.d/ \( -xtype l -a -type d \) -prune -o -type f -print))
+
+PREVIOUS_ONESHOTS=($(cat $ONESHOTS_FILE))
+
+for oneshot in ${ONESHOTS[@]}; do
+	is_new=0
+	for oldshot in ${PREVIOUS_ONESHOTS[@]}; do
+		if [ "$oneshot" = "$oldshot" ]; then
+			is_new=1
+			break
+		fi
+	done
+	if [ $is_new -eq 0 ]; then
+		logger "Found failed oneshot script; dumping log files."
+		/usr/sbin/rich-core-dumper --name=OneshotFailure --signal=$RANDOM
+		break
+	fi
+done
+
+echo "${ONESHOTS[*]}" > "$ONESHOTS_FILE"
