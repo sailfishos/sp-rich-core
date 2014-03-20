@@ -21,9 +21,8 @@ for oneshot in ${ONESHOTS[@]}; do
 	done
 	if [ $is_new -eq 0 ]; then
 		logger "Found failed oneshot script; dumping log files."
+		echo "${ONESHOTS[*]}" > "$ONESHOTS_FILE"
 		/usr/sbin/rich-core-dumper --name=OneshotFailure --signal=$RANDOM
 		break
 	fi
 done
-
-echo "${ONESHOTS[*]}" > "$ONESHOTS_FILE"
