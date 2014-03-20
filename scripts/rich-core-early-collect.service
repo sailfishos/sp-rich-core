@@ -1,7 +1,7 @@
 [Unit]
 Description=Collects system logs early after boot if error conditions are detected.
 Requires=local-fs.target
-After=local-fs.target
+After=init-done.service oneshot-root-late.service
 
 ConditionFileIsExecutable=/usr/sbin/rich-core-dumper
 ConditionPathIsDirectory=/var/cache/core-dumps
@@ -23,4 +23,4 @@ ExecStart=/usr/libexec/rich-core-check-oneshot
 ExecStart=/bin/touch /tmp/richcore-early-collect-mark
 
 [Install]
-WantedBy=basic.target
+WantedBy=graphical.target
