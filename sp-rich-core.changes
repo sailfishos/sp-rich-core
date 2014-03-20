@@ -1,3 +1,9 @@
+* Thu Mar 20 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.73.2
+- Run commands involving writing to journal after core is dumped
+- Run logger in background
+- When core is being omitted, dump it to /dev/null
+- Hold a wake lock while processing a core
+
 * Thu Mar 20 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.73.1
 - Add list of failed oneshot scripts into crash report
 - Ignore error when $ONESHOTS_FILE doesn't exist
