@@ -1,3 +1,8 @@
+* Thu Mar 20 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.73.1
+- Add list of failed oneshot scripts into crash report
+- Ignore error when $ONESHOTS_FILE doesn't exist
+- Don't fail rich-core-pattern.service when no HW reboot happened
+
 * Wed Mar 19 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.73.0
 - Use proper Condition* options in rich-core-pattern service file
 - Update description and marker file name in rich-core-pattern.service
