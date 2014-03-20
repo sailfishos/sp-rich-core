@@ -289,6 +289,12 @@ _dump_proc_lastlog()
   fi
 }
 
+_section_failed_oneshot_scripts()
+{
+  _print_header failed_oneshot_scripts
+  cat "${CORE_LOCATION}/oneshots"
+}
+
 _section_rich_core_errors()
 {
   if [ "${omit_core}" = "true" ] || [ "$RICH_CORE_ERRORS" != "" ]; then
@@ -670,6 +676,9 @@ if [ x"$INCLUDE_SYSLOG" = x"true" ]; then
 fi
 if [ "${core_name}" == "HWreboot" ]; then
   _dump_proc_lastlog
+fi
+if [ "${core_name}" = "OneshotFailure" ]; then
+  _section_failed_oneshot_scripts
 fi
 if [ x"$INCLUDE_PKGLIST" = x"true" ]; then
   _section_packagelist

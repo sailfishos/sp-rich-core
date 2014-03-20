@@ -9,7 +9,7 @@ IFS=$'\n'
 # ID).
 ONESHOTS=($(find -L /etc/oneshot.d/ \( -xtype l -a -type d \) -prune -o -type f -print))
 
-PREVIOUS_ONESHOTS=($(cat $ONESHOTS_FILE))
+PREVIOUS_ONESHOTS=($(cat $ONESHOTS_FILE 2>/dev/null))
 
 for oneshot in ${ONESHOTS[@]}; do
 	is_new=0
@@ -21,9 +21,8 @@ for oneshot in ${ONESHOTS[@]}; do
 	done
 	if [ $is_new -eq 0 ]; then
 		logger "Found failed oneshot script; dumping log files."
+		echo "${ONESHOTS[*]}" > "$ONESHOTS_FILE"
 		/usr/sbin/rich-core-dumper --name=OneshotFailure --signal=$RANDOM
 		break
 	fi
 done
-
-echo "${ONESHOTS[*]}" > "$ONESHOTS_FILE"
