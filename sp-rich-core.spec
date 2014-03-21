@@ -23,8 +23,8 @@ Tool that creates rich core dumps, which include information about system state 
 
 %files
 %defattr(-,root,root,-)
-/lib/systemd/system/rich-core-pattern.service
-/lib/systemd/system/basic.target.wants/rich-core-pattern.service
+/lib/systemd/system/rich-core-early-collect.service
+/lib/systemd/system/graphical.target.wants/rich-core-early-collect.service
 /usr/lib/sysctl.d/sp-rich-core.conf
 %{_sbindir}/rich-core-dumper
 %{_libexecdir}/rich-core-check-oneshot
@@ -85,7 +85,6 @@ make
 %install
 mkdir -p %{buildroot}/%{_sbindir}
 mkdir -p %{buildroot}/lib/systemd/system
-mkdir -p %{buildroot}/lib/systemd/system/basic.target.wants
 mkdir -p %{buildroot}/usr/lib/sysctl.d
 mkdir -m 777 -p %{buildroot}/var/cache/core-dumps
 mkdir -p %{buildroot}/%{_datadir}/%{name}-tests
@@ -97,4 +96,4 @@ make distclean
 %post
 /sbin/sysctl -p /usr/lib/sysctl.d/sp-rich-core.conf
 systemctl daemon-reload
-systemctl start rich-core-pattern.service
+systemctl start rich-core-early-collect.service
