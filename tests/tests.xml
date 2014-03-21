@@ -10,9 +10,9 @@
             <case name="core_pattern-file-string-set-correctly" type="Integration" level="Feature">
               <step expected_result="0">[ "|/usr/sbin/rich-core-dumper --pid=%p --signal=%s --name=%e" = "$(cat /proc/sys/kernel/core_pattern)" ]</step>
             </case>
-            <case name="Rich-core-pattern-script-installed" type="Integration" level="Feature">
-              <step expected_result="0">[ -f /lib/systemd/system/rich-core-pattern.service ]</step>
-              <step expected_result="0">[ -f /lib/systemd/system/basic.target.wants/rich-core-pattern.service ]</step>
+            <case name="Rich-core-early-collect-script-installed" type="Integration" level="Feature">
+              <step expected_result="0">[ -f /lib/systemd/system/rich-core-early-collect.service ]</step>
+              <step expected_result="0">[ -f /lib/systemd/system/graphical.target.wants/rich-core-early-collect.service ]</step>
             </case>
             <case name="Rich-core-dumperscript-installed" type="Integration" level="Feature">
               <step expected_result="0">[ -x /usr/sbin/rich-core-dumper ]</step>
