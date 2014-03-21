@@ -1,3 +1,7 @@
+* Thu Mar 21 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.73.3
+- Rename rich-core-pattern.service -> rich-core-early-collect.service
+- Ensure all oneshot scripts were run before early log collection
+
 * Thu Mar 20 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.73.2
 - Run commands involving writing to journal after core is dumped
 - Run logger in background
