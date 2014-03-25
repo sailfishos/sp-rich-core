@@ -20,6 +20,10 @@ ExecStart=-/bin/sh -c ' \
 
 ExecStart=/usr/libexec/rich-core-check-oneshot
 
+ExecStart=-/bin/sh -c ' \
+	grep "Shutdown:" /var/log/systemboot.log | tail -n1 | grep -qi "overheat" && \
+	/usr/sbin/rich-core-dumper --name=OverheatShutdown --signal=$RANDOM'
+
 ExecStart=/bin/touch /tmp/richcore-early-collect-mark
 
 [Install]
