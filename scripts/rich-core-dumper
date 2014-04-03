@@ -249,7 +249,7 @@ _section_user_message()
 _section_packagelist()
 {
   _print_header packagelist
-  rpm -qa
+  _run_with_timeout 5 rpm -qa
 }
 
 _section_repositories()
@@ -333,8 +333,8 @@ _section_ssu_status()
 
 _section_exe_package()
 {
-	_print_header exe-package
-	rpmquery -f ${core_exe}
+  _print_header exe-package
+  _run_with_timeout 5 rpmquery -f ${core_exe}
 }
 
 _get_vmsizes()
@@ -489,6 +489,27 @@ _log_msg()
   # We run logger on background so that the script doesn't get stuck if system
   # journal is not accessible.
   logger "$1" &
+}
+
+_run_with_timeout()
+{
+  local timeout=$1
+  local cmd=$2
+  shift 2
+
+  ($cmd $@) &
+  local pid=$!
+
+  (sleep $timeout && kill -KILL $pid) 2>/dev/null &
+  local watcher=$!
+
+  wait $pid
+  pkill -HUP -P $watcher
+
+  if wait $watcher; then
+    # $watcher process returns zero exit status if timeout did occur.
+    echo "$cmd terminated after $timeout seconds." 
+  fi
 }
 
 #
