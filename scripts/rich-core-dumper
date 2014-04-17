@@ -543,7 +543,7 @@ if ! _check_core_location; then
   exit
 fi
 
-network_type=$(su nemo -c 'cat /run/state/namespaces/Internet/NetworkType')
+network_type=$(cat /run/state/namespaces/Internet/NetworkType)
 has_suitable_network_connection=false
 
 # Don't download anything when on a network that charges for data.
