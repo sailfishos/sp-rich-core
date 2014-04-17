@@ -1,3 +1,6 @@
+* Thu Apr 17 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.73.6
+- Don't su to 'nemo' when checking network_type
+
 * Thu Apr 03 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.73.5
 - Use timeout when invoking rpm
 
