@@ -1,3 +1,6 @@
+* Tue Apr 22 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.73.7
+- Always create crash report when invoked from quick-feedback
+
 * Thu Apr 17 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.73.6
 - Don't su to 'nemo' when checking network_type
 
