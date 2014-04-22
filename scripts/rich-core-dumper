@@ -529,10 +529,11 @@ _log_msg "rich-core: arguments: $*"
 # Clean up any leftover temporary files last modified more than two days ago.
 find "$CORE_LOCATION" -maxdepth 1 -mtime +2 -name *.tmp -delete
 
-# If dumping is disabled in settings, don't bother going further. However, if
-# this dump was invoked with PID 0, meaning only logs are collected, the setting
-# is overriden.
-if [ x"${coredumping}" = x"false" -a ! $core_pid -eq 0 ]; then
+# If dumping is disabled in settings, don't bother going further. However, the
+# setting is overriden if this dump was invoked with PID 0, meaning only logs
+# are collected, or the process was killed by SIGQUIT, which means user
+# explicitly requested its termination from quick-feedback application.
+if [ x"${coredumping}" = x"false" -a ! \( $core_pid -eq 0 -o $core_sig -eq 3 \) ]; then
   cat > /dev/null
   exit
 fi
