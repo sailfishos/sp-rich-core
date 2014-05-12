@@ -32,6 +32,7 @@ set +o posix
 SW_VERSION_FILE=/etc/os-release
 CORE_LOCATION=/var/cache/core-dumps
 CORE_SIZE_LIMIT=1000000		# kB
+CORE_REDUCE_THRESHOLD=10000	# kB
 WAKE_LOCK_TIMEOUT=120 # s
 
 #
@@ -476,10 +477,16 @@ _capture_stacktrace()
 
 _reduce_core()
 {
+  local original_core_size=$(du -b "$originalcorefilename" | awk '{ print $1 }')
+  if [ $original_core_size -lt $(($CORE_REDUCE_THRESHOLD * 1000)) ]; then
+    _log_msg "Core size ${original_core_size}B below threshold; not reducing."
+    cat $originalcorefilename;
+    return;
+  fi
+
   core-reducer -i "$originalcorefilename" -o /dev/stdout -e $core_exe
   retval=$?
   if [ $retval != 0 ]; then
-    original_core_size=$(du -b "$originalcorefilename" | awk '{ print $1 }')
     RICH_CORE_ERRORS="${RICH_CORE_ERRORS}core-reducer exited with value $retval, core file of size ${original_core_size}B is likely truncated\n"
   fi
 }
