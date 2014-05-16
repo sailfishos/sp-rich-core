@@ -523,6 +523,11 @@ _run_with_timeout()
 # Main program
 #
 
+# Don't dump cores when OS is updating.
+if [ -e /tmp/os-update-running ]; then
+  exit
+fi
+
 echo "rich-core-dumper $(($WAKE_LOCK_TIMEOUT * 1000000000))" > /sys/power/wake_lock
 
 export PATH
