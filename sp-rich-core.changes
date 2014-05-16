@@ -1,3 +1,6 @@
+* Fri May 16 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.73.9
+- Don't dump cores when OS is updating
+
 * Mon May 12 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.73.8
 - Don't reduce cores below 10MB
 
