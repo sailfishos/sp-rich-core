@@ -732,7 +732,7 @@ elif [ "${omit_core}" != "true" ] && [ "${core_pid}" -gt 0 ]; then
   # By default core is read from stdin.
   originalcorefilename=-
   if [ x"$REDUCE_CORE" = x"true" ] || [ x"$INCLUDE_STACK_TRACE" = x"true" ]; then
-    originalcorefilename=${rcorebasename}.core.in
+    originalcorefilename=${rcorebasename}.core.in.tmp
     cat > ${originalcorefilename}
   fi
 
@@ -749,8 +749,12 @@ elif [ "${omit_core}" != "true" ] && [ "${core_pid}" -gt 0 ]; then
     _capture_stacktrace
   fi
 
-  if [ x"$KEEP_UNSTRIPPED_CORE" != x"true" ] && [ -f "${originalcorefilename}" ]; then
-    rm "${originalcorefilename}"
+  if [ -f "${originalcorefilename}" ]; then
+    if [ x"$KEEP_UNSTRIPPED_CORE" = x"true" ]; then
+      mv "${originalcorefilename}" "${originalcorefilename%.tmp}"
+    else
+      rm "${originalcorefilename}"
+    fi
   fi
 fi
 
