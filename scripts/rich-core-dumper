@@ -556,7 +556,10 @@ if ! _check_core_location; then
   exit
 fi
 
-network_type=$(cat /run/state/namespaces/Internet/NetworkType)
+if [ "$core_name" != "statefs" ]; then
+  network_type=$(cat /run/state/namespaces/Internet/NetworkType)
+fi
+
 has_suitable_network_connection=false
 
 # Don't download anything when on a network that charges for data.
