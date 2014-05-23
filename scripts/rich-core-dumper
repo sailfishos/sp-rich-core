@@ -189,7 +189,7 @@ _section_ifconfig()
 
 _section_df()
 {
-  _print_command_with_header /bin/df
+  _print_command_with_header /bin/df -x fuse.statefs
 }
 
 _section_ls_proc()
