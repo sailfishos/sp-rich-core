@@ -1,3 +1,7 @@
+* Mon May 26 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.73.11
+- Exclude statefs from an output of /bin/df
+- Check that statefs haven't crashed before accessing it
+
 * Tue May 20 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.73.10
 - Remove *.core.in files if user didn't intend to keep them
 - Don't start rich-core-early-collect.service in %post
