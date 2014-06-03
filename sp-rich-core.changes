@@ -1,3 +1,6 @@
+* Tue Jun 03 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.73.12
+- Remove leftover temp files when package is being uninstalled
+
 * Mon May 26 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.73.11
 - Exclude statefs from an output of /bin/df
 - Check that statefs haven't crashed before accessing it
