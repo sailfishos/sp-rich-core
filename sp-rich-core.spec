@@ -95,3 +95,8 @@ make distclean
 
 %post
 /sbin/sysctl -p /usr/lib/sysctl.d/sp-rich-core.conf
+
+%postun
+if [ "$1" = 0 ]; then
+  rm -f /var/cache/core-dumps/{*.tmp,oneshots}
+fi
