@@ -247,10 +247,16 @@ _section_user_message()
   fi
 }
 
+_pkcon_query_installed()
+{
+  _run_with_timeout 30 pkcon --plain --noninteractive --filter=installed $@ \
+    | awk '/^Installed / {print $2}'
+}
+
 _section_packagelist()
 {
   _print_header packagelist
-  _run_with_timeout 5 rpm -qa
+  _pkcon_query_installed get-packages
 }
 
 _section_repositories()
@@ -335,7 +341,7 @@ _section_ssu_status()
 _section_exe_package()
 {
   _print_header exe-package
-  _run_with_timeout 5 rpmquery -f ${core_exe}
+  _pkcon_query_installed search file ${core_exe}
 }
 
 _get_vmsizes()
