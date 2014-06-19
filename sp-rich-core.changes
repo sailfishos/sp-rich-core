@@ -1,3 +1,6 @@
+* Thu Jun 19 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.73.13
+- Use pkcon instead of rpm for package queries
+
 * Tue Jun 03 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.73.12
 - Remove leftover temp files when package is being uninstalled
 
