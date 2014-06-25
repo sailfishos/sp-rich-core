@@ -1,6 +1,6 @@
 Name: sp-rich-core
 
-Version: 1.73.13
+Version: 1.73.14
 Release: 1
 Summary: Create rich core dumps
 Group: Development/Tools
@@ -28,6 +28,7 @@ Tool that creates rich core dumps, which include information about system state 
 /usr/lib/sysctl.d/sp-rich-core.conf
 %{_sbindir}/rich-core-dumper
 %{_libexecdir}/rich-core-check-oneshot
+/usr/lib/startup/preinit/late.d/rich-core-preinit
 /var/cache/core-dumps
 
 %package postproc
