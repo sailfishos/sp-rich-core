@@ -49,6 +49,7 @@ Group: Development/Libraries
 Requires: %{name} = %{version}-%{release}
 Requires: %{name}-postproc = %{version}-%{release}
 Requires: core-reducer = %{version}-%{release}
+Requires: gdb-qml-stacktrace = %{version}-%{release}
 # From mer-qa project
 Requires: blts-tools
 
@@ -71,6 +72,18 @@ Create core dumps that have a reduced size, allowing them to be transported betw
 %files -n core-reducer
 %defattr(-,root,root,-)
 %{_bindir}/core-reducer
+
+%package -n gdb-qml-stacktrace
+Summary: Allows inspecting QML stack traces in gdb
+Group: Development/Tools
+
+%description -n gdb-qml-stacktrace
+A gdb frame filter that prints a QML stack trace in addition to a regular backtrace of a Qt/QML application.
+
+%files -n gdb-qml-stacktrace
+%defattr(-,root,root,-)
+%config %{_sysconfdir}/gdbinit.d/*
+%{_datadir}/gdb/python/gdb/*
 
 %prep
 # Adjusting %%setup since git-pkg unpacks to src/
