@@ -1,3 +1,6 @@
+* Wed Jun 25 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.74.0
+- Add gdb extension for dumping QML stack traces 
+
 * Wed Jun 25 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.73.14
 - Install preinit late plugin to enable core dumps
 
