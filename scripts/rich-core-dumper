@@ -279,7 +279,14 @@ _dump_logs()
 
   _print_command_with_header /bin/journalctl -b
   _print_command_with_header /bin/dmesg
-  _print_command_with_header /system/bin/logcat -d -b main -b radio
+
+  LOGCAT=/system/bin/logcat
+  HYBRIS_LOGCAT=/usr/libexec/droid-hybris$LOGCAT
+  if [ -x $HYBRIS_LOGCAT ]; then
+    LOGCAT=$HYBRIS_LOGCAT
+  fi
+
+  _print_command_with_header $LOGCAT -d -b main -b radio
 
   _print_file_with_header /var/log/syslog
   _print_file_with_header /var/log/syslog.old
