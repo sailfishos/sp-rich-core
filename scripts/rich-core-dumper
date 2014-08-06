@@ -149,6 +149,14 @@ _check_core_location()
 # Information collection functions
 #
 
+_section_battery_info()
+{
+  _print_header battery_info
+  if [ -f /sys/class/power_supply/battery/uevent ]; then
+    cat /sys/class/power_supply/battery/uevent
+  fi
+}
+
 _section_kernel_parameters()
 {
   _print_header kernel_parameters
@@ -715,6 +723,7 @@ fi
 
 _section_ps
 _section_kernel_parameters
+_section_battery_info
 _section_pstree
 _section_date
 _section_software_version
