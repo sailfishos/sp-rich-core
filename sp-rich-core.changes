@@ -1,3 +1,7 @@
+* Wed Aug 06 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.74.1
+- Add SFE adaptation logcat path to sp-rich-core collection script
+- Add battery info to core dump
+
 * Wed Jun 25 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.74.0
 - Add gdb extension for dumping QML stack traces 
 
