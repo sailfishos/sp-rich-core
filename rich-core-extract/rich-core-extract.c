@@ -193,21 +193,18 @@ int main(int argc, char *argv[])
     }
 
     input_fn = argv[1];
+    char* suffix = strstr(input_fn, ".rcore");
+
     if (argc < 3)
     {
-        /* check if filename ends with .rcore or .rcore.lzo */
-        char *suffix = strstr(input_fn, ".rcore");
-
-        if (!suffix || (strcmp(suffix, ".rcore.lzo") && strcmp(suffix, ".rcore")))
+        /* check if filename ends with .rcore, .rcore.lzo or .rcore.gz */
+        if (!suffix || (strcmp(suffix, ".rcore.lzo") && strcmp(suffix, ".rcore.gz") && strcmp(suffix, ".rcore")))
         {
             fprintf(stderr, "please specify output directory\n");
             exit(1);
         }
 
-        if (!strcmp(suffix, ".rcore"))
-            output_dir = strndup( input_fn, strlen(input_fn)-6 );
-        else
-            output_dir = strndup( input_fn, strlen(input_fn)-10 );
+        output_dir = strndup(input_fn, suffix - input_fn);
     }
     else
     {
@@ -251,12 +248,28 @@ int main(int argc, char *argv[])
         exit(1);
     }
 
-    snprintf(buf, 255, "lzop -d -c \"%s\"", input_fn);
-    input_file = popen(buf, "r");
-    if (!input_file)
+    /* Use gunzip if file end with .rcore.gz, otherwise use lzop */
+    if (!strcmp(suffix, ".rcore.gz"))
     {
-        fprintf(stderr, "error forking lzop: %s\n", strerror(errno));
-        exit(1);
+        snprintf(buf, sizeof buf, "gunzip -c \"%s\"", input_fn);
+        input_file = popen(buf, "r");
+
+        if (!input_file)
+        {
+            fprintf(stderr, "error forking gunzip: %s\n", strerror(errno));
+            exit(1);
+        }
+    }
+    else
+    {
+        snprintf(buf, sizeof buf, "lzop -d -c \"%s\"", input_fn);
+        input_file = popen(buf, "r");
+
+        if (!input_file)
+        {
+            fprintf(stderr, "error forking lzop: %s\n", strerror(errno));
+            exit(1);
+        }
     }
 
     extract_rich_core(input_file, output_dir);
