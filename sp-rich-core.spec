@@ -1,6 +1,6 @@
 Name: sp-rich-core
 
-Version: 1.74.1
+Version: 1.74.2
 Release: 1
 Summary: Create rich core dumps
 Group: Development/Tools
@@ -35,6 +35,7 @@ Tool that creates rich core dumps, which include information about system state 
 Summary: Rich core postprocessing
 Group: Development/Tools
 Requires: lzop
+Requires: gzip
 
 %description postproc
 Tools to extract information from rich cores.

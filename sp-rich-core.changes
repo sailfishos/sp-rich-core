@@ -1,3 +1,6 @@
+* Wed Aug 20 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.74.2
+- Add support to extract gz compressed rcore files
+
 * Wed Aug 06 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.74.1
 - Add SFE adaptation logcat path to sp-rich-core collection script
 - Add battery info to core dump
