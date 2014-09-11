@@ -150,7 +150,7 @@ wait $pid
 sleep 4
 
 # get its name
-corename=`_get_core_name`
+corename=`_get_core_name`.$pid
 
 echo "Corename has to be: $corename" 
 
