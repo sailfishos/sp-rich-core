@@ -1,3 +1,6 @@
+* Mon Dec 22 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.74.5
+- Ignore stderr output when asking device model
+
 * Fri Dec 19 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.74.4
 - Fix GCC 4.8 toolchain compilation
 
