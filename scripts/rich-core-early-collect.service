@@ -18,6 +18,11 @@ ExecStart=-/bin/sh -c ' \
 	/usr/bin/test -n "$STATUS" && \
 	/usr/sbin/rich-core-dumper --name=$STATUS --signal=$RANDOM'
 
+ExecStart=-/bin/sh -c ' \
+	STATUS=$(/bin/sed -n "s|.*reset=kernel_wdt\([^ ]*\).*|HWreboot|p" /proc/cmdline) && \
+	/usr/bin/test -n "$STATUS" && \
+	/usr/sbin/rich-core-dumper --name=$STATUS --signal=$RANDOM'
+
 ExecStart=/usr/libexec/rich-core-check-oneshot
 
 ExecStart=-/bin/sh -c ' \
