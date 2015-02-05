@@ -1,3 +1,6 @@
+* Thu Feb 05 2015 Matti Kosola <matti.kosola@jollamobile.com> - 1.74.6
+- Dump panic partition if we get kernel wd reset
+
 * Mon Dec 22 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.74.5
 - Ignore stderr output when asking device model
 
