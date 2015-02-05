@@ -312,6 +312,14 @@ _dump_proc_lastlog()
   fi
 }
 
+_dump_panic_partition()
+{
+  if [ -b /dev/disk/by-partlabel/panic ]; then
+    _print_header panic_partition
+    cat /dev/disk/by-partlabel/panic
+  fi
+}
+
 _section_failed_oneshot_scripts()
 {
   _print_header failed_oneshot_scripts
@@ -744,6 +752,7 @@ _section_user_message
 
 if [ "${core_name}" == "HWreboot" ]; then
   _dump_proc_lastlog
+  _dump_panic_partition
 fi
 if [ "${core_name}" = "OneshotFailure" ]; then
   _section_failed_oneshot_scripts
