@@ -475,10 +475,13 @@ _section_proc_maps()
 
 _download_debuginfo()
 {
-  _print_header debuginfo_download
-  [ $has_suitable_network_connection = "true" ] && \
-    ! (ps ax | grep '[/]bin/sh /var/tmp/rpm-tmp.' >/dev/null) && \
-    (pkcon -p -y refresh; echo $LIBS | xargs rpm -qf | sed -e 's/-[^-]*-[^-]*$/-debuginfo/' | xargs pkcon -p -y install)
+  DEVICE_STATE=$(/usr/sbin/dsmetool -g)
+  if [ x"$DEVICE_STATE" = x"USER" ]; then
+    _print_header debuginfo_download
+    [ $has_suitable_network_connection = "true" ] && \
+      ! (ps ax | grep '[/]bin/sh /var/tmp/rpm-tmp.' >/dev/null) && \
+      (pkcon -p -y refresh; echo $LIBS | xargs rpm -qf | sed -e 's/-[^-]*-[^-]*$/-debuginfo/' | xargs pkcon -p -y install)
+  fi
 }
 
 _capture_stacktrace()
