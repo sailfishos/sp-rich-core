@@ -456,6 +456,7 @@ _section_proc_maps()
     if [ -n "$build_id" ]; then
       echo $lib $build_id
       BUILD_IDS="$BUILD_IDS $build_id"
+      LIBS="$LIBS $lib"
     else
       textaddr=$(readelf --sections $lib \
           | sed -n 's/^[[:space:]]*\[[ 0-9]\+\] \.text[[:space:]]\+[A-Z_]\+[[:space:]]\+[[:xdigit:]]\+ \([[:xdigit:]]\+\) .*$/\1/p')
@@ -475,27 +476,15 @@ _section_proc_maps()
 _download_debuginfo()
 {
   _print_header debuginfo_download
-  for buildid in $BUILD_IDS; do
-    CMD="zypper --non-interactive install -C debuginfo(build-id)=$buildid"
-    echo "-------------------------------------------------------------------"
-    echo "\$$CMD"
-    echo "-------------------------------------------------------------------"
-    $CMD 2>&1
-  done
+  [ $has_suitable_network_connection = "true" ] && \
+    ! (ps ax | grep '[/]bin/sh /var/tmp/rpm-tmp.' >/dev/null) && \
+    (pkcon -p -y refresh; echo $LIBS | xargs rpm -qf | sed -e 's/-[^-]*-[^-]*$/-debuginfo/' | xargs pkcon -p -y install)
 }
 
 _capture_stacktrace()
 {
   if _check_and_install gdb; then
-    if [ x"$DOWNLOAD_DEBUGINFO" = x"true" ] && (_check_and_install zypper); then
-
-      # Disable packagekitd if it is running before we attempt to download
-      # debuginfo packages using zypper.
-      local packagekitd_pid=$(pgrep -x packagekitd)
-      if [ -n "$packagekitd_pid" ]; then
-        kill $packagekitd_pid
-      fi
-
+    if [ x"$DOWNLOAD_DEBUGINFO" = x"true" ]; then
       _download_debuginfo
     fi
 
