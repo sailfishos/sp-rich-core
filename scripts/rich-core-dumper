@@ -152,8 +152,8 @@ _check_core_location()
 _section_battery_info()
 {
   _print_header battery_info
-  if [ -f /sys/class/power_supply/battery/uevent ]; then
-    cat /sys/class/power_supply/battery/uevent
+  if [ -f /sys/class/power_supply/*battery/uevent ]; then
+    cat /sys/class/power_supply/*battery/uevent
   fi
 }
 
