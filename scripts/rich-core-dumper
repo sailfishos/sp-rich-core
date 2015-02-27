@@ -39,6 +39,20 @@ WAKE_LOCK_TIMEOUT=120 # s
 # Helper functions
 #
 
+_read_config_variable()
+{
+  value=$2 
+  if [ -e $system_settings/crash-reporter-privacy.conf ]; then
+    value=$(awk -F "=" "/$1/ {print \$2}" $system_settings/crash-reporter-privacy.conf)
+  fi
+
+  if [ -e $user_settings/crash-reporter-privacy.conf ]; then
+    value=$(awk -F "=" "/$1/ {print \$2}" $user_settings/crash-reporter-privacy.conf)
+  fi
+
+  echo $value
+}
+
 _obtain_configuration()
 {
   # default fallback values, overruled by configuration file if one exists
@@ -46,23 +60,17 @@ _obtain_configuration()
   system_settings=/usr/share/crash-reporter-settings
   user_settings=/home/nemo/.config/crash-reporter-settings
 
-  INCLUDE_CORE=true
-  REDUCE_CORE=true
-  INCLUDE_SYSLOG=true
-  INCLUDE_PKGLIST=true
-  INCLUDE_STACK_TRACE=false
-  DOWNLOAD_DEBUGINFO=false
-  KEEP_UNSTRIPPED_CORE=false
+  coredumping=$(_read_config_variable coredumping false)
+  
+  INCLUDE_CORE=$(_read_config_variable INCLUDE_CORE true)
+  REDUCE_CORE=$(_read_config_variable REDUCE_CORE true)
+  INCLUDE_SYSLOG=$(_read_config_variable INCLUDE_SYSLOG true)
+  INCLUDE_PKGLIST=$(_read_config_variable INCLUDE_PKGLIST true)
+  INCLUDE_STACK_TRACE=$(_read_config_variable INCLUDE_STACK_TRACE false)
+  DOWNLOAD_DEBUGINFO=$(_read_config_variable DOWNLOAD_DEBUGINFO false)
+  KEEP_UNSTRIPPED_CORE=$(_read_config_variable KEEP_UNSTRIPPED_CORE false)
 
-  DEFAULT_CORE_NAME="unknown"
-
-  if [ -e $system_settings/crash-reporter-privacy.conf ]; then
-    . $system_settings/crash-reporter-privacy.conf 2>/dev/null
-  fi
-
-  if [ -e $user_settings/crash-reporter-privacy.conf ]; then
-    . $user_settings/crash-reporter-privacy.conf 2>/dev/null
-  fi
+  DEFAULT_CORE_NAME=$(_read_config_variable DEFAULT_CORE_NAME unknown)
 }
 
 _parse_arguments()
