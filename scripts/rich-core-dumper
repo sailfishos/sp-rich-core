@@ -43,11 +43,17 @@ _read_config_variable()
 {
   value=$2 
   if [ -e $system_settings/crash-reporter-privacy.conf ]; then
-    value=$(awk -F "=" "/$1/ {print \$2}" $system_settings/crash-reporter-privacy.conf)
+    v=$(awk -F "=" "/$1/ {print \$2}" $system_settings/crash-reporter-privacy.conf)
+    if [ "$v" != "" ]; then
+      value=$v
+    fi
   fi
 
   if [ -e $user_settings/crash-reporter-privacy.conf ]; then
-    value=$(awk -F "=" "/$1/ {print \$2}" $user_settings/crash-reporter-privacy.conf)
+    v=$(awk -F "=" "/$1/ {print \$2}" $user_settings/crash-reporter-privacy.conf)
+    if [ "$v" != "" ]; then
+      value=$v
+    fi
   fi
 
   echo $value
