@@ -1,3 +1,7 @@
+* Tue Mar 03 2015 Matti Kosola <matti.kosola@jollamobile.com> - 1.74.9
+- Handle missing settings in configuration files
+- Enable core dumping by default if crash reporter is not installed
+
 * Fri Feb 27 2015 Matti Kosola <matti.kosola@jollamobile.com> - 1.74.8
 - Parse configuration settings using ask instead of bash sourcing
 - Don't producuce core dumps without agreed privacy notice
