@@ -66,8 +66,8 @@ _obtain_configuration()
   system_settings=/usr/share/crash-reporter-settings
   user_settings=/home/nemo/.config/crash-reporter-settings
 
-  coredumping=$(_read_config_variable coredumping false)
-  privacy_notice_accepted=$(_read_config_variable privacy-notice-accepted false)
+  coredumping=$(_read_config_variable coredumping true)
+  privacy_notice_accepted=$(_read_config_variable privacy-notice-accepted true)
   
   INCLUDE_CORE=$(_read_config_variable INCLUDE_CORE true)
   REDUCE_CORE=$(_read_config_variable REDUCE_CORE true)
