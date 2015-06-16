@@ -1,3 +1,6 @@
+* Tue Jun 16 2015 Matti Kosola <matti.kosola@jollamobile.com> - 1.74.10
+- Use nemo-test-tools in tests xml. Fixes MER#1111
+
 * Tue Mar 03 2015 Matti Kosola <matti.kosola@jollamobile.com> - 1.74.9
 - Handle missing settings in configuration files
 - Enable core dumping by default if crash reporter is not installed

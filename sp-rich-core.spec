@@ -1,6 +1,6 @@
 Name: sp-rich-core
 
-Version: 1.74.9
+Version: 1.74.10
 Release: 1
 Summary: Create rich core dumps
 Group: Development/Tools
@@ -52,7 +52,7 @@ Requires: %{name}-postproc = %{version}-%{release}
 Requires: core-reducer = %{version}-%{release}
 Requires: gdb-qml-stacktrace = %{version}-%{release}
 # From mer-qa project
-Requires: blts-tools
+Requires: nemo-test-tools
 
 %description tests
 Provides test cases for sp-rich-core, sp-rich-core-postproc and core-reducer.
