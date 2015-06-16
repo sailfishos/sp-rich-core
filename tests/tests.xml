@@ -21,16 +21,16 @@
               <step expected_result="0">[ -x /usr/bin/core-reducer ]</step>
             </case>
             <case name="Core-Reducer-core-dump-work" type="Integration" level="Feature">
-              <step expected_result="0">/usr/sbin/run-blts-root /usr/share/sp-rich-core-tests/test_script</step>
+              <step expected_result="0">/usr/sbin/run-root /usr/share/sp-rich-core-tests/test_script</step>
             </case>
             <case name="Rich-core-whitelist-blacklist" type="Integration" level="Feature">
-              <step expected_result="0">/usr/sbin/run-blts-root /usr/share/sp-rich-core-tests/test_whiteblacklist</step>
+              <step expected_result="0">/usr/sbin/run-root /usr/share/sp-rich-core-tests/test_whiteblacklist</step>
             </case>
             <case name="Rich-core-extra-files" type="Integration" level="Feature">
-              <step expected_result="0">/usr/sbin/run-blts-root /usr/share/sp-rich-core-tests/test_extra_files</step>
+              <step expected_result="0">/usr/sbin/run-root /usr/share/sp-rich-core-tests/test_extra_files</step>
             </case>
             <case name="Rich-core-extract-test" type="Integration" level="Feature">
-              <step expected_result="0">/usr/sbin/run-blts-root /usr/share/sp-rich-core-tests/test_extract</step>
+              <step expected_result="0">/usr/sbin/run-root /usr/share/sp-rich-core-tests/test_extract</step>
             </case>
 	</set>
         <set name="input-validation-tests" feature="Robustness">
