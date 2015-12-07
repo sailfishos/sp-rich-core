@@ -1,3 +1,6 @@
+* Mon Dec 07 2015 Matti Kosola <matti.kosola@jollamobile.com> - 1.74.11
+- Unify open source licenses. Contributes to JB#33648
+
 * Tue Jun 16 2015 Matti Kosola <matti.kosola@jollamobile.com> - 1.74.10
 - Use nemo-test-tools in tests xml. Fixes MER#1111
 
