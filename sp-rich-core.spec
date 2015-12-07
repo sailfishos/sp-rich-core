@@ -4,7 +4,7 @@ Version: 1.74.10
 Release: 1
 Summary: Create rich core dumps
 Group: Development/Tools
-License: GPL-2
+License: GPLv2
 URL: http://github.com/mer-tools
 Source0: %{name}-%{version}.tar.gz  
 Source1: _src
@@ -33,7 +33,6 @@ Tool that creates rich core dumps, which include information about system state 
 
 %package postproc
 Summary: Rich core postprocessing
-Group: Development/Tools
 Requires: lzop
 Requires: gzip
 
@@ -46,7 +45,6 @@ Tools to extract information from rich cores.
 
 %package tests
 Summary: Tests for the sp-rich-core packages
-Group: Development/Libraries
 Requires: %{name} = %{version}-%{release}
 Requires: %{name}-postproc = %{version}-%{release}
 Requires: core-reducer = %{version}-%{release}
@@ -63,7 +61,6 @@ Provides test cases for sp-rich-core, sp-rich-core-postproc and core-reducer.
 
 %package -n core-reducer
 Summary: Reduce the size of a core dump
-Group: Development/Tools
 Requires: %{name} = %{version}-%{release}
 Requires: elfutils-libelf
 
@@ -76,7 +73,6 @@ Create core dumps that have a reduced size, allowing them to be transported betw
 
 %package -n gdb-qml-stacktrace
 Summary: Allows inspecting QML stack traces in gdb
-Group: Development/Tools
 
 %description -n gdb-qml-stacktrace
 A gdb frame filter that prints a QML stack trace in addition to a regular backtrace of a Qt/QML application.
