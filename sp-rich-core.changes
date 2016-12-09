@@ -1,3 +1,6 @@
+* Fri Dec 09 2016 Matti Kosola <matti.kosola@jollamobile.com> - 1.74.12
+- Use ssu-sysinfo to query device model. Contributes to JB#37157
+
 * Mon Dec 07 2015 Matti Kosola <matti.kosola@jollamobile.com> - 1.74.11
 - Unify open source licenses. Contributes to JB#33648
 
