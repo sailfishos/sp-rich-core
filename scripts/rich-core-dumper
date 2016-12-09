@@ -709,7 +709,7 @@ if [ $has_suitable_network_connection = "false" ]; then
 fi
 
 # Get hwid
-hwid=$(ssu model -s 2> /dev/null)
+hwid=$(ssu-sysinfo -m 2> /dev/null)
 if [ -z "${hwid}" ]; then
   hwid="xxx"
 fi
