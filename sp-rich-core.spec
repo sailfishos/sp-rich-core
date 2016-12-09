@@ -1,6 +1,6 @@
 Name: sp-rich-core
 
-Version: 1.74.11
+Version: 1.74.12
 Release: 1
 Summary: Create rich core dumps
 Group: Development/Tools
@@ -17,6 +17,8 @@ Requires: lzop
 Requires: sp-endurance
 Requires: core-reducer
 Requires: binutils
+Requires: ssu
+Requires: ssu-sysinfo
 
 %description
 Tool that creates rich core dumps, which include information about system state and core in a single compressed file. Requires a kernel that supports piping core dumps. 
