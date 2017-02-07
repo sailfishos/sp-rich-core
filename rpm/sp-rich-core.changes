@@ -1,0 +1,243 @@
+* Fri Dec 09 2016 Matti Kosola <matti.kosola@jollamobile.com> - 1.74.12
+- Use ssu-sysinfo to query device model. Contributes to JB#37157
+
+* Mon Dec 07 2015 Matti Kosola <matti.kosola@jollamobile.com> - 1.74.11
+- Unify open source licenses. Contributes to JB#33648
+
+* Tue Jun 16 2015 Matti Kosola <matti.kosola@jollamobile.com> - 1.74.10
+- Use nemo-test-tools in tests xml. Fixes MER#1111
+
+* Tue Mar 03 2015 Matti Kosola <matti.kosola@jollamobile.com> - 1.74.9
+- Handle missing settings in configuration files
+- Enable core dumping by default if crash reporter is not installed
+
+* Fri Feb 27 2015 Matti Kosola <matti.kosola@jollamobile.com> - 1.74.8
+- Parse configuration settings using ask instead of bash sourcing
+- Don't producuce core dumps without agreed privacy notice
+
+* Tue Feb 17 2015 Matti Kosola <matti.kosola@jollamobile.com> - 1.74.7
+- Use pkcon for downloading debug info
+- Read battery information better to match different drivers
+- Download debuginfo packages only in USER state
+
+* Thu Feb 05 2015 Matti Kosola <matti.kosola@jollamobile.com> - 1.74.6
+- Dump panic partition if we get kernel wd reset
+
+* Mon Dec 22 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.74.5
+- Ignore stderr output when asking device model
+
+* Fri Dec 19 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.74.4
+- Fix GCC 4.8 toolchain compilation
+
+* Thu Sep 11 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.74.3
+- Fix test case to match proper core name
+
+* Wed Aug 20 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.74.2
+- Add support to extract gz compressed rcore files
+
+* Wed Aug 06 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.74.1
+- Add SFE adaptation logcat path to sp-rich-core collection script
+- Add battery info to core dump
+
+* Wed Jun 25 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.74.0
+- Add gdb extension for dumping QML stack traces 
+
+* Wed Jun 25 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.73.14
+- Install preinit late plugin to enable core dumps
+
+* Thu Jun 19 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.73.13
+- Use pkcon instead of rpm for package queries
+
+* Tue Jun 03 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.73.12
+- Remove leftover temp files when package is being uninstalled
+
+* Mon May 26 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.73.11
+- Exclude statefs from an output of /bin/df
+- Check that statefs haven't crashed before accessing it
+
+* Tue May 20 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.73.10
+- Remove *.core.in files if user didn't intend to keep them
+- Don't start rich-core-early-collect.service in %post
+
+* Fri May 16 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.73.9
+- Don't dump cores when OS is updating
+
+* Mon May 12 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.73.8
+- Don't reduce cores below 10MB
+
+* Tue Apr 22 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.73.7
+- Always create crash report when invoked from quick-feedback
+
+* Thu Apr 17 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.73.6
+- Don't su to 'nemo' when checking network_type
+
+* Thu Apr 03 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.73.5
+- Use timeout when invoking rpm
+
+* Tue Mar 25 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.73.4
+- Send report when shutdown from overheating is detected
+
+* Thu Mar 21 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.73.3
+- Rename rich-core-pattern.service -> rich-core-early-collect.service
+- Ensure all oneshot scripts were run before early log collection
+
+* Thu Mar 20 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.73.2
+- Run commands involving writing to journal after core is dumped
+- Run logger in background
+- When core is being omitted, dump it to /dev/null
+- Hold a wake lock while processing a core
+
+* Thu Mar 20 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.73.1
+- Add list of failed oneshot scripts into crash report
+- Ignore error when $ONESHOTS_FILE doesn't exist
+- Don't fail rich-core-pattern.service when no HW reboot happened
+
+* Wed Mar 19 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.73.0
+- Use proper Condition* options in rich-core-pattern service file
+- Update description and marker file name in rich-core-pattern.service
+- Dump system logs when failed oneshot scripts are found
+- Clean up leftover temporary files from CORE_LOCATION
+
+* Thu Mar 13 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.72.9
+- Limit journalctl dump to current boot
+
+* Tue Mar 11 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.72.8
+- Set kernel.core_pattern in sysctl/sp-rich-core.conf
+- Let sysctl load /usr/lib/sysctl.d/sp-rich-core.conf in %post
+
+* Tue Mar 11 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.72.7
+- Don't call pkcon -p repo-list
+- Avoid using pkcon when running RPM scriptlet
+
+* Mon Mar 10 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.72.6
+- Update NetworkType retrieval from statefs
+
+* Wed Feb 26 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.72.5
+- Fix HWreboot core name
+
+* Mon Feb 24 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.72.4
+- Set the core dump mode for setuid or otherwise protected binaries
+
+* Fri Feb 21 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.72.3
+- Distinguish spontaneous HW reboot reports by name
+
+* Thu Feb 17 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.72.2
+- Add 'ps aux' into crash report
+
+* Thu Feb 14 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.72.1
+- On abnormal reboot, add files in /proc/lastlog/* into crash report
+- Add kernel parameters into crash report
+- Detect HW reboot just by pwr_on_by_HW_ status prefix
+
+* Thu Jan 16 2014 Matti Kosola <matti.kosola@jollamobile.com> - 1.72.0
+- Create crash report after HW reboot
+
+* Fri Dec 18 2013 Matti Kosola <matti.kosola@jollamobile.com> - 1.71.26
+- Change logic of overriding disabled coredump
+
+* Fri Dec 13 2013 Matti Kosola <matti.kosola@jollamobile.com> - 1.71.25
+- Add pmlog.log into crash report
+
+* Tue Dec 09 2013 Matti Kosola <matti.kosola@jollamobile.com> - 1.71.24
+- Fix occasional merged sections in unpacked crash report
+
+* Tue Dec 05 2013 Matti Kosola <matti.kosola@jollamobile.com> - 1.71.23
+- Prevent rich-core-dumper getting stuck when invoked by Quick Feedback
+
+* Tue Nov 26 2013 Matti Kosola <matti.kosola@jollamobile.com> - 1.71.22
+- Dump radio buffer into logcat
+
+* Tue Nov 12 2013 Matti Kosola <matti.kosola@jollamobile.com> - 1.71.21
+- Dump pstree & coreless reports
+
+* Tue Nov 08 2013 Matti Kosola <matti.kosola@jollamobile.com> - 1.71.20
+- Check whether core-reducer finished successfully
+- Add logcat output into rich core
+
+* Tue Nov 07 2013 Matti Kosola <matti.kosola@jollamobile.com> - 1.71.19
+- [core-reducer] Try to find the stack even if sp overflowed 
+
+* Tue Nov 06 2013 Matti Kosola <matti.kosola@jollamobile.com> - 1.71.18
+- Write each log into a separate section
+
+* Tue Nov 05 2013 Matti Kosola <matti.kosola@jollamobile.com> - 1.71.17
+- Remove unused _section_component_version function
+- Add KEEP_UNSTRIPPED_CORE config property
+
+* Tue Oct 22 2013 Matti Kosola <matti.kosola@jollamobile.com> - 1.71.16
+- When available, use /proc/$pid/map_files to read build-ids
+- Create buildids_missing section only if there is anything to put there
+- Collect libraries that were deleted into new a rich core section
+- Remove trailing whitespace from buildids_missing section
+
+* Mon Oct 14 2013 Matti Kosola <matti.kosola@jollamobile.com> - 1.71.15
+- Core-reducer: use memory-mapped I/O when loading cores
+
+* Fri Oct 04 2013 Matti Kosola <matti.kosola@jollamobile.com> - 1.71.14
+- Attach user message from Quick Feedback application
+
+* Tue Oct 03 2013 Matti Kosola <matti.kosola@jollamobile.com> - 1.71.13
+- Fix $core_exe of deleted executables
+- Raise CORE_SIZE_LIMIT to 450MB
+
+* Tue Oct 02 2013 Matti Kosola <matti.kosola@jollamobile.com> - 1.71.12
+- Fix possible infinite loop in ProcInterface::heapAddress
+
+* Tue Oct 01 2013 Matti Kosola <matti.kosola@jollamobile.com> - 1.71.11
+- Don't remove core_pattern on system shutdown
+- Keep 500M empty space on core loacation instead of 20M
+
+* Fri Sep 27 2013 Matti Kosola <matti.kosola@jollamobile.com> - 1.71.10
+- Fix parsing of /proc/${pid}/maps with deleted files
+- Use pipe as sed regexp delimiter
+- Test case UUID support for integration with testrunner-lite
+
+* Tue Sep 24 2013 Matti Kosola <matti.kosola@jollamobile.com> - 1.71.9
+- Use pkcon instead of zypper
+
+* Tue Sep 23 2013 Matti Kosola <matti.kosola@jollamobile.com> - 1.71.8
+- Download debuginfo only when on WiFi or Ethernet
+- Remove unused _section_product_info() and related code
+- Update _section_software_version() for Nemo and Sailfish
+
+* Tue Sep 20 2013 Matti Kosola <matti.kosola@jollamobile.com> - 1.71.7
+- Add 'exe' section with path to the crashed binary
+
+* Tue Sep 17 2013 Matti Kosola <matti.kosola@jollamobile.com> - 1.71.6
+- Add dependency to binutils
+- Revert "check executable name from /proc/pid/cmdline"
+
+* Mon Sep 02 2013 Matti Kosola <matti.kosola@jollamobile.com> - 1.71.5
+- Fix crashed binary's executable name 
+
+* Fri Aug 30 2013 Matti Kosola <matti.kosola@jollamobile.com> - 1.71.4
+- Make auto-download of debug symbols optional
+- Include crashed binary's rpm package name into rich core
+
+* Tue Aug 27 2013 Matti Kosola <matti.kosola@jollamobile.com> - 1.71.3
+- Include list of package repositories into rich core
+
+* Mon Aug 26 2013 Matti Kosola <matti.kosola@jollamobile.com> - 1.71.2
+- Add ssu status
+
+* Wed Aug 21 2013 Matti Kosola <matti.kosola@jollamobile.com> - 1.71.1
+- Fix gdb detection
+- Load symbols for libs without build-id into gdb
+- Add list of shared libraries and build-ids into rich core
+
+* Tue Aug 13 2013 Matti Kosola <matti.kosola@jollamobile.com> - 1.71.0
+- Added on-device stack traces feature
+
+* Fri May 17 2013 Matti Kosola <matti.kosola@jollamobile.com> - 1.70.1
+- Get rid of Nemo dependencies
+- Change default core dump location to /var/cache/core-dumps
+
+* Tue May 14 2013 Matti Kosola <matti.kosola@jollamobile.com> - 1.70.0
+- Set default core folder to /home/nemo/core-dumps 
+- Add Meego patches to core-reducer
+- Remove sysvinit startup scripts
+- Add systemd service for rich core pattern
+- Modify test cases for Mer
+
+* Wed May 08 2013 Matti Kosola <matti.kosola@jollamobile.com> - 1.69.2
+- Initial Mer packaging
