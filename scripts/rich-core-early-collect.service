@@ -14,12 +14,12 @@ RemainAfterExit=yes
 # Test whether last reboot was caused by a hardware event and if so, gather the
 # log files into a crash report.
 ExecStart=-/bin/sh -c ' \
-	STATUS=$(/bin/sed -n "s|.*pwr_on_status=pwr_on_by_HW_\([^ ]*\).*|HW\1|p" /proc/cmdline) && \
+	STATUS=$(/bin/sed -n "s|.*pwr_on_status=pwr_on_by_HW_\\([^ ]*\\).*|HW\\1|p" /proc/cmdline) && \
 	/usr/bin/test -n "$STATUS" && \
 	/usr/sbin/rich-core-dumper --name=$STATUS --signal=$RANDOM'
 
 ExecStart=-/bin/sh -c ' \
-	STATUS=$(/bin/sed -n "s|.*reset=kernel_wdt\([^ ]*\).*|HWreboot|p" /proc/cmdline) && \
+	STATUS=$(/bin/sed -n "s|.*reset=kernel_wdt\\([^ ]*\\).*|HWreboot|p" /proc/cmdline) && \
 	/usr/bin/test -n "$STATUS" && \
 	/usr/sbin/rich-core-dumper --name=$STATUS --signal=$RANDOM'
 
