@@ -18,6 +18,7 @@ Requires: core-reducer
 Requires: binutils
 Requires: ssu
 Requires: ssu-sysinfo
+Requires: findutils
 
 %description
 Tool that creates rich core dumps, which include information about system state and core in a single compressed file. Requires a kernel that supports piping core dumps.
