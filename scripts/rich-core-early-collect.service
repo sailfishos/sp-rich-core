@@ -4,12 +4,16 @@ Requires=local-fs.target
 After=init-done.service oneshot-root-late.service
 
 ConditionFileIsExecutable=/usr/sbin/rich-core-dumper
+ConditionFileIsExecutable=/usr/lib/startup/wait-for-file
 ConditionPathIsDirectory=/var/cache/core-dumps
 ConditionPathExists=!/tmp/richcore-early-collect-mark
 
 [Service]
 Type=oneshot
 RemainAfterExit=yes
+
+# Wait post user session to ensure that all oneshots have been launched
+ExecStartPre=/usr/lib/startup/wait-for-file /run/user-session/post-user-init-done.flag
 
 # Test whether last reboot was caused by a hardware event and if so, gather the
 # log files into a crash report.
