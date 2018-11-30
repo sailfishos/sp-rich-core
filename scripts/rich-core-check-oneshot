@@ -4,10 +4,10 @@ ONESHOTS_FILE=/var/cache/core-dumps/oneshots
 
 IFS=$'\n'
 
-# Find all files and file symlinks in oneshot directories. We ignore symlinked
-# directories (e.g. directory 'default' may have a symlink named after some user
-# ID).
-ONESHOTS=($(find -L /etc/oneshot.d/ \( -xtype l -a -type d \) -prune -o -type f -print))
+# Find all files and file symlinks in oneshot directories. We do not check
+# symlinked directories (e.g. directory 'default' may have a symlink named
+# after some user ID).
+ONESHOTS=($(find -L $(find /etc/oneshot.d/ -type d) -maxdepth 1 -type f))
 
 PREVIOUS_ONESHOTS=($(cat $ONESHOTS_FILE 2>/dev/null))
 
