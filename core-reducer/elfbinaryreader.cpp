@@ -212,10 +212,10 @@ Phdr *ElfBinaryReader::getSegmentByType(Elf_Word type)
 	Phdr *phdr = NULL;
 #if __WORDSIZE == 32
 	if (!(phdr = elf32_getphdr(file)))
-		LOG_RETURN(LOG_ERR, false, "getphdr() failed: %s", elf_errmsg(-1)); 
+		LOG_RETURN(LOG_ERR, NULL, "getphdr() failed: %s", elf_errmsg(-1)); 
 #else
 	if (!(phdr = elf64_getphdr(file)))
-		LOG_RETURN(LOG_ERR, false, "getphdr() failed: %s", elf_errmsg(-1)); 
+		LOG_RETURN(LOG_ERR, NULL, "getphdr() failed: %s", elf_errmsg(-1)); 
 #endif
 
 	while (phdr)
