@@ -64,7 +64,9 @@ _obtain_configuration()
   # default fallback values, overruled by configuration file if one exists
 
   system_settings=/usr/share/crash-reporter-settings
-  user_settings=/home/nemo/.config/crash-reporter-settings
+  system_user=$(getent group sailfish-system | cut -d: -f4 | tr , '\n' | grep -vE '^sailfish-' | head -n1)
+  user_settings=$(getent passwd ${system_user} | cut -d: -f6)/.config/crash-reporter-settings
+  unset system_user
 
   coredumping=$(_read_config_variable coredumping true)
   privacy_notice_accepted=$(_read_config_variable privacy-notice-accepted true)
