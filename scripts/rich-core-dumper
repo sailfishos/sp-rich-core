@@ -214,7 +214,7 @@ _section_ifconfig()
 
 _section_df()
 {
-  _print_command_with_header /bin/df -x fuse.statefs
+  _print_command_with_header /bin/df
 }
 
 _section_ls_proc()
@@ -600,16 +600,24 @@ if ! _check_core_location; then
   exit
 fi
 
-if [ "$core_name" != "statefs" ]; then
-  network_type=$(cat /run/state/namespaces/Internet/NetworkType)
-fi
+network_type=$(dbus-send --system --type=method_call --print-reply --dest=net.connman / net.connman.Manager.GetTechnologies | awk '
+BEGIN { connected = ""; }
+/object path/ { t = 0; c = 0; type=""; next; }
+/string "Type"$/ { t = 1; next; }
+/string "Connected"$/ { c = 1; next; }
+t == 1 && /string/ { type = gensub(/^.*string "(.*)".*$/,"\\1", "g"); t = 0; next; }
+c == 1 && /boolean/ { c = gensub(/^.*boolean (.*)$/,"\\1", "g") == "true" ? 2 : 0; next; }
+c == 2 && type != "" { connected = type; type = ""; c = 0; }
+END { print(connected) }
+')
 
 has_suitable_network_connection=false
 
 # Don't download anything when on a network that charges for data.
-# Valid NetworkType values are from src/connman/provider_connman.cpp in
-# Nemo Mobile's statefs-providers.
-if [ x"$network_type" = x"WLAN" -o x"$network_type" = x"ethernet" ]; then
+# Valid NetworkType values are from connman/plugins/*.c files defined as .name
+# values in the connman_technology_driver structs. The following will list them.
+# grep "struct connman_technology_driver" connman/plugins/* -A1 | grep -o "\".*\""
+if [ x"$network_type" = x"wifi" -o x"$network_type" = x"ethernet" ]; then
   has_suitable_network_connection=true
 fi
 

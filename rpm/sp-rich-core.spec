@@ -21,6 +21,9 @@ Requires: ssu-sysinfo
 Requires: findutils
 # awk used by scripts/rich-core-dumper
 Requires: gawk
+# dbus, connman used by scripts/rich-core-dumper
+Requires: dbus
+Requires: connman
 # getent used by scripts/rich-core-dumper
 Requires: glibc-common
 
