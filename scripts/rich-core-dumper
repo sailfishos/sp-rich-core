@@ -515,7 +515,7 @@ _capture_stacktrace()
 
 _reduce_core()
 {
-  local original_core_size=$(du -b "$originalcorefilename" | awk '{ print $1 }')
+  local original_core_size=$(stat -c %s "$originalcorefilename")
   if [ $original_core_size -lt $(($CORE_REDUCE_THRESHOLD * 1000)) ]; then
     _log_msg "Core size ${original_core_size}B below threshold; not reducing."
     cat $originalcorefilename;
