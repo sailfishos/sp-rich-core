@@ -26,6 +26,8 @@ Requires: dbus
 Requires: connman
 # getent used by scripts/rich-core-dumper
 Requires: glibc-common
+# loginctl used by scripts/rich-core-check-oneshot
+Requires: systemd
 
 %description
 Tool that creates rich core dumps, which include information about system state and core in a single compressed file. Requires a kernel that supports piping core dumps.
