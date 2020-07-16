@@ -3,13 +3,13 @@ Name: sp-rich-core
 Version: 1.74.12
 Release: 1
 Summary: Create rich core dumps
-Group: Development/Tools
 License: GPLv2
 URL: http://github.com/mer-tools
 Source0: %{name}-%{version}.tar.gz
 BuildRequires: elfutils-libelf-devel
 BuildRequires: autoconf
 BuildRequires: gcc-c++
+BuildRequires: systemd
 Requires: sed
 Requires: coreutils
 Requires: lzop
@@ -34,8 +34,8 @@ Tool that creates rich core dumps, which include information about system state 
 
 %files
 %defattr(-,root,root,-)
-/lib/systemd/system/rich-core-early-collect.service
-/lib/systemd/system/graphical.target.wants/rich-core-early-collect.service
+%{_unitdir}/rich-core-early-collect.service
+%{_unitdir}/graphical.target.wants/rich-core-early-collect.service
 /usr/lib/sysctl.d/sp-rich-core.conf
 %{_sbindir}/rich-core-dumper
 %{_libexecdir}/rich-core-check-oneshot
@@ -104,7 +104,7 @@ make
 
 %install
 mkdir -p %{buildroot}/%{_sbindir}
-mkdir -p %{buildroot}/lib/systemd/system
+mkdir -p %{buildroot}%{_unitdir}
 mkdir -p %{buildroot}/usr/lib/sysctl.d
 mkdir -m 777 -p %{buildroot}/var/cache/core-dumps
 mkdir -p %{buildroot}/%{_datadir}/%{name}-tests
