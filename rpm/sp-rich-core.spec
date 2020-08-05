@@ -118,5 +118,5 @@ make distclean
 
 %postun
 if [ "$1" = 0 ]; then
-  rm -f /var/cache/core-dumps/{*.tmp,oneshots}
+  rm -f /var/cache/core-dumps/*.tmp /var/cache/core-dumps/oneshots
 fi

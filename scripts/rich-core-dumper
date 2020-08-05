@@ -110,7 +110,7 @@ _parse_arguments()
   core_pid=${core_pid:-0}
 
   if [ -z "${core_sig}" ]; then
-    if [ "${core_name}" == "Quickie" ]; then
+    if [ "${core_name}" = "Quickie" ]; then
       # Coreless reports requested from Quick Feedback tool should have a random
       # number in place of a signal identifier in its filename.
       core_sig=$RANDOM
@@ -155,7 +155,7 @@ _check_core_location()
   # Check if location exists and has enough space to write a rich core.
   if [ -d "$CORE_LOCATION" ]; then
     freespace=`_free_space "$CORE_LOCATION"`
-    [ -n "$freespace" -a "$freespace" -ge 500000 ]
+    [ -n "$freespace" ] && [ "$freespace" -ge 500000 ]
     return
   fi
 
@@ -410,9 +410,9 @@ _check_and_install()
 
 _invoke_gdb()
 {
-  while read line; do
+  echo -e "$LIBS_WITHOUT_BUILD_ID" | while read line; do
     local gdb_ex="$gdb_ex -ex '$line'"
-  done < <(echo -e "$LIBS_WITHOUT_BUILD_ID")
+  done
 
   local GDB="gdb -nx ${gdb_ex} -ex '$1' --batch ${core_exe} \"${originalcorefilename}\""
 
@@ -437,7 +437,7 @@ _collect_shlibs()
     has_map_files=true
   fi
 
-  while read startaddr endaddr lib; do
+  echo "$maps" | while read startaddr endaddr lib; do
     lib_path=${lib% (deleted)}
 
     if [ -n "$has_map_files" ]; then
@@ -452,7 +452,7 @@ _collect_shlibs()
     fi
 
     SH_LIBS="${SH_LIBS}$startaddr $lib_path $idsource\n"
-  done < <(echo "$maps")
+  done
 
   SH_LIBS="${SH_LIBS%\\n}"
 
@@ -467,7 +467,7 @@ _section_proc_maps()
   _collect_shlibs
 
   _print_header buildids
-  while read startaddr lib idsource; do
+  echo -e "$SH_LIBS" | while read startaddr lib idsource; do
     build_id=$(readelf -n $idsource \
         | sed -n 's/[[:space:]]*Build ID: \([[:xdigit:]]\+\)$/\1/p');
     if [ -n "$build_id" ]; then
@@ -482,7 +482,7 @@ _section_proc_maps()
       lib=$(echo "$lib" | sed 's/^\/system\/lib\///')
       LIBS_WITHOUT_BUILD_ID="${LIBS_WITHOUT_BUILD_ID}add-symbol-file /system/symbols/$lib 0x$offset\n"
     fi
-  done < <(echo -e "$SH_LIBS")
+  done
 
   if [ -n "$LIBS_WITHOUT_BUILD_ID" ]; then
     _print_header buildids_missing
@@ -577,7 +577,7 @@ _parse_arguments $*
 _log_msg "rich-core: arguments: $*"
 
 # Clean up any leftover temporary files last modified more than two days ago.
-find "$CORE_LOCATION" -maxdepth 1 -mtime +2 -name *.tmp -delete
+find "$CORE_LOCATION" -maxdepth 1 -mtime +2 -name "*.tmp" -delete
 
 # If the user hasn't agreed to the privacy notice abort here.
 if [ x"${privacy_notice_accepted}" = x"false" ]; then
@@ -589,7 +589,7 @@ fi
 # setting is overriden if this dump was invoked with PID 0, meaning only logs
 # are collected, or the process was killed by SIGQUIT, which means user
 # explicitly requested its termination from quick-feedback application.
-if [ x"${coredumping}" = x"false" -a ! \( $core_pid -eq 0 -o $core_sig -eq 3 \) ]; then
+if [ x"${coredumping}" = x"false" ] && { [ ! $core_pid -eq 0 ] || [ $core_sig -eq 3 ]; }; then
   cat > /dev/null
   exit
 fi
@@ -617,16 +617,16 @@ has_suitable_network_connection=false
 # Valid NetworkType values are from connman/plugins/*.c files defined as .name
 # values in the connman_technology_driver structs. The following will list them.
 # grep "struct connman_technology_driver" connman/plugins/* -A1 | grep -o "\".*\""
-if [ x"$network_type" = x"wifi" -o x"$network_type" = x"ethernet" ]; then
+if [ x"$network_type" = x"wifi" ] || [ x"$network_type" = x"ethernet" ]; then
   has_suitable_network_connection=true
 fi
 
 # When core reducing and/or stack trace inclusion is enabled, coredump is
 # written temporarily on disk. Therefore, space left must be checked.
-if [ "${core_pid}" != "0" -a \( "${REDUCE_CORE}" = "true" -o "${INCLUDE_STACK_TRACE}" = "true" \) ]; then
+if [ "${core_pid}" != "0" ] && { [ "${REDUCE_CORE}" = "true" ] || [ "${INCLUDE_STACK_TRACE}" = "true" ]; }; then
   _get_vmsizes ${core_pid}
 
-  if [ -z "${vmsize}" -o -z "${vmlib}" -o -z "${vmexe}" ]; then
+  if [ -z "${vmsize}" ] || [ -z "${vmlib}" ] || [ -z "${vmexe}" ]; then
     _log_msg "rich-core: could not get virtual memory information of process - not dumping"
     cat > /dev/null
     exit
@@ -773,14 +773,14 @@ fi
 
 _section_user_message
 
-if [ "${core_name}" == "HWreboot" ]; then
+if [ "${core_name}" = "HWreboot" ]; then
   _dump_proc_lastlog
   _dump_panic_partition
 fi
 if [ "${core_name}" = "OneshotFailure" ]; then
   _section_failed_oneshot_scripts
 fi
-if [ x"$NO_SECTION_HEADER" = x"true" -a "${omit_core}" != "true" ]; then
+if [ x"$NO_SECTION_HEADER" = x"true" ] && [ "${omit_core}" != "true" ]; then
 cat
 elif [ -n "${IS_OOPSLOG}" ]; then
   _print_header oopslog
