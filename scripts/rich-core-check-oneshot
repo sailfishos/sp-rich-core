@@ -8,20 +8,26 @@ IFS=$'\n'
 USERID=$(loginctl list-sessions | grep seat0 | tr -s " " | cut -d " " -f 3)
 ONESHOTS="$(find -L $(find /etc/oneshot.d/$USERID -type d) -maxdepth 1 -type f)"
 
-PREVIOUS_ONESHOTS="$(cat $ONESHOTS_FILE 2>/dev/null)"
+PREVIOUS_ONESHOTS=$(mktemp /tmp/previous_oneshots.XXXXXX)
+cat $ONESHOTS_FILE >> $PREVIOUS_ONESHOTS
 
 echo "$ONESHOTS" | while read oneshot; do
-	is_new=0
-	echo "$PREVIOUS_ONESHOTS" | while read oldshot; do
+	is_new=1
+	while read oldshot; do
 		if [ "$oneshot" = "$oldshot" ]; then
-			is_new=1
+			is_new=0
 			break
 		fi
-	done
-	if [ $is_new -eq 0 ]; then
+	done < $PREVIOUS_ONESHOTS
+	if [ $is_new -eq 1 ]; then
 		logger "Found failed oneshot script; dumping log files."
 		echo "${ONESHOTS}" > "$ONESHOTS_FILE"
-		/usr/sbin/rich-core-dumper --name=OneshotFailure --signal=$RANDOM
+		# Don't set failure, if oneshot line is empty.
+		if [ ${#oneshot} != 0 ]; then
+			/usr/sbin/rich-core-dumper --name=OneshotFailure --signal=$RANDOM
+		fi
 		break
 	fi
 done
+
+rm $PREVIOUS_ONESHOTS
