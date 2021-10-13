@@ -1,6 +1,6 @@
 Name: sp-rich-core
 
-Version: 1.74.12
+Version: 1.74.26
 Release: 1
 Summary: Create rich core dumps
 License: GPLv2
