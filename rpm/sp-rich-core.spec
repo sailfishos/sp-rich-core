@@ -9,7 +9,7 @@ Source0: %{name}-%{version}.tar.gz
 BuildRequires: elfutils-libelf-devel
 BuildRequires: autoconf
 BuildRequires: gcc-c++
-BuildRequires: systemd
+BuildRequires: pkgconfig(systemd)
 Requires: sed
 Requires: coreutils
 Requires: lzop
