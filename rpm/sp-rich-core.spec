@@ -4,7 +4,7 @@ Version: 1.74.26
 Release: 1
 Summary: Create rich core dumps
 License: GPLv2
-URL: http://github.com/mer-tools
+URL: https://github.com/sailfishos/sp-rich-core
 Source0: %{name}-%{version}.tar.gz
 BuildRequires: elfutils-libelf-devel
 BuildRequires: autoconf
@@ -34,6 +34,7 @@ Tool that creates rich core dumps, which include information about system state 
 
 %files
 %defattr(-,root,root,-)
+%license COPYING
 %{_unitdir}/rich-core-early-collect.service
 %{_unitdir}/graphical.target.wants/rich-core-early-collect.service
 /usr/lib/sysctl.d/sp-rich-core.conf
@@ -100,7 +101,7 @@ A gdb frame filter that prints a QML stack trace in addition to a regular backtr
 touch NEWS README AUTHORS ChangeLog
 autoreconf --install
 %configure --prefix=/usr
-make
+%make_build
 
 %install
 mkdir -p %{buildroot}/%{_sbindir}
