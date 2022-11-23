@@ -85,36 +85,36 @@ EOF
 }
 
 _run_test_case() {
-    cat $COMMANDS_FILE | while read cmd
-    do
-	EXE=$(basename ${cmd%% *})
-	$cmd&
-	PID=$!
+  cat $COMMANDS_FILE | while read cmd
+  do
+ 	EXE=$(basename ${cmd%% *})
+ 	$cmd&
+ 	PID=$!
 
-	sleep 1
-        # send signal causing core dump and wait rich core to be created
-	kill -11 $PID
-	sleep 5
+ 	sleep 1
+ 	# send signal causing core dump and wait rich core to be created
+ 	kill -11 $PID
+ 	sleep 5
 	
 	if ls $CORE_DUMPS_DIR | grep -qe "$EXE-.*-$PID\.rcore\.lzo"; then
-	    if [ "$EXPECTED_CORE" -eq 1 ]; then
+	  if [ "$EXPECTED_CORE" == "1" ]; then
 		echo "PASSED: command $cmd"
-	    else
+	  else
 		echo "FAILED: command $cmd" >&2
 		touch /tmp/richcoretest_failed
-	    fi
+	  fi
 	else
-	    if [ "$EXPECTED_CORE" -eq 0 ]; then
+	  if [ "$EXPECTED_CORE" == "0" ]; then
 		echo "PASSED: command $cmd"
-	    else
+	  else
 		echo "FAILED: command $cmd" >&2
 		touch /tmp/richcoretest_failed
-	    fi
+ 	  fi
 	fi
 
-        # cleanup (possible) core
+	# cleanup (possible) core
 	rm -f $CORE_DUMPS_DIR/$EXE*$PID.rcore.lzo
-    done
+  done
 }
 
 #

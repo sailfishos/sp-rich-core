@@ -655,8 +655,8 @@ fi
 # alternatives if this is not the case.
 
 if [ "${core_pid}" -gt 0 ]; then
-core_tmp=`tr '\0' ' ' < /proc/${core_pid}/cmdline | cut -d' ' -f1`
-core_name=${core_tmp##*/}
+  core_tmp=`tr '\0' ' ' < /proc/${core_pid}/cmdline | cut -d' ' -f1`
+  core_name=${core_tmp##*/}
 fi
 
 if [ -z "${core_name}" ]; then
@@ -771,7 +771,7 @@ if [ "${core_name}" = "OneshotFailure" ]; then
   _section_failed_oneshot_scripts
 fi
 if [ x"$NO_SECTION_HEADER" = x"true" ] && [ "${omit_core}" != "true" ]; then
-cat
+  cat
 elif [ -n "${IS_OOPSLOG}" ]; then
   _print_header oopslog
   cat
