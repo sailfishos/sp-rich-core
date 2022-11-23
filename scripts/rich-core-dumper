@@ -681,7 +681,7 @@ fi
 # on white/blacklisting rules.
 
 if [ -e /etc/rich-core.include ]; then
-    /bin/grep -q "^[[:space:]]*${core_name}[[:space:]]*$" /etc/rich-core.include
+    grep -q "^[[:space:]]*${core_name}[[:space:]]*$" /etc/rich-core.include
     if [ $? -ne 0 ]; then
         # Not in the whitelist; do not dump a core
         cat > /dev/null
@@ -689,7 +689,7 @@ if [ -e /etc/rich-core.include ]; then
     fi
 fi
 if [ -e /etc/rich-core.exclude ]; then
-    /bin/grep -q "^[[:space:]]*${core_name}[[:space:]]*$" /etc/rich-core.exclude
+    grep -q "^[[:space:]]*${core_name}[[:space:]]*$" /etc/rich-core.exclude
     if [ $? -eq 0 ]; then
         # Is in the blacklist; do not dump a core
         cat > /dev/null
