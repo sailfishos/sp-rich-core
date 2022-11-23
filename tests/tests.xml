@@ -2,7 +2,7 @@
 <testdefinition version="1.0">
     <suite name="core-reducer-tests" domain="Core">
         <description>Testing of sp-rich-core</description>
-        <set name="Installation-acceptance-tests" feature="Integration">
+        <set name="Installation-acceptance-tests" feature="sp-rich-core">
             <description>Ensure the application is installed correctly</description>
             <environments>
               <scratchbox>false</scratchbox>
@@ -32,9 +32,6 @@
             <case name="Rich-core-extract-test" type="Integration" level="Feature">
               <step expected_result="0">/usr/sbin/run-root /usr/share/sp-rich-core-tests/test_extract</step>
             </case>
-	</set>
-        <set name="input-validation-tests" feature="Robustness">
-            <description>Determine how the application responds to input</description>
             <case name="no-parameters" type="Robustness" level="Component">
                 <step expected_result="255">core-reducer</step>
             </case>
