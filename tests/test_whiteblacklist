@@ -94,7 +94,7 @@ _run_test_case() {
  	sleep 1
  	# send signal causing core dump and wait rich core to be created
  	kill -11 $PID
- 	sleep 5
+ 	sleep 30
 	
 	if ls $CORE_DUMPS_DIR | grep -qe "$EXE-.*-$PID\.rcore\.lzo"; then
 	  if [ "$EXPECTED_CORE" == "1" ]; then
@@ -140,6 +140,7 @@ if [ -e "$BLACKLIST_FILE" ]; then
     mv $BLACKLIST_FILE $BLACKLIST_FILE_BAK
 fi
 
+echo "Starting white / black list test. Make sure you have crash report autoupload disabled"
 echo "Running case 1"
 _setup_case1
 _run_test_case
