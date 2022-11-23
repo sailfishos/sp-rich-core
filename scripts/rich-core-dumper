@@ -292,16 +292,6 @@ _section_repositories()
 
 _dump_logs()
 {
-  for xorglog in /var/log/Xorg.0.log.*.gz; do
-    if [ -f "$xorglog" ]; then
-      _print_header $xorglog
-      zcat $xorglog
-    fi
-  done
-
-  _print_file_with_header /var/log/Xorg.0.log
-  _print_file_with_header /var/log/Xorg.0.log.old
-
   _print_command_with_header /usr/bin/journalctl -b
   _print_command_with_header /bin/dmesg
 
