@@ -292,16 +292,6 @@ _section_repositories()
 
 _dump_logs()
 {
-  for xorglog in /var/log/Xorg.0.log.*.gz; do
-    if [ -f "$xorglog" ]; then
-      _print_header $xorglog
-      zcat $xorglog
-    fi
-  done
-
-  _print_file_with_header /var/log/Xorg.0.log
-  _print_file_with_header /var/log/Xorg.0.log.old
-
   _print_command_with_header /usr/bin/journalctl -b
   _print_command_with_header /bin/dmesg
 
@@ -665,8 +655,8 @@ fi
 # alternatives if this is not the case.
 
 if [ "${core_pid}" -gt 0 ]; then
-core_tmp=`tr '\0' ' ' < /proc/${core_pid}/cmdline | cut -d' ' -f1`
-core_name=${core_tmp##*/}
+  core_tmp=`tr '\0' ' ' < /proc/${core_pid}/cmdline | cut -d' ' -f1`
+  core_name=${core_tmp##*/}
 fi
 
 if [ -z "${core_name}" ]; then
@@ -681,7 +671,7 @@ fi
 # on white/blacklisting rules.
 
 if [ -e /etc/rich-core.include ]; then
-    /bin/grep -q "^[[:space:]]*${core_name}[[:space:]]*$" /etc/rich-core.include
+    grep -q "^[[:space:]]*${core_name}[[:space:]]*$" /etc/rich-core.include
     if [ $? -ne 0 ]; then
         # Not in the whitelist; do not dump a core
         cat > /dev/null
@@ -689,7 +679,7 @@ if [ -e /etc/rich-core.include ]; then
     fi
 fi
 if [ -e /etc/rich-core.exclude ]; then
-    /bin/grep -q "^[[:space:]]*${core_name}[[:space:]]*$" /etc/rich-core.exclude
+    grep -q "^[[:space:]]*${core_name}[[:space:]]*$" /etc/rich-core.exclude
     if [ $? -eq 0 ]; then
         # Is in the blacklist; do not dump a core
         cat > /dev/null
@@ -781,7 +771,7 @@ if [ "${core_name}" = "OneshotFailure" ]; then
   _section_failed_oneshot_scripts
 fi
 if [ x"$NO_SECTION_HEADER" = x"true" ] && [ "${omit_core}" != "true" ]; then
-cat
+  cat
 elif [ -n "${IS_OOPSLOG}" ]; then
   _print_header oopslog
   cat
