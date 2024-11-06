@@ -289,7 +289,7 @@ _section_packagelist()
 {
   _print_header packagelist
   if [ "$is_under_rpm" = "true" ]; then
-    RICH_CORE_ERRORS="${RICH_CORE_ERRORS}Crash under rpm, not getting package list\n"
+    _log_rich_core_error "Crash under rpm, not getting package list"
   else
     rpm -q -a | sort
   fi
@@ -383,7 +383,7 @@ _section_exe_package()
 {
   _print_header exe-package
   if [ "$is_under_rpm" = "true" ]; then
-    RICH_CORE_ERRORS="${RICH_CORE_ERRORS}Crash under rpm, not getting exe package\n"
+    _log_rich_core_error "Crash under rpm, not getting exe package"
   else
     rpm -q -f "${core_exe}"
   fi
@@ -403,11 +403,11 @@ _check_and_install()
   (which $1 >/dev/null) && return 0
 
   if [ "$is_under_rpm" = "true" ]; then
-    RICH_CORE_ERRORS="${RICH_CORE_ERRORS}Crash under rpm, not installing $1\n"
+    _log_rich_core_error "Crash under rpm, not installing $1"
     return 1
   fi
   if [ "$has_suitable_network_connection" = "false" ]; then
-    RICH_CORE_ERRORS="${RICH_CORE_ERRORS}No network connection, not installing $1\n"
+    _log_rich_core_error "No network connection, not installing $1"
     return 1
   fi
 
@@ -503,11 +503,11 @@ _download_debuginfo()
   [ x"$DEVICE_STATE" = x"USER" ] || return 1
 
   if [ "$is_under_rpm" = "true" ]; then
-    RICH_CORE_ERRORS="${RICH_CORE_ERRORS}Crash under rpm, not downloading debuginfo\n"
+    _log_rich_core_error "Crash under rpm, not downloading debuginfo"
     return 1
   fi
   if [ "$has_suitable_network_connection" = "false" ]; then
-    RICH_CORE_ERRORS="${RICH_CORE_ERRORS}No suitable connection, not downloading debuginfo\n"
+    _log_rich_core_error "No suitable connection, not downloading debuginfo"
     return 1
   fi
   
@@ -539,7 +539,7 @@ _reduce_core()
   core-reducer -i "$originalcorefilename" -o /dev/stdout -e $core_exe
   retval=$?
   if [ $retval != 0 ]; then
-    RICH_CORE_ERRORS="${RICH_CORE_ERRORS}core-reducer exited with value $retval, core file of size ${original_core_size}B is likely truncated\n"
+    _log_rich_core_error "core-reducer exited with value $retval, core file of size ${original_core_size}B is likely truncated"
   fi
 }
 
@@ -548,6 +548,11 @@ _log_msg()
   # We run logger on background so that the script doesn't get stuck if system
   # journal is not accessible.
   logger "$1" &
+}
+
+_log_rich_core_error()
+{
+  RICH_CORE_ERRORS="${RICH_CORE_ERRORS}$1\n"
 }
 
 _run_with_timeout()
