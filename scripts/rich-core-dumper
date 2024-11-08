@@ -30,7 +30,6 @@
 
 SW_VERSION_FILE=/etc/os-release
 CORE_LOCATION=/var/cache/core-dumps
-CORE_SIZE_LIMIT=1000000		# kB
 CORE_REDUCE_THRESHOLD=10000	# kB
 WAKE_LOCK_TIMEOUT=120 # s
 
@@ -71,6 +70,8 @@ _obtain_configuration()
   privacy_notice_accepted=$(_read_config_variable privacy-notice-accepted true)
   
   INCLUDE_CORE=$(_read_config_variable INCLUDE_CORE true)
+  # Core size limit in kB, or 0 for unlimited (except by free disk space)
+  CORE_SIZE_LIMIT=$(_read_config_variable CORE_SIZE_LIMIT 1000000)
   REDUCE_CORE=$(_read_config_variable REDUCE_CORE true)
   INCLUDE_SYSLOG=$(_read_config_variable INCLUDE_SYSLOG true)
   INCLUDE_PKGLIST=$(_read_config_variable INCLUDE_PKGLIST true)
@@ -629,7 +630,7 @@ if [ "${core_pid}" != "0" ] && { [ "${REDUCE_CORE}" = "true" ] || [ "${INCLUDE_S
     # not enough free space for input core file + required extra 50M
     omit_core=true
     _log_msg "rich-core: dumping core might fill up disk - not dumping"
-  elif [ ${coresize_approx} -gt ${CORE_SIZE_LIMIT} ]; then
+  elif [ $CORE_SIZE_LIMIT -gt 0 ] && [ ${coresize_approx} -gt ${CORE_SIZE_LIMIT} ]; then
     # approximated size of input core file is greater than the limit
     omit_core=true
     _log_msg "rich-core: approximate of core size is greater than ${CORE_SIZE_LIMIT} kB - not dumping"
