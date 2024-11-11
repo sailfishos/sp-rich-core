@@ -162,6 +162,18 @@ _check_core_location()
   return 1
 }
 
+_check_rpm_in_parents()
+{
+  local pid=$core_pid
+  while [ -n "$pid" ]; do
+    local comm=$(cat /proc/$pid/comm)
+    [ "$comm" = "rpm" ] && return 0
+    pid=$(awk -F' ' '/PPid/ { print $2 }' /proc/$pid/status)
+    [ 0${pid} -le 1 ] && break
+  done
+  return 1
+}
+
 #
 # Information collection functions
 #
@@ -273,16 +285,14 @@ _section_user_message()
   fi
 }
 
-_pkcon_query_installed()
-{
-  _run_with_timeout 30 pkcon --plain --noninteractive --filter=installed $@ \
-    | awk '/^Installed / {print $2}'
-}
-
 _section_packagelist()
 {
   _print_header packagelist
-  _pkcon_query_installed get-packages
+  if [ "$is_under_rpm" = "true" ]; then
+    _log_rich_core_error "Crash under rpm, not getting package list"
+  else
+    rpm -q -a | sort
+  fi
 }
 
 _section_repositories()
@@ -372,7 +382,11 @@ _section_ssu_status()
 _section_exe_package()
 {
   _print_header exe-package
-  _pkcon_query_installed search file ${core_exe}
+  if [ "$is_under_rpm" = "true" ]; then
+    _log_rich_core_error "Crash under rpm, not getting exe package"
+  else
+    rpm -q -f "${core_exe}"
+  fi
 }
 
 _get_vmsizes()
@@ -388,14 +402,16 @@ _check_and_install()
 {
   (which $1 >/dev/null) && return 0
 
-  # If a running rpm scriptlet is detected, we don't execute pkcon. Application
-  # crashing inside that script may cause a deadlock since packagekitd would be
-  # waiting until scriptlet finishes, which would be waiting for failed program
-  # to finish dumping core, which would be waiting for pkcon to finish.
-  [ $has_suitable_network_connection = "true" ] && \
-    ! (ps ax | grep '[/]bin/sh /var/tmp/rpm-tmp.' >/dev/null) && \
-    (pkcon --noninteractive install $1 >/dev/null)
+  if [ "$is_under_rpm" = "true" ]; then
+    _log_rich_core_error "Crash under rpm, not installing $1"
+    return 1
+  fi
+  if [ "$has_suitable_network_connection" = "false" ]; then
+    _log_rich_core_error "No network connection, not installing $1"
+    return 1
+  fi
 
+  pkcon --noninteractive install $1 >/dev/null
   return $?
 }
 
@@ -484,12 +500,19 @@ _section_proc_maps()
 _download_debuginfo()
 {
   DEVICE_STATE=$(/usr/sbin/dsmetool -g)
-  if [ x"$DEVICE_STATE" = x"USER" ]; then
-    _print_header debuginfo_download
-    [ $has_suitable_network_connection = "true" ] && \
-      ! (ps ax | grep '[/]bin/sh /var/tmp/rpm-tmp.' >/dev/null) && \
-      (pkcon -p -y refresh; echo $LIBS | xargs rpm -qf | sed -e 's/-[^-]*-[^-]*$/-debuginfo/' | xargs pkcon -p -y install)
+  [ x"$DEVICE_STATE" = x"USER" ] || return 1
+
+  if [ "$is_under_rpm" = "true" ]; then
+    _log_rich_core_error "Crash under rpm, not downloading debuginfo"
+    return 1
   fi
+  if [ "$has_suitable_network_connection" = "false" ]; then
+    _log_rich_core_error "No suitable connection, not downloading debuginfo"
+    return 1
+  fi
+  
+  _print_header debuginfo_download
+  pkcon -p -y refresh; echo $LIBS | xargs rpm -qf | sed -e 's/-[^-]*-[^-]*$/-debuginfo/' | xargs pkcon -p -y install
 }
 
 _capture_stacktrace()
@@ -516,7 +539,7 @@ _reduce_core()
   core-reducer -i "$originalcorefilename" -o /dev/stdout -e $core_exe
   retval=$?
   if [ $retval != 0 ]; then
-    RICH_CORE_ERRORS="${RICH_CORE_ERRORS}core-reducer exited with value $retval, core file of size ${original_core_size}B is likely truncated\n"
+    _log_rich_core_error "core-reducer exited with value $retval, core file of size ${original_core_size}B is likely truncated"
   fi
 }
 
@@ -525,6 +548,11 @@ _log_msg()
   # We run logger on background so that the script doesn't get stuck if system
   # journal is not accessible.
   logger "$1" &
+}
+
+_log_rich_core_error()
+{
+  RICH_CORE_ERRORS="${RICH_CORE_ERRORS}$1\n"
 }
 
 _run_with_timeout()
@@ -610,6 +638,18 @@ has_suitable_network_connection=false
 # grep "struct connman_technology_driver" connman/plugins/* -A1 | grep -o "\".*\""
 if [ x"$network_type" = x"wifi" ] || [ x"$network_type" = x"ethernet" ]; then
   has_suitable_network_connection=true
+fi
+
+
+# If the crashing program is running under rpm, i.e. in a scriptlet, then we
+# don't execute package management related commands. This could cause a
+# deadlock, since rpm would be waiting until the scriptlet finishes, which
+# would be waiting for the failed program to finish dumping core, which would
+# be waiting for a rpm lock.
+if _check_rpm_in_parents; then
+  is_under_rpm=true
+else
+  is_under_rpm=false
 fi
 
 # When core reducing and/or stack trace inclusion is enabled, coredump is
@@ -702,11 +742,6 @@ fi
 # If we are not including the core file, reducing it makes no sense
 if [ x"$INCLUDE_CORE" != x"true" ]; then
     REDUCE_CORE=false
-fi
-
-# If network transfers are paid, don't download anything 
-if [ $has_suitable_network_connection = "false" ]; then
-    DOWNLOAD_DEBUGINFO=false
 fi
 
 # Get hwid
