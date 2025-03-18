@@ -12,22 +12,22 @@ PREVIOUS_ONESHOTS=$(mktemp /tmp/previous_oneshots.XXXXXX)
 cat $ONESHOTS_FILE >> $PREVIOUS_ONESHOTS
 
 echo "$ONESHOTS" | while read oneshot; do
-	is_new=1
-	while read oldshot; do
-		if [ "$oneshot" = "$oldshot" ]; then
-			is_new=0
-			break
-		fi
-	done < $PREVIOUS_ONESHOTS
-	if [ $is_new -eq 1 ]; then
-		logger "Found failed oneshot script; dumping log files."
-		echo "${ONESHOTS}" > "$ONESHOTS_FILE"
-		# Don't set failure, if oneshot line is empty.
-		if [ ${#oneshot} != 0 ]; then
-			/usr/sbin/rich-core-dumper --name=OneshotFailure --signal=$RANDOM
-		fi
-		break
-	fi
+  is_new=1
+  while read oldshot; do
+    if [ "$oneshot" = "$oldshot" ]; then
+      is_new=0
+      break
+    fi
+  done < $PREVIOUS_ONESHOTS
+  if [ $is_new -eq 1 ]; then
+    logger "Found failed oneshot script; dumping log files."
+    echo "${ONESHOTS}" > "$ONESHOTS_FILE"
+    # Don't set failure, if oneshot line is empty.
+    if [ ${#oneshot} != 0 ]; then
+      /usr/sbin/rich-core-dumper --name=OneshotFailure --signal=$RANDOM
+    fi
+    break
+  fi
 done
 
 rm $PREVIOUS_ONESHOTS
