@@ -40,19 +40,15 @@ WAKE_LOCK_TIMEOUT=120 # s
 _read_config_variable()
 {
   value=$2
-  if [ -e $system_settings/crash-reporter-privacy.conf ]; then
-    v=$(awk -F "=" "/$1/ {print \$2}" $system_settings/crash-reporter-privacy.conf)
-    if [ "$v" != "" ]; then
-      value=$v
+  for file in $user_settings/$config_file $system_settings/$config_file; do
+    if [ -e $file ]; then
+      v=$(awk -F "=" "/$1/ {print \$2}" $file)
+      if [ "$v" != "" ]; then
+        value=$v
+        break
+      fi
     fi
-  fi
-
-  if [ -e $user_settings/crash-reporter-privacy.conf ]; then
-    v=$(awk -F "=" "/$1/ {print \$2}" $user_settings/crash-reporter-privacy.conf)
-    if [ "$v" != "" ]; then
-      value=$v
-    fi
-  fi
+  done
 
   echo $value
 }
@@ -61,6 +57,7 @@ _obtain_configuration()
 {
   # default fallback values, overruled by configuration file if one exists
 
+  config_file=crash-reporter-privacy.conf
   system_settings=/usr/share/crash-reporter-settings
   system_user=$(getent group sailfish-system | cut -d: -f4 | tr , '\n' | grep -vE '^sailfish-' | head -n1)
   user_settings=$(getent passwd ${system_user} | cut -d: -f6)/.config/crash-reporter-settings
