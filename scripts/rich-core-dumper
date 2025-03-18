@@ -42,7 +42,7 @@ _read_config_variable()
   value=$2
   for file in $user_settings/$config_file $system_settings/$config_file; do
     if [ -e $file ]; then
-      v=$(awk -F "=" "/$1/ {print \$2}" $file)
+      v=$(awk -F "=" "/^$1=/ {print \$2}" $file)
       if [ "$v" != "" ]; then
         value=$v
         break
