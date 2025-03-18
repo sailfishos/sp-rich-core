@@ -29,7 +29,6 @@
 #
 
 SW_VERSION_FILE=/etc/os-release
-CORE_LOCATION=/var/cache/core-dumps
 CORE_REDUCE_THRESHOLD=10000 # kB
 WAKE_LOCK_TIMEOUT=120 # s
 
@@ -65,6 +64,20 @@ _obtain_configuration()
 
   coredumping=$(_read_config_variable coredumping true)
   privacy_notice_accepted=$(_read_config_variable privacy-notice-accepted true)
+
+  use_home_partition=$(_read_config_variable use-home-partition false)
+  home_mounted=$(grep " /home " /etc/mtab | wc -l)
+  if [ "$use_home_partition" == "true" ] && [ $home_mounted -eq 1 ]; then
+    CORE_LOCATION="/home/.crash-reporter/core-dumps"
+    if [ ! -d "$CORE_LOCATION" ]; then
+      mkdir -p "$CORE_LOCATION"
+      chmod 777 "$CORE_LOCATION"
+    fi
+  else
+    CORE_LOCATION="/var/cache/core-dumps"
+  fi
+  unset use_home_partition
+  unset home_mounted
 
   INCLUDE_CORE=$(_read_config_variable INCLUDE_CORE true)
   # Core size limit in kB, or 0 for unlimited (except by free disk space)
@@ -338,7 +351,7 @@ _dump_panic_partition()
 _section_failed_oneshot_scripts()
 {
   _print_header failed_oneshot_scripts
-  cat "${CORE_LOCATION}/oneshots"
+  cat "/var/cache/core-dumps/oneshots"
 }
 
 _section_rich_core_errors()
@@ -758,10 +771,12 @@ fi
 rcorefilename=${rcorebasename}.rcore.lzo
 
 # Create marker file for testrunner-lite
-if [ -f "${CORE_LOCATION}/testrunner-lite-testcase" ]; then
-  core_tc_uuid=$(cat "${CORE_LOCATION}/testrunner-lite-testcase")
+testcase_file="/var/cache/core-dumps/testrunner-lite-testcase"
+if [ -f "$testcase_file" ]; then
+  core_tc_uuid=$(cat "$testcase_file")
   touch "${rcorefilename}.${core_tc_uuid}"
 fi
+unset testcase_file
 
 # Collect process specific information first, only then system
 # as process may disappear while this info is collected
