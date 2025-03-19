@@ -63,7 +63,7 @@ ADDRESS ProcInterface::heapAddress(const char *fileName) const
                 {
                     // correct line is found
                     ADDRESS addr = 0;
-                    if(sscanf(buf, "%x", &addr)>0)
+                    if(sscanf(buf, "%lx", &addr)>0)
                     {
                         fclose(fd);
                         return addr;
@@ -115,7 +115,7 @@ const std::vector<ProcInterface::SharedObject> *ProcInterface::getSharedObjects(
                 {
                     // correct line is found - get needed data
                     ADDRESS addr = 0;
-                    sscanf(buf, "%x", &addr);
+                    sscanf(buf, "%lx", &addr);
                     int len = strlen(buf);
                     if (len > 0)
                     {

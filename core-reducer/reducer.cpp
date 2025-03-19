@@ -67,15 +67,15 @@ Reducer::Reducer(const char *output, ADDRESS heap)
     :   coreReader(NULL),
     binaryReader(NULL),
     coreWriter(NULL),
-    dynamicAddressFromExecutable(NULL),
+    dynamicAddressFromExecutable(0),
     dynamicSectionSizeFromExecutable(0),
-    interpAddress(NULL),
+    interpAddress(0),
     interpreter(NULL),
     output(output),
     heapAddress(heap),
     processId(INT_MAX),
     executableName(NULL),
-	phdrAddr(0)
+    phdrAddr(0)
 {
 }
 
@@ -129,8 +129,8 @@ bool Reducer::initalize(const char *core, const char *binary)
     if (!binaryReader->initalize(binary))
         return false;
 
-	Phdr *phdr = binaryReader->getSegmentByType(PT_PHDR);
-	ADDRESS loadBias = phdrAddr - phdr->p_vaddr;
+    Phdr *phdr = binaryReader->getSegmentByType(PT_PHDR);
+    ADDRESS loadBias = phdrAddr - phdr->p_vaddr;
     //get the dynamic section from the binary executable
     const CurrentSectionData *binarySectionData = binaryReader->getSectionByType(SHT_DYNAMIC);
     if (binarySectionData)
@@ -243,19 +243,19 @@ bool Reducer::getNotes()
             //but not just the name it should include its path
             executableName = info->pr_psargs;
         }
-		else if (current->n_type == NT_AUXV)
-		{
-			Auxv *aux = (Auxv *)((char *)(current + 1) + align_power(current->n_namesz, 2)); 
-			while (aux->a_type != AT_NULL)
-			{
-				if (aux->a_type == AT_PHDR)
-				{
-					phdrAddr = (ADDRESS)aux->a_un.a_val;
-					break; 
-				}
-				++aux;
-			}
-		}
+        else if (current->n_type == NT_AUXV)
+        {
+            Auxv *aux = (Auxv *)((char *)(current + 1) + align_power(current->n_namesz, 2));
+            while (aux->a_type != AT_NULL)
+            {
+                if (aux->a_type == AT_PHDR)
+                {
+                    phdrAddr = (ADDRESS)aux->a_un.a_val;
+                    break;
+                }
+                ++aux;
+            }
+        }
 
         current = (Nhdr *)((char *)(current + 1) + align_power (current->n_namesz, 2)
                            + align_power (current->n_descsz, 2));
