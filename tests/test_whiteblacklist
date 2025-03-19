@@ -34,51 +34,51 @@ CORE_DUMPS_DIR=/var/cache/core-dumps/
 EXPECTED_CORE=0
 
 _setup_case1() {
-    EXPECTED_CORE=1
-    cat > $COMMANDS_FILE <<EOF
+  EXPECTED_CORE=1
+  cat > $COMMANDS_FILE <<EOF
 /bin/sleep 60
 EOF
-    cat > $WHITELIST_FILE <<EOF
+  cat > $WHITELIST_FILE <<EOF
 sleep
 dummy
 EOF
-    rm -f $BLACKLIST_FILE
+  rm -f $BLACKLIST_FILE
 }
 
 _setup_case2() {
-    EXPECTED_CORE=0
-    cat > $COMMANDS_FILE <<EOF
+  EXPECTED_CORE=0
+  cat > $COMMANDS_FILE <<EOF
 /bin/sleep 60
 EOF
-    rm -f $WHITELIST_FILE
-    cat > $BLACKLIST_FILE <<EOF
-foobar  
-sleep  
+  rm -f $WHITELIST_FILE
+  cat > $BLACKLIST_FILE <<EOF
+foobar
+sleep
 EOF
 }
 
 _setup_case3() {
-    EXPECTED_CORE=1
-    cat > $COMMANDS_FILE <<EOF
+  EXPECTED_CORE=1
+  cat > $COMMANDS_FILE <<EOF
 /bin/sleep 60
 EOF
-    cat > $WHITELIST_FILE <<EOF
-  dummy 
-  sleep 
+  cat > $WHITELIST_FILE <<EOF
+  dummy
+  sleep
 EOF
-    cat > $BLACKLIST_FILE <<EOF
+  cat > $BLACKLIST_FILE <<EOF
 sleeper
 foobar
 EOF
 }
 
 _setup_case4() {
-    EXPECTED_CORE=1
-    cat > $COMMANDS_FILE <<EOF
+  EXPECTED_CORE=1
+  cat > $COMMANDS_FILE <<EOF
 /bin/sleep 60
 EOF
-    rm -f $WHITELIST_FILE
-    cat > $BLACKLIST_FILE <<EOF
+  rm -f $WHITELIST_FILE
+  cat > $BLACKLIST_FILE <<EOF
 sleeper
 foobar
 EOF
@@ -87,33 +87,33 @@ EOF
 _run_test_case() {
   cat $COMMANDS_FILE | while read cmd
   do
- 	EXE=$(basename ${cmd%% *})
- 	$cmd&
- 	PID=$!
+   EXE=$(basename ${cmd%% *})
+   $cmd&
+   PID=$!
 
- 	sleep 1
- 	# send signal causing core dump and wait rich core to be created
- 	kill -11 $PID
- 	sleep 30
-	
-	if ls $CORE_DUMPS_DIR | grep -qe "$EXE-.*-$PID\.rcore\.lzo"; then
-	  if [ "$EXPECTED_CORE" == "1" ]; then
-		echo "PASSED: command $cmd"
-	  else
-		echo "FAILED: command $cmd" >&2
-		touch /tmp/richcoretest_failed
-	  fi
-	else
-	  if [ "$EXPECTED_CORE" == "0" ]; then
-		echo "PASSED: command $cmd"
-	  else
-		echo "FAILED: command $cmd" >&2
-		touch /tmp/richcoretest_failed
- 	  fi
-	fi
+   sleep 1
+   # send signal causing core dump and wait rich core to be created
+   kill -11 $PID
+   sleep 30
 
-	# cleanup (possible) core
-	rm -f $CORE_DUMPS_DIR/$EXE*$PID.rcore.lzo
+  if ls $CORE_DUMPS_DIR | grep -qe "$EXE-.*-$PID\.rcore\.lzo"; then
+    if [ "$EXPECTED_CORE" == "1" ]; then
+      echo "PASSED: command $cmd"
+    else
+      echo "FAILED: command $cmd" >&2
+      touch /tmp/richcoretest_failed
+    fi
+  else
+    if [ "$EXPECTED_CORE" == "0" ]; then
+      echo "PASSED: command $cmd"
+    else
+      echo "FAILED: command $cmd" >&2
+      touch /tmp/richcoretest_failed
+     fi
+  fi
+
+  # cleanup (possible) core
+  rm -f $CORE_DUMPS_DIR/$EXE*$PID.rcore.lzo
   done
 }
 
@@ -126,18 +126,18 @@ rm -f /tmp/richcoretest_failed
 
 # check core dir exists
 if [ ! -d "$CORE_DUMPS_DIR" ]; then
-    echo "Core dump directory $CORE_DUMPS_DIR does not exists"
-    exit 2
+  echo "Core dump directory $CORE_DUMPS_DIR does not exists"
+  exit 2
 fi
 
 # backup original whitelist file
 if [ -e "$WHITELIST_FILE" ]; then
-    mv $WHITELIST_FILE $WHITELIST_FILE_BAK
+  mv $WHITELIST_FILE $WHITELIST_FILE_BAK
 fi
 
 # backup original blacklist file
 if [ -e "$BLACKLIST_FILE" ]; then
-    mv $BLACKLIST_FILE $BLACKLIST_FILE_BAK
+  mv $BLACKLIST_FILE $BLACKLIST_FILE_BAK
 fi
 
 echo "Starting white / black list test. Make sure you have crash report autoupload disabled"
@@ -159,20 +159,20 @@ _run_test_case
 
 # restore original whitelist
 if [ -e "$WHITELIST_FILE_BAK" ]; then
-    mv $WHITELIST_FILE_BAK $WHITELIST_FILE
+  mv $WHITELIST_FILE_BAK $WHITELIST_FILE
 else
-    rm -f $WHITELIST_FILE
+  rm -f $WHITELIST_FILE
 fi
 
 # restore original blacklist
 if [ -e "$BLACKLIST_FILE_BAK" ]; then
-    mv $BLACKLIST_FILE_BAK $BLACKLIST_FILE
+  mv $BLACKLIST_FILE_BAK $BLACKLIST_FILE
 else
-    rm -f $BLACKLIST_FILE
+  rm -f $BLACKLIST_FILE
 fi
 
 if [ -e /tmp/richcoretest_failed ]; then
-    ret=1
+  ret=1
 fi
 
 rm -f $COMMANDS_FILE

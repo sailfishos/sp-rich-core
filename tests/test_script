@@ -38,7 +38,7 @@ _obtain_configuration()
 _parse_arguments()
 {
   while [ $# -ge 1 ]; do
-    case $1 in 
+    case $1 in
       "--do-wait")
       DO_WAIT=true
     esac
@@ -71,8 +71,8 @@ _enable_rich_core_dumper()
 _get_shadow_pid()
 {
   # get pid of 2nd instance
-  ps ax | 
-    grep "$SCRIPT" | 
+  ps ax |
+    grep "$SCRIPT" |
     grep "$SCRIPT_ADDITIONAL_KEY" |
     tr '\n' ' ' |
     sed -e 's/^ *\([0-9]*\) .*$/\1/g'
@@ -152,12 +152,12 @@ sleep 4
 # get its name
 corename=`_get_core_name`.$pid
 
-echo "Corename has to be: $corename" 
+echo "Corename has to be: $corename"
 
 # when core dumping is started, empty file is already exist, and just some time after
-# it will be closed and a real content might be visible, so existing core dump with size 0 
-# just means that 
-# 1) core dumping is yet processing 
+# it will be closed and a real content might be visible, so existing core dump with size 0
+# just means that
+# 1) core dumping is yet processing
 # or
 # 2) something going wrong
 
@@ -206,7 +206,7 @@ if [ -e $corename ]; then
     ret=1
   fi
 
-else 
+else
   echo "Core dump does not exist"
 
   # change return value
