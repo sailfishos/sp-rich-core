@@ -81,7 +81,7 @@ _obtain_configuration()
 
   INCLUDE_CORE=$(_read_config_variable INCLUDE_CORE true)
   # Core size limit in kB, or 0 for unlimited (except by free disk space)
-  CORE_SIZE_LIMIT=$(_read_config_variable CORE_SIZE_LIMIT 1000000)
+  CORE_SIZE_LIMIT=$(_read_config_variable CORE_SIZE_LIMIT 2000000)
   REDUCE_CORE=$(_read_config_variable REDUCE_CORE true)
   INCLUDE_SYSLOG=$(_read_config_variable INCLUDE_SYSLOG true)
   INCLUDE_PKGLIST=$(_read_config_variable INCLUDE_PKGLIST true)
@@ -676,8 +676,8 @@ if [ "${core_pid}" != "0" ] && { [ "${REDUCE_CORE}" = "true" ] || [ "${INCLUDE_S
   # calculate approximate size of core file
   coresize_approx=$((${vmsize}-${vmlib}-${vmexe}))
 
-  if [ $((${freespace} - ${coresize_approx})) -lt 50000 ]; then
-    # not enough free space for input core file + required extra 50M
+  if [ $((${freespace} - ${coresize_approx})) -lt 100000 ]; then
+    # not enough free space for input core file + required extra 100M
     omit_core=true
     _log_msg "rich-core: dumping core might fill up disk - not dumping"
   elif [ $CORE_SIZE_LIMIT -gt 0 ] && [ ${coresize_approx} -gt ${CORE_SIZE_LIMIT} ]; then
