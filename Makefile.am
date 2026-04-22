@@ -1,6 +1,6 @@
 EXTRA_DIST = autogen.sh
 
-INCLUDES = $(DEPS_CFLAGS)
+AM_CPPFLAGS = $(DEPS_CFLAGS)
 
 SUBDIRS = rich-core-extract core-reducer scripts tests sysctl gdb
 DIST_SUBDIRS = $(SUBDIRS)

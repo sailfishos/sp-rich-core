@@ -1,3 +1,4 @@
+AUTOMAKE_OPTIONS = subdir-objects
 
 main_test_LDFLAGS = \
 	$(ELF_LIBS) \
