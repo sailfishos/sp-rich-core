@@ -86,6 +86,7 @@ _get_core_name()
     tr '\n' ' ' |
     sed -e 's/%e/test_script/g' |
     sed -e "s/%p/$pid/g" |
+    sed -e "s/%P/$pid/g" |
     sed -e 's/%s/11/g' |
     sed -e 's/^ *//' -e 's/ *$//'
 }
