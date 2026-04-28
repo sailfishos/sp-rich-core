@@ -8,7 +8,7 @@
               <scratchbox>false</scratchbox>
             </environments>
             <case name="core_pattern-file-string-set-correctly" type="Integration" level="Feature">
-              <step expected_result="0">[ "|/usr/sbin/rich-core-dumper --pid=%p --signal=%s --name=%e" = "$(cat /proc/sys/kernel/core_pattern)" ]</step>
+              <step expected_result="0">[ "|/usr/sbin/rich-core-dumper --pid=%P --signal=%s --name=%e" = "$(cat /proc/sys/kernel/core_pattern)" ]</step>
             </case>
             <case name="Rich-core-early-collect-script-installed" type="Integration" level="Feature">
               <step expected_result="0">[ -f /usr/lib/systemd/system/rich-core-early-collect.service ]</step>
@@ -33,7 +33,7 @@
               <step expected_result="0">/usr/sbin/run-root /usr/share/sp-rich-core-tests/test_extract</step>
             </case>
             <case name="no-parameters" type="Robustness" level="Component">
-                <step expected_result="255">core-reducer</step>
+              <step expected_result="255">core-reducer</step>
             </case>
         </set> 
     </suite>
